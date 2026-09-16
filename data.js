@@ -87,9 +87,6 @@ window.projectData = {
       { type: 'image', file_path: 'assets/projet takoradi/1.jpg' },
       { type: 'image', file_path: 'assets/projet takoradi/2.jpg' },
       { type: 'image', file_path: 'assets/projet takoradi/4.jpg' },
-      { type: 'image', file_path: 'assets/baguida/4.jpg' },
-      { type: 'image', file_path: 'assets/baguida/5.jpg' },
-      { type: 'image', file_path: 'assets/baguida/6.jpg' },
       { type: 'image', file_path: 'assets/projet takoradi/5.jpg' },
       { type: 'image', file_path: 'assets/projet takoradi/6.jpg' },
       { type: 'image', file_path: 'assets/projet takoradi/7.jpg' },
@@ -112,7 +109,19 @@ window.projectData = {
       { type: 'image', file_path: 'assets/baguida/4.jpg' },
       { type: 'image', file_path: 'assets/baguida/5.jpg' },
       { type: 'image', file_path: 'assets/baguida/6.jpg' },
-      { type: 'image', file_path: 'assets/baguida/7.jpg' }
+      { type: 'image', file_path: 'assets/baguida/7.jpg' },
+      { type: 'image', file_path: 'assets/baguida/8.jpg' },
+      { type: 'image', file_path: 'assets/baguida/9.jpg' },
+      { type: 'image', file_path: 'assets/baguida/10.jpg' },
+      { type: 'image', file_path: 'assets/baguida/11.jpg' },
+      { type: 'image', file_path: 'assets/baguida/12.jpg' },
+      { type: 'image', file_path: 'assets/baguida/13.jpg' },
+      { type: 'image', file_path: 'assets/baguida/14.jpg' },
+      { type: 'image', file_path: 'assets/baguida/15.jpg' },
+      { type: 'image', file_path: 'assets/baguida/16.jpg' },
+      { type: 'image', file_path: 'assets/baguida/17.jpg' },
+      { type: 'image', file_path: 'assets/baguida/18.jpg' },
+      { type: 'image', file_path: 'assets/baguida/19.jpg' }
     ]
   },
   7: {
