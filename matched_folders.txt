@@ -1,0 +1,7 @@
+C:\xampp\htdocs\Architect\assets\baguida
+C:\xampp\htdocs\Architect\assets\cuisine
+C:\xampp\htdocs\Architect\assets\escalier
+C:\xampp\htdocs\Architect\assets\kegue
+C:\xampp\htdocs\Architect\assets\murs
+C:\xampp\htdocs\Architect\assets\PROJET BAGUIDA
+C:\xampp\htdocs\Architect\assets\projet takoradi

@@ -1,0 +1,12 @@
+# Clean URL & DirectoryIndex Configuration for Apache (XAMPP)
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Architect/
+
+    # Ensure directories have trailing slash for clean URLs
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(.*[^/])$ $1/ [L,R=301]
+</IfModule>

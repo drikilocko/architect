@@ -1,0 +1,68 @@
+<!-- marble_modal.html - Shared Product Popup Modal & AJAX Logic -->
+<div class="marble-modal" id="marble-detail-modal">
+    <div class="modal-overlay" onclick="closeMarbleModal()"></div>
+    <div class="modal-wrapper">
+        <button class="modal-close-btn" onclick="closeMarbleModal()">&times;</button>
+        
+        <!-- Left Side: Visual -->
+        <div class="modal-image-side">
+            <span class="stock-badge" id="modal-stock-badge">En stock</span>
+            <img src="produit/1.avif" alt="Marble Image" id="modal-marble-img">
+        </div>
+        
+        <!-- Right Side: Spec details & form -->
+        <div class="modal-info-side">
+            <!-- Success Overlay Screen -->
+            <div class="order-success-overlay" id="order-success-overlay">
+                <div class="success-icon">✓</div>
+                <h3 class="success-title">Sélection Ajoutée</h3>
+                <p class="success-message">Le marbre a bien été ajouté à votre sélection. Vous pouvez poursuivre vos visites ou finaliser votre demande via le panier en bas à gauche de l'écran.</p>
+                <button type="button" class="order-submit-btn" style="width:100%; max-width:240px; margin-top:20px;" onclick="closeMarbleModal()">Continuer mes achats</button>
+            </div>
+
+            <span class="marble-tag" id="modal-marble-tag">Premium</span>
+            <h2 class="marble-title" id="modal-marble-title">Blanc Carrare</h2>
+            <div class="marble-origin" id="modal-marble-origin">Italie · Toscane</div>
+            
+            <p class="marble-description" id="modal-marble-desc">
+                Description du marbre...
+            </p>
+            
+            <a href="mailto:Artech.marbrerie@gmail.com" class="order-submit-btn" style="display:inline-block; text-align:center; width:100%; max-width:240px; margin-top:10px;">
+                <span>Contacter un conseiller</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// DOM Elements Caching
+const modalEl = document.getElementById('marble-detail-modal');
+
+// Injected dynamic catalogue
+const productsDb = window.productData || [];
+
+function openMarbleModal(productId) {
+    const product = productsDb.find(p => parseInt(p.id) === parseInt(productId));
+    if (!product) return;
+    
+    document.getElementById('modal-marble-title').textContent = product.name;
+    document.getElementById('modal-marble-tag').textContent = product.tag;
+    document.getElementById('modal-marble-origin').textContent = product.origin;
+    document.getElementById('modal-marble-desc').textContent = product.description;
+    document.getElementById('modal-marble-img').src = product.image_path;
+    document.getElementById('modal-marble-img').alt = product.name;
+    
+    modalEl.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMarbleModal() {
+    modalEl.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+});
+</script>
+

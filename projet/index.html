@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Nos Projets — ARTECH</title>
+    <meta name="description" content="Découvrez nos projets emblématiques en marbre et pierre naturelle.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+        <link rel="icon" type="image/jpeg" href="../assets/favicon.jpg">
+<link rel="stylesheet" href="../style.css">
+
+
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0f0f0f;
+            --white: #f5f5f0;
+            --red: #ff3b30;
+            --gray: #888;
+            --transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f5f5f0;
+            color: #0f0f0f;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 1cm;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-logo span {
+            color: var(--red);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            position: relative;
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 8px 0;
+            color: #000;
+        }
+
+        .nav-links a.btn-contact {
+            padding: 12px 25px;
+            background: var(--primary-color);
+            color: var(--bg-dark) !important;
+            border-radius: 50px;
+            font-weight: 600 !important;
+            opacity: 1 !important;
+            line-height: 1.3;
+            overflow: hidden;
+            mix-blend-mode: normal;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+        }
+
+        /* ===== PROJECTS GRID ===== */
+        .projects-grid-section {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+            background: #f5f5f0;
+        }
+
+        .projects-grid-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .projects-grid-title h1 {
+            font-size: clamp(3rem, 6vw, 6rem);
+            font-weight: 900;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 0;
+        }
+
+        .projects-grid-desc {
+            font-size: 1rem;
+            color: #000;
+            line-height: 1.6;
+            max-width: 450px;
+            font-weight: 400;
+        }
+
+        .projects-grid-filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: #000;
+            padding: 10px 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: capitalize;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .filter-btn:hover {
+            border-bottom-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-btn.active {
+            border-bottom-color: #000;
+        }
+
+        .projects-count {
+            margin-left: auto;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .project-grid-card {
+            position: relative;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            cursor: pointer;
+            background: #e0e0e0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .project-grid-image {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .project-grid-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(0.3) brightness(0.85);
+            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.6s ease;
+        }
+
+        .project-grid-card:hover .project-grid-image img {
+            transform: scale(1.05);
+            filter: grayscale(0) brightness(0.95);
+        }
+
+        .zigzag-unavailable {
+            background: #ffffff;
+            position: relative;
+        }
+
+        .zigzag-unavailable::before {
+            content: 'ARTECH';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: rgba(0, 0, 0, 0.06);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        .zigzag-unavailable::after {
+            display: none;
+        }
+
+        .zigzag-unavailable img {
+            opacity: 0.3 !important;
+            filter: grayscale(1) !important;
+        }
+
+        .project-grid-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        .project-grid-category {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .project-grid-title {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        /* Premium Modal */
+        .premium-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100003;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .premium-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .premium-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+        }
+
+        .premium-modal-container {
+            position: relative;
+            width: 90%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+            overscroll-behavior: contain;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-modal.active .premium-modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .premium-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .premium-modal-close:hover {
+            color: #ff3b30;
+            transform: rotate(90deg);
+        }
+
+        .premium-modal-icon {
+            color: #ff3b30;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .premium-modal-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .premium-modal-subtitle {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ff3b30;
+            margin-bottom: 20px;
+        }
+
+        .premium-modal-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .premium-modal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            background: #ff3b30;
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .premium-modal-btn:hover {
+            background: #e02b22;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 59, 48, 0.3);
+        }
+
+        .premium-modal-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .premium-modal-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 768px) {
+            .premium-modal-container {
+                padding: 40px 24px;
+                border-radius: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .projects-grid-filters {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body class="loaded">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../" class="nav-logo">ARTECH<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="../#hero" data-nav-text="Accueil"><span class="nav-text-wrap" aria-label="Accueil"><span
+                            class="nav-text-top" aria-hidden="true">Accueil</span><span class="nav-text-bottom"
+                            aria-hidden="true">Accueil</span></span></a></li>
+            <li><a href="../projet/" data-nav-text="Projets"><span class="nav-text-wrap" aria-label="Projets"><span
+                            class="nav-text-top" aria-hidden="true">Projets</span><span class="nav-text-bottom"
+                            aria-hidden="true">Projets</span></span></a></li>
+            <li><a href="../services/" data-nav-text="Services"><span class="nav-text-wrap" aria-label="Services"><span
+                            class="nav-text-top" aria-hidden="true">Services</span><span class="nav-text-bottom"
+                            aria-hidden="true">Services</span></span></a></li>
+            <li><a href="../marbres/" data-nav-text="Nos Marbres"><span class="nav-text-wrap"
+                        aria-label="Nos Marbres"><span class="nav-text-top" aria-hidden="true">Nos Marbres</span><span
+                            class="nav-text-bottom" aria-hidden="true">Nos Marbres</span></span></a></li>
+            <li><a href="../contact/" class="btn-contact" data-nav-text="Contact"><span class="nav-text-wrap"
+                        aria-label="Contact"><span class="nav-text-top" aria-hidden="true">Contact</span><span
+                            class="nav-text-bottom" aria-hidden="true">Contact</span></span></a></li>
+        </ul>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- Projects Grid -->
+    <section class="projects-grid-section" id="projects-grid-section">
+        <div class="projects-grid-header">
+            <div class="projects-grid-title">
+                <h1>Nos Projets</h1>
+            </div>
+            <div class="projects-grid-desc">
+                <p>
+                    Nous concevons et réalisons des projets architecturaux intégrant la pierre naturelle et le marbre.
+                    De l'étude à la livraison, nos interventions couvrent la structure, les revêtements,
+                    les calepinages complexes et les finitions sur mesure. Découvrez nos réalisations.
+                </p>
+            </div>
+        </div>
+        <div class="projects-grid-filters">
+            <button class="filter-btn active" data-filter="all">All Work</button>
+            <button class="filter-btn" data-filter="type">Type of work</button>
+        </div>
+        <div class="projects-zigzag" id="projects-zigzag">
+            <!-- Projects injected by JS -->
+        </div>
+    </section>
+
+    <!-- Premium Coming Soon Modal -->
+    <div id="premium-modal" class="premium-modal">
+        <div class="premium-modal-overlay"></div>
+        <div class="premium-modal-container">
+            <button class="premium-modal-close" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="premium-modal-icon">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            </div>
+            <h2 class="premium-modal-title">Projet Exclusif</h2>
+            <p class="premium-modal-subtitle">Disponible uniquement au dépôt ARTECH</p>
+            <p class="premium-modal-desc">
+                Ce projet est présenté en avant-première dans notre showroom.<br>
+                Découvrez-le en exclusivité chez ARTECH.
+            </p>
+            <a href="../contact/" class="premium-modal-btn">
+                <span>Prendre Rendez-vous</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="project-modal">
+        <div class="pm-header">
+            <span class="pm-header-title">Awwwards</span>
+            <button class="pm-close-btn" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+                Close
+            </button>
+        </div>
+        <div class="pm-subtitle" id="modal-project-subtitle"></div>
+        <div class="pm-media-wrapper">
+            <div class="pm-media-row" id="modal-media-row"></div>
+            <button class="pm-arrow pm-arrow-left" aria-label="Previous">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="pm-arrow pm-arrow-right" aria-label="Next">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="pm-footer">
+            <div class="pm-info-left">
+                <div class="pm-project-meta">
+                    <span class="pm-project-number" id="modal-project-number"></span>
+                    <span class="pm-project-category" id="modal-project-category"></span>
+                </div>
+                <h2 class="pm-project-name" id="modal-project-name"></h2>
+                <p class="pm-project-desc" id="modal-project-desc"></p>
+                <a href="javascript:void(0)" class="pm-read-more">Read More</a>
+            </div>
+            <a href="../contact/" class="pm-project-request">Nous Contacter</a>
+        </div>
+        <div class="pm-details" id="modal-project-details">
+            <div class="pm-details-header">
+                <button class="pm-details-back" aria-label="Retour">&larr; Retour</button>
+            </div>
+            <p class="pm-details-text" id="modal-project-details-text"></p>
+        </div>
+    </div>
+
+    <!-- Project Modal Lightbox -->
+    <div id="pm-lightbox" class="pm-lightbox">
+        <div class="pm-lightbox-content">
+            <button class="pm-lightbox-close" aria-label="Fermer">&times;</button>
+            <img id="pm-lightbox-img" src="" alt="Aperçu Projet ARTECH" onerror="this.src='../projet/1.jpg'">
+            <video id="pm-lightbox-video" src="" controls autoplay muted></video>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-marquee">
+            <div class="marquee-track">
+                <span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col about">
+                    <div class="footer-logo">ARTECH<span>.</span></div>
+                    <p>L'excellence de la pierre naturelle et du marbre au service de l'architecture moderne depuis 20
+                        ans.</p>
+                </div>
+
+                <div class="footer-col contact-info">
+                    <h4>NOUS CONTACTER</h4>
+                    <p><strong>Tel :</strong> <a href="tel:+22870457341">+228 70 45 73 41</a></p>
+                    <p><strong>Email :</strong> <a
+                            href="mailto:Artech.marbrerie@gmail.com">Artech.marbrerie@gmail.com</a></p>
+                    <p><strong>Adresse :</strong> Rue des Filaos 03, non loin de pharmacie Justine<br>Tokoin Habitat -
+                        08 BP 81735<br>Lomé - Togo</p>
+
+                    <div class="footer-social-icons">
+                        <a href="#" target="_blank" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441c.795 0 1.439-.645 1.439-1.441s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="Behance">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h2.027c2.518 0 2.508-3.521 0-3.521h-2.027v3.521zm0 5.988h2.731c2.816 0 2.534-4 0-4h-2.731v4z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col links">
+                    <h4>NAVIGATION</h4>
+                    <ul>
+                        <li><a href="../services/">Services</a></li>
+                        <li><a href="../marbres/">Nos Marbres</a></li>
+                        <li><a href="../contact/">Contact</a></li>
+                        <li><a href="../#faq">FAQ</a></li>
+                        <li><a href="tel:+22870457341">Appelez maintenant</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col portfolio-info">
+                    <h4>PORTFOLIO</h4>
+                    <div class="portfolio-dropdowns">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle">Services <svg width="10" height="6" viewBox="0 0 10 6"
+                                    fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M1 1l4 4 4-4" />
+                                </svg></button>
+                        </div>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle">Type <svg width="10" height="6" viewBox="0 0 10 6"
+                                    fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M1 1l4 4 4-4" />
+                                </svg></button>
+                        </div>
+                    </div>
+                    <div class="portfolio-count">
+                        <span id="visible-count">2</span> / <span id="total-count">4</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 ARCHITECT MARBLE. Tous droits réservés.</p>
+            <div class="footer-legal">
+                <a href="../mentions-legales/">Mentions Légales</a>
+                <a href="../confidentialite/">Politique de Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Modals -->
+    <div id="legal-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-legal">
+                <h2>MENTIONS LÉGALES</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Éditeur du site :</strong> ARTECH SAS</p>
+                    <p><strong>Siège social :</strong> Rue des Filaos 03, Tokoin Habitat, Lomé - Togo.</p>
+                    <p><strong>Email :</strong> Artech.marbrerie@gmail.com</p>
+                    <p><strong>Téléphone :</strong> +228 70 45 73 41</p>
+                    <p><strong>Directeur de publication :</strong> [Nom du responsable]</p>
+                    <p><strong>Hébergement :</strong> [Nom de l'hébergeur]</p>
+                    <p><strong>Déclaration CNIL :</strong> [Numéro de déclaration]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-privacy">
+                <h2>POLITIQUE DE CONFIDENTIALITÉ</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Données collectées :</strong> [Détails]</p>
+                    <p><strong>Utilisation des données :</strong> [Détails]</p>
+                    <p><strong>Durée de conservation :</strong> [Détails]</p>
+                    <p><strong>Vos droits :</strong> [Détails]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../script.js"></script>
+
+    <script>
+        // Projects zigzag loader
+        (function () {
+            const container = document.getElementById('projects-zigzag');
+            const visibleCountEl = document.getElementById('visible-count');
+            const totalCountEl = document.getElementById('total-count');
+            if (!container || !window.projectData) return;
+
+            const projects = Object.values(window.projectData);
+            const total = projects.length;
+
+            function renderProjects(filter = 'all') {
+                const filtered = filter === 'all' ? projects : projects.filter(p => {
+                    const cat = (p.category || '').toLowerCase();
+                    return cat.includes(filter);
+                });
+
+                if (visibleCountEl) visibleCountEl.textContent = filtered.length;
+                if (totalCountEl) totalCountEl.textContent = total;
+
+                container.innerHTML = filtered.map((project, index) => {
+                    const isEven = index % 2 === 0;
+                    const category = project.category || 'PROJET';
+                    const imageFile = project.gallery && project.gallery[0] ? project.gallery[0].file_path : 'projet/1.jpg';
+                    const isUnavailable = project.available === false;
+                    const imageHtml = isUnavailable ? `
+                        <div class="zigzag-image zigzag-unavailable">
+                        </div>
+                    ` : `
+                        <div class="zigzag-image">
+                            <img src="../${imageFile}" alt="${project.name}" loading="lazy" decoding="async" onerror="this.src='../projet/1.jpg'">
+                        </div>
+                    `;
+                    const textHtml = `
+                        <div class="zigzag-text">
+                            <span class="zigzag-category">${category}</span>
+                            <h3 class="zigzag-title">${project.name}</h3>
+                        </div>
+                    `;
+
+                    const onClick = isUnavailable ? `showPremiumPopup(${project.id})` : `openProjectModal(${project.id})`;
+
+                    return `
+                        <div class="zigzag-row ${isEven ? 'zigzag-left' : 'zigzag-right'}" onclick="${onClick}">
+                            ${isEven ? imageHtml + textHtml : textHtml + imageHtml}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderProjects();
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderProjects(btn.dataset.filter);
+                });
+            });
+        })();
+
+        // Legal modals
+        document.getElementById('open-legal')?.addEventListener('click', () => {
+            document.getElementById('legal-modal')?.classList.add('open');
+        });
+
+        document.getElementById('open-privacy')?.addEventListener('click', () => {
+            document.getElementById('privacy-modal')?.classList.add('open');
+        });
+
+        document.querySelectorAll('.modal-close, .modal-overlay').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
+            });
+        });
+    </script>
+</body>
+
+</html>

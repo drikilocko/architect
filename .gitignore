@@ -1,0 +1,22 @@
+# Sensitive keys & configuration
+config.js
+.env
+.env.local
+.env.*.local
+
+# Heavy media backups
+backup_originals/
+
+# Python cache & scripts output
+__pycache__/
+*.pyc
+
+# IDE & OS temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# System & server logs
+*.log

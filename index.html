@@ -1,0 +1,953 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect - Design & Innovation</title>
+    <meta name="description"
+        content="Découvrez notre vision de l'architecture moderne à travers une expérience immersive unique.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- EmailJS SDK for 100% Client-Side Email Delivery -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="config.js"></script>
+    <style>
+        .process-step,
+        .service-sticky-card {
+            cursor: pointer;
+        }
+
+        .gallery-item {
+            cursor: pointer;
+        }
+
+        a.process-step.voir-plus-step {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-left: 1px solid rgba(0, 0, 0, 0.06);
+            transition: background 0.4s ease;
+        }
+
+        a.process-step.voir-plus-step:hover {
+            background: #efefef;
+        }
+
+        a.process-step.voir-plus-step:hover .voir-plus-arrow {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+        }
+
+        a.process-step.voir-plus-step:hover .voir-plus-arrow svg {
+            stroke: #fff;
+            transform: translateX(5px);
+        }
+
+        .voir-plus-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .voir-plus-arrow {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .voir-plus-arrow svg {
+            width: 28px;
+            height: 28px;
+            stroke: #1a1a1a;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .voir-plus-label {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* ── Preloader progress bar ── */
+        #preloader-bar-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            z-index: 10001;
+            overflow: hidden;
+        }
+
+        #preloader-bar {
+            height: 100%;
+            width: 0%;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            transition: none;
+            /* driven by JS rAF */
+            will-change: width;
+        }
+
+        /* Percentage counter centered on preloader */
+        #preloader-percent {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10002;
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -3px;
+            line-height: 1;
+            pointer-events: none;
+            mix-blend-mode: difference;
+        }
+
+        /* Burger always visible on mobile regardless of load state */
+        @media (max-width: 991px) {
+            .menu-toggle {
+                opacity: 1 !important;
+                animation: none !important;
+                z-index: 10000 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="is-loading home">
+    <!-- Split Preloader -->
+    <div id="new-preloader">
+        <div class="preloader-panel left-panel">
+            <img src="produit/1.avif" alt="Preloader Left">
+        </div>
+        <div class="preloader-panel right-panel">
+            <img src="produit/2.avif" alt="Preloader Right">
+        </div>
+        <div id="preloader-percent">0%</div>
+        <div id="preloader-bar-wrap">
+            <div id="preloader-bar"></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <!-- Progressive Blur Overlay -->
+        <div id="loader-overlay"></div>
+
+        <!-- Header / Navbar -->
+        <header id="main-header">
+            <nav class="navbar" id="navbar">
+                <div class="logo">
+                    <a href="index.html" class="nav-minimal-logo">ARTECH<span>.</span></a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#hero" class="active" data-nav-text="Accueil"><span class="nav-text-wrap"
+                                aria-label="Accueil"><span class="nav-text-top" aria-hidden="true">Accueil</span><span
+                                    class="nav-text-bottom" aria-hidden="true">Accueil</span></span></a></li>
+                    <li><a href="#process-track" data-nav-text="Projets"><span class="nav-text-wrap"
+                                aria-label="Projets"><span class="nav-text-top" aria-hidden="true">Projets</span><span
+                                    class="nav-text-bottom" aria-hidden="true">Projets</span></span></a></li>
+                    <li><a href="#services" data-nav-text="Services"><span class="nav-text-wrap"
+                                aria-label="Services"><span class="nav-text-top" aria-hidden="true">Services</span><span
+                                    class="nav-text-bottom" aria-hidden="true">Services</span></span></a></li>
+                    <li><a href="marbres/" data-nav-text="Nos Marbres"><span class="nav-text-wrap"
+                                aria-label="Nos Marbres"><span class="nav-text-top" aria-hidden="true">Nos
+                                    Marbres</span><span class="nav-text-bottom" aria-hidden="true">Nos
+                                    Marbres</span></span></a></li>
+                    <li><a href="#contact" class="btn-contact" data-nav-text="Contact"><span class="nav-text-wrap"
+                                aria-label="Contact"><span class="nav-text-top" aria-hidden="true">Contact</span><span
+                                    class="nav-text-bottom" aria-hidden="true">Contact</span></span></a></li>
+                </ul>
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Scroll Section for Video Expansion -->
+        <div class="scroll-container">
+            <section id="hero" class="hero-section">
+                <div class="video-wrapper" id="video-wrapper">
+                    <video autoplay muted loop playsinline id="hero-video">
+                        <source src="video/1.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                    <div class="video-overlay"></div>
+                    <div class="video-white-blur" id="video-white-blur"></div>
+
+                    <!-- Background Split Text -->
+                    <div class="architect-bg-text" id="architect-bg-text">
+                        <span>A</span><span>R</span><span>T</span><span>E</span><span>C</span><span>H</span>
+                    </div>
+
+                    <!-- New UI Layer -->
+                    <div class="hero-ui-layer" id="hero-ui-layer">
+                        <div class="hero-left-list">
+                            <span>BATIMENT</span>
+                            <span>AMEUBLEMENT</span>
+                            <span>MONUMENT</span>
+                        </div>
+
+                        <div class="hero-bottom-text desktop-only">
+                            <p>Découvrez notre vision de l'espace.</p>
+                            <p>L'alliance parfaite entre le design,</p>
+                            <p>l'innovation et la durabilité.</p>
+                        </div>
+
+                        <div class="hero-center-action">
+                            <a href="tel:+22870457341" class="btn-callnow">APPELEZ<br>MAINTENANT</a>
+                        </div>
+
+                        <div class="hero-right-widget">
+                            <div class="hero-socials">
+                                <a href="#" target="_blank" aria-label="Instagram">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                        <path
+                                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441c.795 0 1.439-.645 1.439-1.441s-.644-1.44-1.439-1.44z" />
+                                    </svg>
+                                </a>
+                                <a href="#" target="_blank" aria-label="Facebook">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                        <path
+                                            d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+                                    </svg>
+                                </a>
+                                <a href="#" target="_blank" aria-label="LinkedIn">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                        <path
+                                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                    </svg>
+                                </a>
+                                <a href="mailto:Artech.marbrerie@gmail.com" target="_blank" aria-label="Email">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                        <path
+                                            d="M12 12.713l-11.985-9.713h23.97l-11.985 9.713zm0 2.574l-12-9.725v15.438h24v-15.438l-12 9.725z" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <a href="marbres.html" class="slider-square">
+                                <img src="produit/1.avif" alt="Produit 1" class="slide-img slide-1">
+                                <img src="produit/3.avif" alt="Produit 3" class="slide-img slide-2">
+                                <img src="produit/5.avif" alt="Produit 5" class="slide-img slide-3">
+                                <img src="produit/7.avif" alt="Produit 7" class="slide-img slide-4">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-mask-layer" id="image-mask-layer">
+                    <img src="paralax/1.png" alt="Architecture" class="parallax-img">
+                </div>
+            </section>
+        </div>
+
+        <!-- Custom Scroll Indicator -->
+        <div class="scroll-indicator" id="scroll-indicator">
+            <div class="scroll-indicator__line"></div>
+            <div class="scroll-indicator__dot" id="scroll-dot"></div>
+        </div>
+
+        <!-- Projects Section -->
+        <section class="projects-section" style="background: none;">
+            <div class="projects-header">
+                <div class="projects-header-left">
+                    <div class="huge-title-stacked">PROJETS<br>REALISES</div>
+                    <span class="projects-label">Nos réalisations emblématiques</span>
+                </div>
+            </div>
+            <div class="projects-cards-container"></div>
+        </section>
+
+        <!-- Process Section (Horizontal Scroll) -->
+        <section class="process-section" id="process-track" style="background: none;">
+            <div class="process-sticky">
+                <div class="process-container" id="process-container">
+                    <!-- Project 1 -->
+                    <div class="process-step" data-index="01" onclick="openProjectModal(1)">
+                        <div class="step-image-box">
+                            <img src="projet/1.jpg" alt="Palais des Congrès"
+                                onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
+                        </div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <span class="step-number">PROJET 01</span>
+                                <span class="step-pagination">01 / 05</span>
+                            </div>
+                            <span class="project-category">PATRIMOINE</span>
+                            <h2 class="step-title">Palais des<br>Congrès</h2>
+                            <a href="javascript:void(0)" class="view-project-btn"
+                                onclick="openProjectModal(1); return false;">DÉCOUVRIR LE PROJET</a>
+                        </div>
+                    </div>
+                    <!-- Project 2 -->
+                    <div class="process-step" data-index="02" onclick="openProjectModal(2)">
+                        <div class="step-image-box">
+                            <img src="projet/2.jpg" alt="Hôtel 2 Février"
+                                onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
+                        </div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <span class="step-number">PROJET 02</span>
+                                <span class="step-pagination">02 / 05</span>
+                            </div>
+                            <span class="project-category">HÔTELLERIE</span>
+                            <h2 class="step-title">Hôtel<br>2 Février</h2>
+                            <a href="javascript:void(0)" class="view-project-btn"
+                                onclick="openProjectModal(2); return false;">DÉCOUVRIR LE PROJET</a>
+                        </div>
+                    </div>
+                    <!-- Project 3 -->
+                    <div class="process-step" data-index="03" onclick="openProjectModal(3)">
+                        <div class="step-image-box artech-card-bg">
+                        </div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <span class="step-number">PROJET 03</span>
+                                <span class="step-pagination">03 / 05</span>
+                            </div>
+                            <span class="project-category">INSTITUTIONNEL</span>
+                            <h2 class="step-title">Siège<br>BIDC</h2>
+                            <a href="javascript:void(0)" class="view-project-btn"
+                                onclick="openProjectModal(3); return false;">DÉCOUVRIR LE PROJET</a>
+                        </div>
+                    </div>
+                    <!-- Project 4 -->
+                    <div class="process-step" data-index="04" onclick="openProjectModal(5)">
+                        <div class="step-image-box">
+                            <img src="assets/projet takoradi/1.jpg" alt="Projet 5 Villa / Takoradi"
+                                onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
+                        </div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <span class="step-number">PROJET 04</span>
+                                <span class="step-pagination">04 / 05</span>
+                            </div>
+                            <span class="project-category">COMMERCIAL</span>
+                            <h2 class="step-title">Takoradi</h2>
+                            <a href="javascript:void(0)" class="view-project-btn"
+                                onclick="openProjectModal(5); return false;">DÉCOUVRIR LE PROJET</a>
+                        </div>
+                    </div>
+                    <!-- Project 5 -->
+                    <div class="process-step" data-index="05" onclick="openProjectModal(4)">
+                        <div class="step-image-box artech-card-bg">
+                        </div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <span class="step-number">PROJET 05</span>
+                                <span class="step-pagination">05 / 05</span>
+                            </div>
+                            <span class="project-category">RÉSIDENTIEL</span>
+                            <h2 class="step-title">Résidence<br>Accra</h2>
+                            <a href="javascript:void(0)" class="view-project-btn"
+                                onclick="openProjectModal(4); return false;">DÉCOUVRIR LE PROJET</a>
+                        </div>
+                    </div>
+                    <!-- Voir Plus -->
+                    <a class="process-step voir-plus-step" href="projet/">
+                        <div class="voir-plus-inner">
+                            <div class="voir-plus-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            <span class="voir-plus-label">Voir tous<br>les projets</span>
+                        </div>
+                    </a>
+                </div>
+        </section>
+
+        <!-- Logo Carousel Section -->
+        <section class="logo-carousel">
+            <div class="logo-track">
+                <!-- Set 1 -->
+                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+                <!-- Set 2 -->
+                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+                <!-- Set 3 -->
+                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+            </div>
+        </section>
+
+        <!-- Text Reveal Section -->
+        <section class="text-reveal-section" id="text-reveal">
+            <div class="text-reveal-container-sticky">
+                <div class="container text-reveal-container">
+                    <h2 class="reveal-text">
+                        <span>Chez</span> <span>ARTECH,</span> <span>chaque</span> <span>projet</span>
+                        <span>commence</span>
+                        <span>par</span> <span>une</span> <span>écoute</span> <span>attentive</span> <span>et</span>
+                        <span>une</span> <span>analyse</span> <span>précise</span> <span>des</span>
+                        <span>besoins.</span>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sticky Image Section -->
+        <section class="simple-image-section">
+            <div class="sticky-image-container">
+                <img src="paralax/2.jpg" alt="Transition Architecture">
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section" id="services">
+            <div class="services-header">
+                <div class="huge-title-stacked">NOS<br>SERVICES</div>
+                <span class="projects-label">20 ans d'Expertise et accompagnement sur-mesure</span>
+            </div>
+
+            <div class="services-blur-target">
+                <div class="services-sticky-container">
+                    <div class="service-sticky-card" style="--i: 1;" onclick="window.location.href='service/?id=1'">
+                        <div class="ssc-image-side">
+                            <img src="assets/HABILAGE ET FACADE/1.jpg" alt="Habillage & Façades">
+                            <div class="ssc-wave-separator">
+                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ssc-content-side">
+                            <span class="ssc-number">01</span>
+                            <div class="ssc-content">
+                                <h3>Habillage & Façades</h3>
+                                <p>Revêtements intérieurs et extérieurs en marbre et pierre naturelle, pensés pour durer
+                                    et valoriser chaque structure.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-sticky-card" style="--i: 2;" onclick="window.location.href='service/?id=2'">
+                        <div class="ssc-image-side">
+                            <img src="assets/CLOISON ET SEPARATION/1.jpg" alt="Cloisons & Séparations">
+                            <div class="ssc-wave-separator">
+                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ssc-content-side">
+                            <span class="ssc-number">02</span>
+                            <div class="ssc-content">
+                                <h3>Cloisons & Séparations</h3>
+                                <p>Solutions architecturales en pierre et matériaux nobles, alliant esthétique, solidité
+                                    et fonctionnalité.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-sticky-card" style="--i: 3;" onclick="window.location.href='service/?id=3'">
+                        <div class="ssc-image-side">
+                            <img src="assets/FINITION ET DETAILS/4.jpg" alt="Finitions & Détails">
+                            <div class="ssc-wave-separator">
+                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ssc-content-side">
+                            <span class="ssc-number">03</span>
+                            <div class="ssc-content">
+                                <h3>Finitions & Détails</h3>
+                                <p>Un soin particulier apporté aux finitions pour garantir un rendu propre, précis et
+                                    durable.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-sticky-card" style="--i: 4;" onclick="window.location.href='service/?id=4'">
+                        <div class="ssc-image-side">
+                            <img src="assets/PROJET STRUCTUREL/2.jpg" alt="Projets structurels sur mesure">
+                            <div class="ssc-wave-separator">
+                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ssc-content-side">
+                            <span class="ssc-number">04</span>
+                            <div class="ssc-content">
+                                <h3>Projets structurels sur mesure</h3>
+                                <p>Réalisation de projets complexes adaptés aux exigences des institutions et grands
+                                    chantiers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="services-voir-plus-wrapper">
+                <a href="services/" class="services-voir-plus">
+                    <span class="voir-plus-plus" aria-hidden="true">+</span>
+                    <span class="voir-plus-text-wrap" aria-label="Voir plus">
+                        <span class="voir-plus-text-top" aria-hidden="true">Voir plus</span>
+                        <span class="voir-plus-text-bottom" aria-hidden="true">Voir plus</span>
+                    </span>
+                    <span class="voir-plus-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Marbre Gallery Section - directly after services, no gap -->
+        <section class="horizontal-gallery-section marbre-gallery-section" id="marbres-gallery">
+            <!-- White shadow at top -->
+            <div class="gallery-top-shadow"></div>
+
+            <div class="gallery-sticky-wrapper">
+                <!-- Section Header (visible at start) -->
+                <div class="marbre-gallery-header" id="marbre-gallery-header">
+                    <div class="huge-title-stacked">NOS<br>MARBRES</div>
+                    <span class="projects-label">Une collection de pierres naturelles d'exception</span>
+                    <a href="marbres/" class="marbre-gallery-link">Voir la collection complète →</a>
+                </div>
+
+                <div class="gallery-hover-bg" id="gallery-hover-bg"></div>
+                <div class="gallery-parallax-bg" id="gallery-bg">
+                    <img src="paralax/3.png" alt="Parallax Texture">
+                </div>
+                <div class="gallery-track-container">
+                    <div class="gallery-track" id="gallery-track">
+                        <!-- Dynamically generated catalogue track of items -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section ("VOTRE PROJET") -->
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <div class="section-title-wrapper with-pagination">
+                    <div class="title-content">
+                        <div class="huge-title-stacked">VOTRE<br>PROJET</div>
+                        <span class="projects-label">Parlons-en ensemble</span>
+                    </div>
+                    <div class="title-pagination-right">05 / 06</div>
+                </div>
+
+                <div class="contact-centered-wrapper">
+                    <div class="contact-info-minimal">
+                        <p>Nous sommes à votre écoute pour transformer vos idées en chefs-d'œuvre de pierre.</p>
+                        <div class="contact-pills">
+                            <div class="pill"><span>TEL:</span> +228 70 45 73 41</div>
+                            <div class="pill"><span>EMAIL:</span> Artech.marbrerie@gmail.com</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-container">
+                        <form class="contact-form" action="send_mail.php" method="POST" id="home-contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>NOM</label>
+                                    <input type="text" name="name" placeholder="Jean Dupont" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>EMAIL</label>
+                                    <input type="email" name="email" placeholder="jean@exemple.com" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>TÉLÉPHONE (OPTIONNEL)</label>
+                                    <input type="tel" name="phone" placeholder="+228 90 00 00 00">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>MESSAGE / DÉTAILS DU PROJET</label>
+                                <textarea name="message" placeholder="Décrivez votre projet..." required></textarea>
+                            </div>
+                            <div id="contact-form-response"
+                                style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; text-align: center;">
+                            </div>
+                            <div class="form-submit-wrapper">
+                                <button type="submit" class="submit-btn-premium">
+                                    <span>ENVOYER LE MESSAGE</span>
+                                    <div class="btn-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M5 12h14M12 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section ("VOS RÉPONSES") -->
+        <section class="faq-section" id="faq">
+            <div class="container">
+                <div class="section-title-wrapper with-pagination">
+                    <div class="title-content">
+                        <div class="huge-title-stacked">VOS<br>RÉPONSES</div>
+                        <span class="projects-label">Questions Fréquentes</span>
+                    </div>
+                    <div class="title-pagination-right">06 / 06</div>
+                </div>
+
+                <div class="faq-container-wrapper">
+                    <div class="faq-grid" id="faq-grid">
+                        <!-- Page 1 -->
+                        <div class="faq-page active" data-page="1">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">MATÉRIAUX</span>
+                                    <h3>Quels types de marbres proposez-vous ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Nous proposons une sélection exclusive de marbres d'exception provenant d'Italie,
+                                        d'Espagne et de Turquie. Du Blanc Carrare au Noir Marquina, nous sourçons
+                                        uniquement des dalles de premier choix.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">CONCEPTION</span>
+                                    <h3>Réalisez-vous du sur-mesure ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Absolument. Chaque projet est unique. Nous travaillons en étroite collaboration
+                                        avec des architectes et des particuliers pour créer des pièces de mobilier, des
+                                        revêtements et des structures sur mesure.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">LOGISTIQUE</span>
+                                    <h3>Quels sont vos délais de fabrication ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Les délais varient selon la complexité du projet et la disponibilité des
+                                        matériaux. En moyenne, comptez 4 à 8 semaines entre la validation du design et
+                                        la pose finale.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2 -->
+                        <div class="faq-page" data-page="2">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">ENTRETIEN</span>
+                                    <h3>Comment entretenir mon marbre ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Le marbre est une pierre vivante. Nous conseillons un nettoyage à l'eau
+                                        savonneuse (Savon de Marseille) et l'utilisation de produits au pH neutre. Nous
+                                        appliquons un traitement hydrofuge lors de la pose.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">SERVICE</span>
+                                    <h3>Livrez-vous à l'international ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Oui, nous avons l'habitude de gérer la logistique complexe pour des chantiers
+                                        internationaux. Nos pièces sont conditionnées dans des caisses en bois
+                                        sécurisées pour un transport sans risque.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span class="faq-category">EXPERTISE</span>
+                                    <h3>Proposez-vous la pose à domicile ?</h3>
+                                    <div class="faq-icon"><span></span><span></span></div>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Notre équipe de maîtres marbriers assure la pose pour garantir un résultat
+                                        parfait, notamment pour les joints invisibles et les calepinages complexes.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Pagination -->
+                    <div class="faq-pagination">
+                        <button class="faq-nav-btn prev" id="faq-prev" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-dots">
+                            <span class="faq-dot active" data-page="1"></span>
+                            <span class="faq-dot" data-page="2"></span>
+                        </div>
+                        <button class="faq-nav-btn next" id="faq-next">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="footer-marquee">
+                <div class="marquee-track">
+                    <span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span>
+                </div>
+            </div>
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col about">
+                        <div class="footer-logo">ARTECH<span>.</span></div>
+                        <p>L'excellence de la pierre naturelle et du marbre au service de l'architecture moderne depuis
+                            20 ans.</p>
+                    </div>
+
+                    <div class="footer-col contact-info">
+                        <h4>NOUS CONTACTER</h4>
+                        <p><strong>Tel :</strong> <a href="tel:+22870457341">+228 70 45 73 41</a></p>
+                        <p><strong>Email :</strong> <a
+                                href="mailto:Artech.marbrerie@gmail.com">Artech.marbrerie@gmail.com</a></p>
+                        <p><strong>Adresse :</strong> Rue des Filaos 03, non loin de pharmacie Justine<br>Tokoin Habitat
+                            - 08 BP 81735<br>Lomé - Togo</p>
+
+                        <div class="footer-social-icons">
+                            <a href="#" target="_blank" aria-label="Instagram">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                    <path
+                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441c.795 0 1.439-.645 1.439-1.441s-.644-1.44-1.439-1.44z" />
+                                </svg>
+                            </a>
+                            <a href="#" target="_blank" aria-label="LinkedIn">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                    <path
+                                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                </svg>
+                            </a>
+                            <a href="#" target="_blank" aria-label="Behance">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                    <path
+                                        d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h2.027c2.518 0 2.508-3.521 0-3.521h-2.027v3.521zm0 5.988h2.731c2.816 0 2.534-4 0-4h-2.731v4z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col links">
+                        <h4>NAVIGATION</h4>
+                        <ul>
+                            <li><a href="services/">Services</a></li>
+                            <li><a href="marbres/">Nos Marbres</a></li>
+                            <li><a href="contact/">Contact</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="tel:+22870457341">Appelez maintenant</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 ARCHITECT MARBLE. Tous droits réservés.</p>
+                <div class="footer-legal">
+                    <a href="../mentions-legales/">Mentions Légales</a>
+                    <a href="../confidentialite/">Politique de Confidentialité</a>
+                </div>
+            </div>
+    </div>
+    </footer>
+    </div>
+
+    <!-- Legal Modals -->
+    <div id="legal-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-legal">
+                <h2>MENTIONS LÉGALES</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Éditeur du site :</strong> ARTECH SAS</p>
+                    <p><strong>Siège social :</strong> Rue des Filaos 03, Tokoin Habitat, Lomé - Togo.</p>
+                    <p><strong>Email :</strong> Artech.marbrerie@gmail.com</p>
+                    <p><strong>Téléphone :</strong> +228 70 45 73 41</p>
+                    <p><strong>Hébergeur :</strong> Cloud Solution Services.</p>
+                    <hr>
+                    <p>L'utilisation de ce site implique l'acceptation pleine et entière des conditions générales
+                        d'utilisation décrites ci-après. Ces conditions d'utilisation sont susceptibles d'être modifiées
+                        ou complétées à tout moment.</p>
+                </div>
+            </div>
+            <div class="modal-content" id="modal-content-privacy" style="display:none;">
+                <h2>POLITIQUE DE CONFIDENTIALITÉ</h2>
+                <div class="modal-scroll-area">
+                    <p>ARCHITECT MARBLE s'engage à ce que la collecte et le traitement de vos données, effectués à
+                        partir du site architect-marble.com, soient conformes au règlement général sur la protection des
+                        données (RGPD).</p>
+                    <p><strong>Données collectées :</strong> Nom, Email (via le formulaire de contact).</p>
+                    <p><strong>Finalité :</strong> Réponse aux demandes de contact.</p>
+                    <p><strong>Conservation :</strong> Les données sont conservées pour une durée maximale de 3 ans.</p>
+                    <p>Vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include shared popup details modal -->
+
+    <script src="data.js"></script>
+
+    <!-- Premium Coming Soon Modal -->
+    <div id="premium-modal" class="premium-modal">
+        <div class="premium-modal-overlay"></div>
+        <div class="premium-modal-container">
+            <button class="premium-modal-close" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="premium-modal-icon">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+            </div>
+            <h2 class="premium-modal-title">Projet Exclusif</h2>
+            <p class="premium-modal-subtitle">Disponible uniquement au dépôt ARTECH</p>
+            <p class="premium-modal-desc">
+                Ce projet est présenté en avant-première dans notre showroom.<br>
+                Découvrez-le en exclusivité chez ARTECH.
+            </p>
+            <a href="contact/" class="premium-modal-btn">
+                <span>Prendre Rendez-vous</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Project Detail Modal -->
+    <div id="project-modal" class="project-modal">
+        <div class="pm-header">
+            <span class="pm-header-title">Awwwards</span>
+            <button class="pm-close-btn" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+                Close
+            </button>
+        </div>
+        <div class="pm-subtitle" id="modal-project-subtitle"></div>
+        <div class="pm-media-wrapper">
+            <div class="pm-media-row" id="modal-media-row"></div>
+            <button class="pm-arrow pm-arrow-left" aria-label="Previous">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="pm-arrow pm-arrow-right" aria-label="Next">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="pm-footer">
+            <div class="pm-info-left">
+                <div class="pm-project-meta">
+                    <span class="pm-project-number" id="modal-project-number"></span>
+                    <span class="pm-project-category" id="modal-project-category"></span>
+                </div>
+                <h2 class="pm-project-name" id="modal-project-name"></h2>
+                <p class="pm-project-desc" id="modal-project-desc"></p>
+                <a href="javascript:void(0)" class="pm-read-more">Read More</a>
+            </div>
+            <a href="contact/" class="pm-project-request">Nous Contacter</a>
+        </div>
+        <div class="pm-details" id="modal-project-details">
+            <div class="pm-details-header">
+                <button class="pm-details-back" aria-label="Retour">&larr; Retour</button>
+            </div>
+            <p class="pm-details-text" id="modal-project-details-text"></p>
+        </div>
+    </div>
+
+    <!-- Project Modal Lightbox -->
+    <div id="pm-lightbox" class="pm-lightbox">
+        <div class="pm-lightbox-content">
+            <button class="pm-lightbox-close" aria-label="Fermer">&times;</button>
+            <img id="pm-lightbox-img" src="" alt="Aperçu Projet ARTECH">
+            <video id="pm-lightbox-video" src="" controls autoplay muted></video>
+        </div>
+    </div>
+
+    <!-- Marble Detail Modal -->
+    <div class="marble-modal" id="marble-detail-modal">
+        <div class="modal-overlay" onclick="closeMarbleModal()"></div>
+        <div class="modal-wrapper">
+            <button class="modal-close-btn" onclick="closeMarbleModal()">&times;</button>
+            <div class="modal-image-side">
+                <span class="stock-badge" id="modal-stock-badge">En stock</span>
+                <img src="produit/1.avif" alt="Marble Image" id="modal-marble-img">
+            </div>
+            <div class="modal-info-side">
+                <span class="marble-tag" id="modal-marble-tag">Premium</span>
+                <h2 class="marble-title" id="modal-marble-title">Blanc Carrare</h2>
+                <div class="marble-origin" id="modal-marble-origin">Italie · Toscane</div>
+                <p class="marble-description" id="modal-marble-desc">Description du marbre...</p>
+                <a href="mailto:Artech.marbrerie@gmail.com" class="order-submit-btn"
+                    style="display:inline-block; text-align:center; width:100%; max-width:240px; margin-top:10px;">
+                    <span>Contacter un conseiller</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Data -->
+    <script src="data.js"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

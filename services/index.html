@@ -1,0 +1,565 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Services — ARTECH</title>
+    <meta name="description"
+        content="Découvrez l'ensemble de nos services d'exception en habillage, façades, cloisons, finitions et projets structurels sur mesure.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+        <link rel="icon" type="image/jpeg" href="../assets/favicon.jpg">
+<link rel="stylesheet" href="../style.css">
+
+
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0f0f0f;
+            --white: #f5f5f0;
+            --red: #c0392b;
+            --gray: #888;
+            --light-gray: #f0f0f0;
+            --transition: cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: var(--bg-global);
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--black);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 1cm;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-logo span {
+            color: var(--red);
+        }
+
+        .nav-back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: gap 0.3s var(--transition);
+        }
+
+        .nav-back:hover {
+            gap: 16px;
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            background: var(--black);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('../assets/palais des congres/1.jpg') center/cover no-repeat;
+            filter: grayscale(0.3) brightness(0.45);
+            transform: scale(1.15);
+            animation: heroZoomIn 3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes heroZoomIn {
+            from {
+                transform: scale(1.15);
+            }
+
+            to {
+                transform: scale(1.0);
+            }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 60%, transparent 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 80px 1cm;
+            width: 100%;
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--red);
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: #fff;
+            line-height: 0.9;
+            letter-spacing: -3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* ===== SERVICES GRID ===== */
+        .services-grid-section {
+            padding: 120px 1cm;
+            background: var(--white);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: var(--black);
+            cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+            transition: transform 0.5s var(--transition), box-shadow 0.5s var(--transition);
+            text-decoration: none;
+            color: #fff;
+            display: block;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.18);
+            will-change: transform;
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.6);
+            transition: filter 0.6s var(--transition), transform 0.6s var(--transition);
+            transform: translateZ(0);
+        }
+
+        .service-card:hover img {
+            filter: grayscale(0);
+            transform: scale(1.03);
+        }
+
+        .service-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .service-card-number {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: var(--red);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .service-card-title {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .service-card-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .service-card-arrow {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s var(--transition);
+        }
+
+        .service-card-arrow svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            stroke-width: 2;
+            transition: transform 0.4s var(--transition);
+        }
+
+        .service-card:hover .service-card-arrow {
+            background: var(--red);
+            border-color: var(--red);
+        }
+
+        .service-card:hover .service-card-arrow svg {
+            transform: translateX(4px);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 20px 50px;
+            background: var(--red);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.4s var(--transition);
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .btn-primary:hover {
+            background: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(255, 59, 48, 0.4);
+        }
+
+        /* ===== FOOTER ===== */
+        .page-footer {
+            padding: 60px 1cm;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-decoration: none;
+            color: var(--black);
+            text-transform: uppercase;
+        }
+
+        .footer-logo span {
+            color: var(--red);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--gray);
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-band {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero {
+                height: 100vh;
+            }
+
+            .services-grid-section {
+                padding: 60px 1cm;
+            }
+        }
+    </style>
+</head>
+
+<body class="loaded services-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../" class="nav-logo">ARTECH<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="../#hero" data-nav-text="Accueil"><span class="nav-text-wrap" aria-label="Accueil"><span
+                            class="nav-text-top" aria-hidden="true">Accueil</span><span class="nav-text-bottom"
+                            aria-hidden="true">Accueil</span></span></a></li>
+            <li><a href="../projet/" data-nav-text="Projets"><span class="nav-text-wrap" aria-label="Projets"><span
+                            class="nav-text-top" aria-hidden="true">Projets</span><span class="nav-text-bottom"
+                            aria-hidden="true">Projets</span></span></a></li>
+            <li><a href="../services/" data-nav-text="Services"><span class="nav-text-wrap" aria-label="Services"><span
+                            class="nav-text-top" aria-hidden="true">Services</span><span class="nav-text-bottom"
+                            aria-hidden="true">Services</span></span></a></li>
+            <li><a href="../marbres/" data-nav-text="Nos Marbres"><span class="nav-text-wrap"
+                        aria-label="Nos Marbres"><span class="nav-text-top" aria-hidden="true">Nos Marbres</span><span
+                            class="nav-text-bottom" aria-hidden="true">Nos Marbres</span></span></a></li>
+            <li><a href="../contact/" class="btn-contact" data-nav-text="Contact"><span class="nav-text-wrap"
+                        aria-label="Contact"><span class="nav-text-top" aria-hidden="true">Contact</span><span
+                            class="nav-text-bottom" aria-hidden="true">Contact</span></span></a></li>
+        </ul>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-label">Savoir-Faire & Technique</span>
+            <h1 class="hero-title">NOS<br>SERVICES</h1>
+            <p class="hero-subtitle">20 ans d'expertise et accompagnement sur-mesure pour vos projets d'architecture et
+                de marbrerie.</p>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="services-grid-section">
+        <div class="services-grid" id="services-grid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-marquee">
+            <div class="marquee-track">
+                <span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col about">
+                    <div class="footer-logo">ARTECH<span>.</span></div>
+                    <p>L'excellence de la pierre naturelle et du marbre au service de l'architecture moderne depuis 20
+                        ans.</p>
+                </div>
+
+                <div class="footer-col contact-info">
+                    <h4>NOUS CONTACTER</h4>
+                    <p><strong>Tel :</strong> <a href="tel:+22870457341">+228 70 45 73 41</a></p>
+                    <p><strong>Email :</strong> <a
+                            href="mailto:Artech.marbrerie@gmail.com">Artech.marbrerie@gmail.com</a></p>
+                    <p><strong>Adresse :</strong> Rue des Filaos 03, non loin de pharmacie Justine<br>Tokoin Habitat -
+                        08 BP 81735<br>Lomé - Togo</p>
+
+                    <div class="footer-social-icons">
+                        <a href="#" target="_blank" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441c.795 0 1.439-.645 1.439-1.441s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="Behance">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h2.027c2.518 0 2.508-3.521 0-3.521h-2.027v3.521zm0 5.988h2.731c2.816 0 2.534-4 0-4h-2.731v4z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col links">
+                    <h4>NAVIGATION</h4>
+                    <ul>
+                        <li><a href="../services/">Services</a></li>
+                        <li><a href="../marbres/">Nos Marbres</a></li>
+                        <li><a href="../contact/">Contact</a></li>
+                        <li><a href="../#faq">FAQ</a></li>
+                        <li><a href="tel:+22870457341">Appelez maintenant</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 ARCHITECT MARBLE. Tous droits réservés.</p>
+            <div class="footer-legal">
+                <a href="../mentions-legales/">Mentions Légales</a>
+                <a href="../confidentialite/">Politique de Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Modals -->
+    <div id="legal-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-legal">
+                <h2>MENTIONS LÉGALES</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Éditeur du site :</strong> ARTECH SAS</p>
+                    <p><strong>Siège social :</strong> Rue des Filaos 03, Tokoin Habitat, Lomé - Togo.</p>
+                    <p><strong>Email :</strong> Artech.marbrerie@gmail.com</p>
+                    <p><strong>Téléphone :</strong> +228 70 45 73 41</p>
+                    <p><strong>Directeur de publication :</strong> [Nom du responsable]</p>
+                    <p><strong>Hébergement :</strong> [Nom de l'hébergeur]</p>
+                    <p><strong>Déclaration CNIL :</strong> [Numéro de déclaration]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-privacy">
+                <h2>POLITIQUE DE CONFIDENTIALITÉ</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Données collectées :</strong> [Détails]</p>
+                    <p><strong>Utilisation des données :</strong> [Détails]</p>
+                    <p><strong>Durée de conservation :</strong> [Détails]</p>
+                    <p><strong>Vos droits :</strong> [Détails]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+
+    <script>
+        // Legal modals
+        document.getElementById('open-legal')?.addEventListener('click', () => {
+            document.getElementById('legal-modal')?.classList.add('open');
+        });
+
+        document.getElementById('open-privacy')?.addEventListener('click', () => {
+            document.getElementById('privacy-modal')?.classList.add('open');
+        });
+
+        document.querySelectorAll('.modal-close, .modal-overlay').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
+            });
+        });
+
+        // Render services grid
+        const servicesGrid = document.getElementById('services-grid');
+        const serviceData = window.serviceData || {};
+
+        if (servicesGrid && Object.keys(serviceData).length > 0) {
+            const services = Object.values(serviceData);
+            servicesGrid.innerHTML = services.map((service, index) => {
+                const number = String(service.id || index + 1).padStart(2, '0');
+                const imagePath = service.image ? '../' + service.image : '../services/1.jpg';
+                return `
+                    <a href="../service/?id=${service.id}" class="service-card">
+                        <img src="${imagePath}" alt="${service.title}" loading="lazy">
+                        <div class="service-card-overlay">
+                            <span class="service-card-number">${number}</span>
+                            <h3 class="service-card-title">${service.title}</h3>
+                            <p class="service-card-desc">${service.description}</p>
+                        </div>
+                        <div class="service-card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+    </script>
+
+    <script src="../script.js"></script>
+
+</body>
+
+</html>

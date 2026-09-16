@@ -1,0 +1,1089 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service — ARTECH</title>
+    <meta name="description" content="Découvrez notre expertise technique et nos réalisations.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+        <link rel="icon" type="image/jpeg" href="../assets/favicon.jpg">
+<link rel="stylesheet" href="../style.css">
+
+
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0f0f0f;
+            --white: #f5f5f0;
+            --red: #ff3b30;
+            --gray: #888;
+            --transition: cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: var(--bg-global);
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--black);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 1cm;
+            mix-blend-mode: difference;
+        }
+
+        @media (max-width: 991px) {
+            .navbar {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-logo span {
+            color: var(--red);
+        }
+
+        .nav-back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: gap 0.3s var(--transition);
+        }
+
+        .nav-back:hover {
+            gap: 16px;
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            background: var(--black);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover !important;
+            background-position: center !important;
+            filter: grayscale(0.4) brightness(0.4);
+            transform: scale(1.1);
+            animation: heroZoomIn 2.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes heroZoomIn {
+            from {
+                transform: scale(1.1);
+            }
+
+            to {
+                transform: scale(1.0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-bg {
+                transform: scale(1.0);
+                animation: none;
+            }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.2) 60%, transparent 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 80px 1cm;
+            width: 100%;
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--red);
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.0;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        /* ===== SERVICE DETAILS CONTAINER ===== */
+        .service-details-container {
+            padding: 120px 1cm 80px;
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 80px;
+        }
+
+        .details-left h2 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 30px;
+        }
+
+        .details-left p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.8;
+            color: #444;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .details-right {
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            height: fit-content;
+        }
+
+        .tech-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 20px;
+        }
+
+        .tech-item:last-child {
+            border: none;
+            padding-bottom: 0;
+        }
+
+        .tech-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+
+        .tech-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--black);
+            line-height: 1.5;
+        }
+
+        /* ===== DYNAMIC PORTFOLIO GALLERY GRID ===== */
+        .gallery-section {
+            padding: clamp(60px, 10vw, 100px) clamp(16px, 3vw, 1cm);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            margin: 0;
+        }
+
+        .gallery-section h2 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            box-sizing: border-box;
+            contain: paint;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: var(--black);
+            cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+            transition: transform 0.5s var(--transition), box-shadow 0.5s var(--transition), filter 0.6s var(--transition);
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            filter: grayscale(0.6);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.18);
+            filter: grayscale(0);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            object-position: center;
+            background: #000;
+            display: block;
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .gallery-item-number {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: var(--red);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .gallery-item-title {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .gallery-item-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .gallery-item-arrow {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s var(--transition);
+        }
+
+        .gallery-item-arrow svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            stroke-width: 2;
+            transition: transform 0.4s var(--transition);
+        }
+
+        .gallery-item:hover .gallery-item-arrow {
+            background: var(--red);
+            border-color: var(--red);
+        }
+
+        .gallery-item:hover .gallery-item-arrow svg {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 1024px) {
+            .gallery-section {
+                padding: 80px 24px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 0;
+            }
+
+            .gallery-item {
+                aspect-ratio: 4/3;
+                border-radius: 16px;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+            }
+
+            .gallery-item-overlay {
+                padding: 24px;
+            }
+
+            .gallery-item-arrow {
+                width: 40px;
+                height: 40px;
+                top: 16px;
+                right: 16px;
+            }
+
+            .gallery-section {
+                padding: 60px 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .gallery-section {
+                padding: 60px 16px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        /* ===== INTERACTIVE VIEWPORT LIGHTBOX ===== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(25px);
+            z-index: 1000000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s var(--transition);
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .lightbox-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 1100px;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-media-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .lightbox-media-container img,
+        .lightbox-media-container video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+            animation: zoomInLight 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        @keyframes zoomInLight {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-btn {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .lightbox-btn:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: scale(1.05);
+        }
+
+        .lightbox-prev {
+            left: -80px;
+        }
+
+        .lightbox-next {
+            right: -80px;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1000005;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 1200px) {
+            .lightbox-prev {
+                left: 20px;
+                bottom: 40px;
+                top: auto;
+            }
+
+            .lightbox-next {
+                right: 20px;
+                bottom: 40px;
+                top: auto;
+            }
+
+            .lightbox-close {
+                top: 16px;
+                right: 16px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .lightbox-prev,
+            .lightbox-next {
+                display: none;
+            }
+
+            .lightbox-close {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .main-footer {
+            background: #000;
+            color: #fff;
+            padding: 100px 1cm 60px;
+        }
+
+        .footer-marquee {
+            overflow: hidden;
+            margin-bottom: 80px;
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 60px;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee-track span {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.04);
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-col h4 {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .footer-col p,
+        .footer-col li {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--red);
+        }
+
+        .footer-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-logo span {
+            color: var(--red);
+        }
+
+        .footer-social-icons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .footer-social-icons a {
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .footer-social-icons a:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-bottom p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-legal a {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-legal a:hover {
+            color: var(--red);
+        }
+
+        @media (max-width: 768px) {
+            .service-details-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 60px 1cm;
+            }
+        }
+
+        .recommended-materials-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .mini-material-card {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s var(--transition);
+        }
+
+        .mini-material-card:hover {
+            transform: scale(1.1);
+        }
+
+        .mini-material-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body class="loaded services-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../" class="nav-logo">ARTECH<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="../#hero" data-nav-text="Accueil"><span class="nav-text-wrap" aria-label="Accueil"><span
+                            class="nav-text-top" aria-hidden="true">Accueil</span><span class="nav-text-bottom"
+                            aria-hidden="true">Accueil</span></span></a></li>
+            <li><a href="../projet/" data-nav-text="Projets"><span class="nav-text-wrap" aria-label="Projets"><span
+                            class="nav-text-top" aria-hidden="true">Projets</span><span class="nav-text-bottom"
+                            aria-hidden="true">Projets</span></span></a></li>
+            <li><a href="../services/" data-nav-text="Services"><span class="nav-text-wrap" aria-label="Services"><span
+                            class="nav-text-top" aria-hidden="true">Services</span><span class="nav-text-bottom"
+                            aria-hidden="true">Services</span></span></a></li>
+            <li><a href="../marbres/" data-nav-text="Nos Marbres"><span class="nav-text-wrap"
+                        aria-label="Nos Marbres"><span class="nav-text-top" aria-hidden="true">Nos Marbres</span><span
+                            class="nav-text-bottom" aria-hidden="true">Nos Marbres</span></span></a></li>
+            <li><a href="../contact/" class="btn-contact" data-nav-text="Contact"><span class="nav-text-wrap"
+                        aria-label="Contact"><span class="nav-text-top" aria-hidden="true">Contact</span><span
+                            class="nav-text-bottom" aria-hidden="true">Contact</span></span></a></li>
+        </ul>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg" id="service-hero-bg" style="background: #0f0f0f center/cover no-repeat;"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-label">Savoir-Faire & Technique</span>
+            <h1 class="hero-title" id="service-title">Service</h1>
+        </div>
+    </section>
+
+    <!-- Service Details -->
+    <section class="service-details-container">
+        <div class="details-left">
+            <h2>NOTRE EXPERTISE TECHNIQUE</h2>
+            <p id="service-description"></p>
+            <p id="service-bureau"></p>
+        </div>
+
+        <div class="details-right">
+            <ul class="tech-list">
+                <li class="tech-item">
+                    <span class="tech-label">Spécifications techniques</span>
+                    <span class="tech-value" id="service-tech-spec"></span>
+                </li>
+                <li class="tech-item">
+                    <span class="tech-label">Domaine d'application</span>
+                    <span class="tech-value" id="service-tech-domain"></span>
+                </li>
+                <li class="tech-item">
+                    <span class="tech-label">Finition recommandée</span>
+                    <span class="tech-value" id="service-tech-finish"></span>
+                </li>
+                <li class="tech-item">
+                    <span class="tech-label">Matériaux recommandés</span>
+                    <div id="service-tech-materials" class="recommended-materials-grid"></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Dynamic Portfolio Gallery -->
+    <section class="gallery-section">
+        <h2>RÉALISATIONS LIÉES</h2>
+        <div class="gallery-grid" id="service-gallery-grid"></div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="service-lightbox">
+        <button class="lightbox-btn lightbox-close" id="lightbox-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <button class="lightbox-btn lightbox-prev" id="lightbox-prev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <button class="lightbox-btn lightbox-next" id="lightbox-next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+        <div class="lightbox-wrapper">
+            <div class="lightbox-media-container" id="lightbox-media-container"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-marquee">
+            <div class="marquee-track">
+                <span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span><span>ARTECH</span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col about">
+                    <div class="footer-logo">ARTECH<span>.</span></div>
+                    <p>L'excellence de la pierre naturelle et du marbre au service de l'architecture moderne depuis 20
+                        ans.</p>
+                </div>
+
+                <div class="footer-col contact-info">
+                    <h4>NOUS CONTACTER</h4>
+                    <p><strong>Tel :</strong> <a href="tel:+22870457341">+228 70 45 73 41</a></p>
+                    <p><strong>Email :</strong> <a
+                            href="mailto:Artech.marbrerie@gmail.com">Artech.marbrerie@gmail.com</a></p>
+                    <p><strong>Adresse :</strong> Rue des Filaos 03, non loin de pharmacie Justine<br>Tokoin Habitat -
+                        08 BP 81735<br>Lomé - Togo</p>
+
+                    <div class="footer-social-icons">
+                        <a href="#" target="_blank" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441c.795 0 1.439-.645 1.439-1.441s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" aria-label="Behance">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <path
+                                    d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h2.027c2.518 0 2.508-3.521 0-3.521h-2.027v3.521zm0 5.988h2.731c2.816 0 2.534-4 0-4h-2.731v4z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col links">
+                    <h4>NAVIGATION</h4>
+                    <ul>
+                        <li><a href="../services/">Services</a></li>
+                        <li><a href="../marbres/">Nos Marbres</a></li>
+                        <li><a href="../contact/">Contact</a></li>
+                        <li><a href="../#faq">FAQ</a></li>
+                        <li><a href="tel:+22870457341">Appelez maintenant</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 ARCHITECT MARBLE. Tous droits réservés.</p>
+            <div class="footer-legal">
+                <a href="../mentions-legales/">Mentions Légales</a>
+                <a href="../confidentialite/">Politique de Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Modals -->
+    <div id="legal-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-legal">
+                <h2>MENTIONS LÉGALES</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Éditeur du site :</strong> ARTECH SAS</p>
+                    <p><strong>Siège social :</strong> Rue des Filaos 03, Tokoin Habitat, Lomé - Togo.</p>
+                    <p><strong>Email :</strong> Artech.marbrerie@gmail.com</p>
+                    <p><strong>Téléphone :</strong> +228 70 45 73 41</p>
+                    <p><strong>Directeur de publication :</strong> [Nom du responsable]</p>
+                    <p><strong>Hébergement :</strong> [Nom de l'hébergeur]</p>
+                    <p><strong>Déclaration CNIL :</strong> [Numéro de déclaration]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content-privacy">
+                <h2>POLITIQUE DE CONFIDENTIALITÉ</h2>
+                <div class="modal-scroll-area">
+                    <p><strong>Données collectées :</strong> [Détails]</p>
+                    <p><strong>Utilisation des données :</strong> [Détails]</p>
+                    <p><strong>Durée de conservation :</strong> [Détails]</p>
+                    <p><strong>Vos droits :</strong> [Détails]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../script.js"></script>
+
+    <script>
+        // Load single service details dynamically from URL parameter ?id=...
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id') || '1';
+            const service = window.serviceData ? window.serviceData[id] : null;
+
+            if (service) {
+                document.getElementById('service-title').textContent = service.title;
+                const bgEl = document.getElementById('service-hero-bg');
+                if (bgEl && service.image) {
+                    bgEl.style.background = `url('../${service.image}') center/cover no-repeat`;
+                }
+                document.getElementById('service-description').textContent = service.description;
+                if (service.bureauDescription) {
+                    document.getElementById('service-bureau').textContent = service.bureauDescription;
+                }
+                if (service.techSpec) document.getElementById('service-tech-spec').textContent = service.techSpec;
+                if (service.techDomain) document.getElementById('service-tech-domain').textContent = service.techDomain;
+                if (service.techFinish) document.getElementById('service-tech-finish').textContent = service.techFinish;
+
+                // Recommended materials
+                const materialsEl = document.getElementById('service-tech-materials');
+                if (materialsEl && service.techMaterials && Array.isArray(service.techMaterials)) {
+                    materialsEl.innerHTML = service.techMaterials.map(mat => `
+                        <div class="mini-material-card" title="${mat.name}">
+                            <img src="../${mat.image}" alt="${mat.name}" onerror="this.src='../produit/1.avif'">
+                        </div>
+                    `).join('');
+                }
+
+                // Gallery
+                const galleryGrid = document.getElementById('service-gallery-grid');
+                if (galleryGrid && service.gallery) {
+                    currentGallery = service.gallery;
+                    galleryGrid.innerHTML = service.gallery.map((item, idx) => `
+                        <div class="gallery-item" onclick="openServiceLightbox(${idx})">
+                            <img src="../${item.file_path}" alt="Réalisation 0${idx + 1}" loading="lazy" onerror="this.src='../produit/1.avif'">
+                            <div class="gallery-item-overlay">
+                                <span class="gallery-item-number">0${idx + 1}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            // Lightbox functionality
+            const lightbox = document.getElementById('service-lightbox');
+            const mediaContainer = document.getElementById('lightbox-media-container');
+
+            function updateLightboxMedia(index) {
+                if (!currentGallery || !currentGallery[index]) return;
+                currentLightboxIndex = index;
+                const item = currentGallery[index];
+                const isVideo = item.file_path.endsWith('.mp4') || item.file_path.endsWith('.webm');
+
+                if (isVideo) {
+                    mediaContainer.innerHTML = `<video src="../${item.file_path}" controls autoplay loop style="max-width:100%; max-height:100%; border-radius:12px;"></video>`;
+                } else {
+                    mediaContainer.innerHTML = `<img src="../${item.file_path}" alt="Réalisation 0${index + 1}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:12px;">`;
+                }
+            }
+
+            window.openServiceLightbox = function (idx) {
+                if (!lightbox) return;
+                updateLightboxMedia(idx);
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+
+            function closeLightbox() {
+                if (!lightbox) return;
+                lightbox.classList.remove('active');
+                mediaContainer.innerHTML = '';
+                document.body.style.overflow = '';
+            }
+
+            document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+            lightbox?.addEventListener('click', (e) => {
+                if (e.target === lightbox || e.target.classList.contains('lightbox-wrapper')) {
+                    closeLightbox();
+                }
+            });
+
+            document.getElementById('lightbox-prev')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (currentGallery.length === 0) return;
+                const newIdx = (currentLightboxIndex - 1 + currentGallery.length) % currentGallery.length;
+                updateLightboxMedia(newIdx);
+            });
+
+            document.getElementById('lightbox-next')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (currentGallery.length === 0) return;
+                const newIdx = (currentLightboxIndex + 1) % currentGallery.length;
+                updateLightboxMedia(newIdx);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox?.classList.contains('active')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') document.getElementById('lightbox-prev')?.click();
+                if (e.key === 'ArrowRight') document.getElementById('lightbox-next')?.click();
+            });
+        })();
+    </script>
+</body>
+
+</html>
