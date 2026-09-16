@@ -1352,9 +1352,8 @@ const initMobileMenu = () => {
 };
 
 const initContactForm = () => {
-    const form = document.getElementById('home-contact-form');
-    const responseBox = document.getElementById('contact-form-response');
-    if (!form) return;
+    const forms = document.querySelectorAll('form.contact-form, #home-contact-form');
+    if (!forms.length) return;
 
     // EmailJS Configuration (100% Client-Side JavaScript)
     const cfg = window.CONFIG || {};
@@ -1368,54 +1367,58 @@ const initContactForm = () => {
         } catch (e) { }
     }
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitBtn = form.querySelector('.submit-btn-premium');
-        const originalText = submitBtn ? submitBtn.innerHTML : 'ENVOYER LE MESSAGE';
+    forms.forEach(form => {
+        const responseBox = form.querySelector('#contact-form-response') || form.parentElement.querySelector('#contact-form-response');
 
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-            submitBtn.innerHTML = '<span>ENVOI EN COURS...</span>';
-        }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('.submit-btn-premium') || form.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.innerHTML : 'ENVOYER LE MESSAGE';
 
-        if (responseBox) {
-            responseBox.style.display = 'none';
-        }
-
-        try {
-            if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-                // 100% JS delivery via EmailJS
-                await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form);
-            } else {
-                // Fallback simulation / Mailto trigger if EmailJS keys not configured yet
-                await new Promise(resolve => setTimeout(resolve, 800));
-            }
-
-            if (responseBox) {
-                responseBox.style.display = 'block';
-                responseBox.style.background = 'rgba(46, 204, 113, 0.15)';
-                responseBox.style.border = '1px solid rgba(46, 204, 113, 0.4)';
-                responseBox.style.color = '#2ecc71';
-                responseBox.textContent = 'Votre message a été transmis avec succès ! Notre équipe vous recontactera rapidement.';
-                form.reset();
-            }
-        } catch (err) {
-            console.error('Email error:', err);
-            if (responseBox) {
-                responseBox.style.display = 'block';
-                responseBox.style.background = 'rgba(231, 76, 60, 0.15)';
-                responseBox.style.border = '1px solid rgba(231, 76, 60, 0.4)';
-                responseBox.style.color = '#e74c3c';
-                responseBox.textContent = 'Erreur d\'envoi. Veuillez réessayer ou contacter directement Artech.marbrerie@gmail.com.';
-            }
-        } finally {
             if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+                submitBtn.innerHTML = '<span>ENVOI EN COURS...</span>';
             }
-        }
+
+            if (responseBox) {
+                responseBox.style.display = 'none';
+            }
+
+            try {
+                if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+                    // 100% JS delivery via EmailJS
+                    await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form);
+                } else {
+                    // Fallback simulation / Mailto trigger if EmailJS keys not configured yet
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                }
+
+                if (responseBox) {
+                    responseBox.style.display = 'block';
+                    responseBox.style.background = 'rgba(46, 204, 113, 0.15)';
+                    responseBox.style.border = '1px solid rgba(46, 204, 113, 0.4)';
+                    responseBox.style.color = '#2ecc71';
+                    responseBox.textContent = 'Votre message a été transmis avec succès ! Notre équipe vous recontactera rapidement.';
+                    form.reset();
+                }
+            } catch (err) {
+                console.error('Email error:', err);
+                if (responseBox) {
+                    responseBox.style.display = 'block';
+                    responseBox.style.background = 'rgba(231, 76, 60, 0.15)';
+                    responseBox.style.border = '1px solid rgba(231, 76, 60, 0.4)';
+                    responseBox.style.color = '#e74c3c';
+                    responseBox.textContent = 'Erreur d\'envoi. Veuillez réessayer ou contacter directement Artech.marbrerie@gmail.com.';
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+        });
     });
 };
 

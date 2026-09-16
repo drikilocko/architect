@@ -345,6 +345,9 @@
             }
         }
     </style>
+    <!-- EmailJS SDK & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="../config.js"></script>
 </head>
 
 <body class="loaded contact-page">
@@ -413,17 +416,59 @@
 
                 <div class="contact-actions">
                     <a href="tel:+22870457341" class="btn-primary">Appelez maintenant</a>
-                    <a href="mailto:Artech.marbrerie@gmail.com" class="btn-outline">Envoyer un Email</a>
+                    
                 </div>
             </div>
 
-            <div class="contact-visual">
-                <div class="map-container">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.748!2d1.2233!3d6.1724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMDcnMDAuMCJOIDHCsDA0JzAwLjAiRQ!5e0!3m2!1sfr!2stg!4v1690000000000!5m2!1sfr!2stg"
-                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
+                        <!-- Formulaire de contact interactif EmailJS -->
+            <div class="contact-form-container">
+                <form class="contact-form" action="#" method="POST" id="contact-page-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>NOM</label>
+                            <input type="text" name="name" placeholder="Jean Dupont" required>
+                        </div>
+                        <div class="form-group">
+                            <label>EMAIL</label>
+                            <input type="email" name="email" placeholder="jean@exemple.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>TÉLÉPHONE (OPTIONNEL)</label>
+                            <input type="tel" name="phone" placeholder="+228 90 00 00 00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>MESSAGE / DÉTAILS DU PROJET</label>
+                        <textarea name="message" placeholder="Décrivez votre projet..." required></textarea>
+                    </div>
+                    <div id="contact-form-response"
+                        style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; text-align: center;">
+                    </div>
+                    <div class="form-submit-wrapper">
+                        <button type="submit" class="submit-btn-premium">
+                            <span>ENVOYER LE MESSAGE</span>
+                            <div class="btn-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+        </div>
+    </section>
+
+    
+    <!-- Map Section -->
+    <section class="map-section" style="padding: 40px 1cm 120px 1cm; background: var(--white);">
+        <div class="map-container" style="max-width: 1400px; margin: 0 auto; border-radius: 24px; overflow: hidden;">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.748!2d1.2233!3d6.1724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMDcnMDAuMCJOIDHCsDA0JzAwLjAiRQ!5e0!3m2!1sfr!2stg!4v1690000000000!5m2!1sfr!2stg"
+                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%; height:450px; border:none; display:block;"></iframe>
         </div>
     </section>
 
