@@ -321,14 +321,19 @@ window.addEventListener('load', () => {
             );
         }
     }
+});
 
+// ===================== INSTANT PRELOADER INITIALIZATION =====================
+const initPreloader = () => {
     const preloader = document.getElementById('new-preloader');
     const barEl = document.getElementById('preloader-bar');
     const percentEl = document.getElementById('preloader-percent');
 
+    if (!preloader) return;
+
     const PRELOADER_KEY = 'artech_preloader_last_shown';
     const PRELOADER_COOLDOWN = 24 * 60 * 60 * 1000;
-    const DURATION_MS = 4000; // 4 seconds total
+    const DURATION_MS = 2500; // 2.5 seconds smooth progress
 
     const shouldShowPreloader = () => {
         try {
@@ -362,28 +367,24 @@ window.addEventListener('load', () => {
     };
 
     if (!shouldShowPreloader()) {
-        // Skip preloader — already seen today
-        if (preloader) {
-            preloader.style.display = 'none';
-            preloader.classList.remove('active');
-        }
+        preloader.style.display = 'none';
+        preloader.classList.remove('active');
         document.body.classList.remove('is-loading');
         document.body.classList.add('loaded');
-    } else if (preloader && barEl) {
+    } else if (barEl) {
         preloader.style.display = '';
         preloader.classList.remove('active');
         document.body.classList.add('is-loading');
         document.body.classList.remove('loaded');
 
-        // Smooth responsive curve: starts immediately (~8% at 1s) and accelerates smoothly
         const easeCurve = (t) => 0.25 * t + 0.75 * (t * t);
 
         let startTime = null;
         const animate = (timestamp) => {
             if (!startTime) startTime = timestamp;
             const elapsed = timestamp - startTime;
-            const t = Math.min(elapsed / DURATION_MS, 1);   // 0 → 1 over DURATION_MS
-            const progress = easeCurve(t) * 100;             // apply smooth curve
+            const t = Math.min(elapsed / DURATION_MS, 1);
+            const progress = easeCurve(t) * 100;
             barEl.style.width = progress + '%';
             if (percentEl) {
                 percentEl.textContent = Math.floor(progress) + '%';
@@ -393,14 +394,20 @@ window.addEventListener('load', () => {
                 requestAnimationFrame(animate);
             } else {
                 if (percentEl) percentEl.textContent = '100%';
-                // Progress bar complete — trigger dismissal
                 dismissPreloader();
             }
         };
 
         requestAnimationFrame(animate);
     }
-});
+};
+
+// Start preloader IMMEDIATELY without waiting for window load event!
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPreloader);
+} else {
+    initPreloader();
+}
 
 // ===================== SERVICES SECTION BLUR ON "VOIR PLUS" REVEAL =====================
 const initServicesBlur = () => {
