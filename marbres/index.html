@@ -324,6 +324,8 @@
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .section-title {
@@ -331,6 +333,133 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -1px;
+        }
+
+        .search-panel {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            flex: 1 1 300px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            color: var(--gray);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 44px 14px 48px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: transparent;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--black);
+            transition: all 0.3s var(--transition);
+            border-radius: 0;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--black);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .search-input::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+        .search-clear.visible {
+            display: flex;
+        }
+
+        .search-clear:hover {
+            color: var(--black);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: none;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .search-suggestion-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-suggestion-item:hover,
+        .search-suggestion-item.active {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .search-suggestion-name {
+            font-weight: 700;
+            color: var(--black);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        .search-suggestion-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .search-no-result {
+            padding: 20px 16px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            text-align: center;
         }
 
         .filter-tabs {
@@ -623,14 +752,45 @@
                 gap: 40px;
             }
 
+            .intro-title {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+                letter-spacing: -1.5px;
+            }
+
+            .intro-body p {
+                font-size: 0.95rem;
+                line-height: 1.7;
+            }
+
+            .intro-stat {
+                gap: 30px;
+                flex-wrap: wrap;
+            }
+
+            .stat-item {
+                flex: 1 1 120px;
+            }
+
             .marbre-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                gap: 10px;
             }
 
             .marbre-card {
                 aspect-ratio: 1/1 !important;
                 border-radius: 0 !important;
+            }
+
+            .marbre-info {
+                padding: 20px 16px;
+            }
+
+            .marbre-name {
+                font-size: clamp(1rem, 3vw, 1.3rem);
+            }
+
+            .marbre-origin {
+                font-size: 0.7rem;
             }
 
             .cta-band {
@@ -640,21 +800,82 @@
 
             .collection-header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
                 gap: 20px;
+            }
+
+            .search-panel {
+                max-width: 100%;
+                flex: 1 1 100%;
             }
 
             .filter-tabs {
                 flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .filter-tab {
+                flex: 1 1 auto;
+                text-align: center;
+                padding: 10px 14px;
+                font-size: 0.7rem;
             }
 
             .hero-scroll {
                 display: none;
             }
 
+            .hero-title {
+                font-size: clamp(3rem, 14vw, 6rem);
+                letter-spacing: -2px;
+            }
+
+            .hero-subtitle {
+                font-size: 0.95rem;
+                max-width: 100%;
+            }
+
             .page-footer {
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .marbre-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .marbre-info {
+                padding: 14px 12px;
+            }
+
+            .marbre-name {
+                font-size: 0.95rem;
+                letter-spacing: -0.5px;
+            }
+
+            .marbre-tag {
+                font-size: 0.6rem;
+                letter-spacing: 2px;
+            }
+
+            .marbre-origin {
+                font-size: 0.65rem;
+            }
+
+            .collection {
+                padding: 0 12px 80px 12px;
+            }
+
+            .intro {
+                padding: 80px 16px;
             }
         }
 
@@ -766,6 +987,17 @@
     <section class="collection">
         <div class="collection-header">
             <h2 class="section-title">Notre Collection</h2>
+            <div class="search-panel">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="text" class="search-input" id="marble-search" placeholder="Rechercher un marbre..." autocomplete="off">
+                    <button class="search-clear" id="search-clear" aria-label="Effacer">&times;</button>
+                </div>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
             <div class="filter-tabs">
                 <button class="filter-tab active" data-filter="all">Tous</button>
                 <button class="filter-tab" data-filter="marbre">Marbres</button>
@@ -897,20 +1129,19 @@
     <script src="../script.js"></script>
 
     <script>
-        // Render Marbres grid
         (function () {
             const grid = document.getElementById('marbre-grid');
+            const searchInput = document.getElementById('marble-search');
+            const searchClear = document.getElementById('search-clear');
+            const suggestionsBox = document.getElementById('search-suggestions');
             if (!grid || !window.productData) return;
 
             const marbles = window.productData;
+            let currentFilter = 'all';
+            let activeSuggestionIndex = -1;
 
-            function render(filter = 'all') {
-                const filtered = filter === 'all' ? marbles : marbles.filter(m => {
-                    const cat = (m.category || '').toLowerCase();
-                    return cat.includes(filter);
-                });
-
-                grid.innerHTML = filtered.map(m => `
+            function buildCard(m) {
+                return `
                     <div class="marbre-card" onclick="openMarbleModal(${m.id})">
                         <div class="marbre-img-wrap">
                             <img src="../${m.image_path}" alt="${m.name}" loading="lazy" decoding="async" onerror="this.src='../produit/1.avif'">
@@ -921,8 +1152,138 @@
                             <div class="marbre-origin">${m.origin || 'Italie'}</div>
                         </div>
                     </div>
-                `).join('');
+                `;
             }
+
+            function renderMarbles(items) {
+                grid.innerHTML = items.map(buildCard).join('');
+            }
+
+            function getFilteredMarbles(query = '', filter = currentFilter) {
+                const term = query.trim().toLowerCase();
+                return marbles.filter(m => {
+                    const cat = (m.category || '').toLowerCase();
+                    const matchesFilter = filter === 'all' || cat.includes(filter);
+                    const matchesSearch = !term ||
+                        (m.name || '').toLowerCase().includes(term) ||
+                        (m.origin || '').toLowerCase().includes(term) ||
+                        (m.tag || '').toLowerCase().includes(term) ||
+                        (m.description || '').toLowerCase().includes(term);
+                    return matchesFilter && matchesSearch;
+                });
+            }
+
+            function render(filter = 'all', query = '') {
+                currentFilter = filter;
+                const items = getFilteredMarbles(query, filter);
+                renderMarbles(items);
+            }
+
+            function showSuggestions(query) {
+                const term = query.trim().toLowerCase();
+                if (!term) {
+                    suggestionsBox.classList.remove('active');
+                    suggestionsBox.innerHTML = '';
+                    activeSuggestionIndex = -1;
+                    return;
+                }
+
+                const matches = marbles.filter(m =>
+                    (m.name || '').toLowerCase().includes(term) ||
+                    (m.origin || '').toLowerCase().includes(term) ||
+                    (m.tag || '').toLowerCase().includes(term)
+                ).slice(0, 8);
+
+                if (matches.length === 0) {
+                    suggestionsBox.innerHTML = '<div class="search-no-result">Aucun résultat</div>';
+                } else {
+                    suggestionsBox.innerHTML = matches.map((m, idx) => `
+                        <div class="search-suggestion-item" data-index="${idx}" data-id="${m.id}">
+                            <div class="search-suggestion-name">${m.name}</div>
+                            <div class="search-suggestion-meta">${m.origin || ''} ${m.tag ? '· ' + m.tag : ''}</div>
+                        </div>
+                    `).join('');
+                }
+
+                suggestionsBox.classList.add('active');
+                activeSuggestionIndex = -1;
+
+                suggestionsBox.querySelectorAll('.search-suggestion-item').forEach(item => {
+                    item.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        const id = parseInt(item.dataset.id, 10);
+                        if (!isNaN(id)) {
+                            searchInput.value = marbles.find(m => m.id === id)?.name || '';
+                            searchClear.classList.add('visible');
+                            suggestionsBox.classList.remove('active');
+                            render(currentFilter, searchInput.value);
+                        }
+                    });
+                });
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    searchClear.classList.toggle('visible', val.length > 0);
+                    showSuggestions(val);
+                    render(currentFilter, val);
+                });
+
+                searchInput.addEventListener('focus', () => {
+                    if (searchInput.value.trim()) {
+                        showSuggestions(searchInput.value);
+                    }
+                });
+
+                searchInput.addEventListener('keydown', (e) => {
+                    const items = suggestionsBox.querySelectorAll('.search-suggestion-item');
+                    if (!items.length) return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        activeSuggestionIndex = Math.min(activeSuggestionIndex + 1, items.length - 1);
+                        updateActiveSuggestion(items);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        activeSuggestionIndex = Math.max(activeSuggestionIndex - 1, 0);
+                        updateActiveSuggestion(items);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (activeSuggestionIndex >= 0 && items[activeSuggestionIndex]) {
+                            items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+                        }
+                    } else if (e.key === 'Escape') {
+                        suggestionsBox.classList.remove('active');
+                        searchInput.blur();
+                    }
+                });
+            }
+
+            function updateActiveSuggestion(items) {
+                items.forEach((item, idx) => {
+                    item.classList.toggle('active', idx === activeSuggestionIndex);
+                });
+                if (activeSuggestionIndex >= 0 && items[activeSuggestionIndex]) {
+                    items[activeSuggestionIndex].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            if (searchClear) {
+                searchClear.addEventListener('click', () => {
+                    searchInput.value = '';
+                    searchClear.classList.remove('visible');
+                    suggestionsBox.classList.remove('active');
+                    render(currentFilter, '');
+                    searchInput.focus();
+                });
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-panel')) {
+                    suggestionsBox.classList.remove('active');
+                }
+            });
 
             render();
 
@@ -930,25 +1291,10 @@
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    render(btn.dataset.filter || 'all');
+                    render(btn.dataset.filter || 'all', searchInput?.value || '');
                 });
             });
         })();
-
-        // Legal modals
-        document.getElementById('open-legal')?.addEventListener('click', () => {
-            document.getElementById('legal-modal')?.classList.add('open');
-        });
-
-        document.getElementById('open-privacy')?.addEventListener('click', () => {
-            document.getElementById('privacy-modal')?.classList.add('open');
-        });
-
-        document.querySelectorAll('.modal-close, .modal-overlay').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
-            });
-        });
     </script>
 
     <!-- Marble Detail Modal Popup -->

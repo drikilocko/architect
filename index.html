@@ -115,6 +115,58 @@
             will-change: width;
         }
 
+        #preloader-status {
+            position: fixed;
+            top: calc(50% + 4rem);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10002;
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        #preloader-status.is-visible {
+            opacity: 1;
+        }
+
+        #start-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10002;
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 20px 60px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        #start-btn.is-visible {
+            display: inline-block;
+        }
+
+        #start-btn:hover {
+            background: #fff;
+            color: #000;
+            letter-spacing: 10px;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
         /* Percentage counter centered on preloader */
         #preloader-percent {
             position: fixed;
@@ -153,6 +205,8 @@
             <img src="produit/2.avif" alt="Preloader Right">
         </div>
         <div id="preloader-percent">0%</div>
+        <div id="preloader-status">Vérifiez votre état de connexion</div>
+        <button id="start-btn" aria-label="COMMENCER"><span class="start-text-wrap"><span class="start-text-top" aria-hidden="true">CHARGEMENT</span><span class="start-text-bottom" aria-hidden="true">CONTINUER</span></span></button>
         <div id="preloader-bar-wrap">
             <div id="preloader-bar"></div>
         </div>

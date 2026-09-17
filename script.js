@@ -8,16 +8,7 @@ const getMaxScroll = () => {
 };
 
 const checkIsServicesPage = () => {
-    return document.body?.classList.contains('services-page')
-        || document.body?.classList.contains('marbres-page')
-        || document.body?.classList.contains('contact-page')
-        || document.body?.classList.contains('projet-page')
-        || window.location.pathname.includes('/services')
-        || window.location.pathname.includes('/service')
-        || window.location.pathname.includes('/marbres')
-        || window.location.pathname.includes('/marbre')
-        || window.location.pathname.includes('/projet')
-        || window.location.pathname.includes('/contact');
+    return !document.body.classList.contains('home');
 };
 
 const isModalActive = () => {
@@ -326,14 +317,15 @@ window.addEventListener('load', () => {
 // ===================== INSTANT PRELOADER INITIALIZATION =====================
 const initPreloader = () => {
     const preloader = document.getElementById('new-preloader');
+    const startBtn = document.getElementById('start-btn');
     const barEl = document.getElementById('preloader-bar');
     const percentEl = document.getElementById('preloader-percent');
+    const statusEl = document.getElementById('preloader-status');
 
     if (!preloader) return;
 
     const PRELOADER_KEY = 'artech_preloader_last_shown';
     const PRELOADER_COOLDOWN = 24 * 60 * 60 * 1000;
-    const DURATION_MS = 2500; // 2.5 seconds smooth progress
 
     const shouldShowPreloader = () => {
         try {
@@ -366,6 +358,53 @@ const initPreloader = () => {
         }, 1500);
     };
 
+    const showConnectionError = () => {
+        if (!preloader || !startBtn) return;
+        if (barEl) barEl.style.width = '100%';
+        if (percentEl) percentEl.textContent = '100%';
+        if (statusEl) statusEl.classList.add('is-visible');
+        startBtn.classList.add('is-visible');
+        const topText = startBtn.querySelector('.start-text-top');
+        const bottomText = startBtn.querySelector('.start-text-bottom');
+        if (topText) topText.textContent = 'CONTINUER';
+        if (bottomText) bottomText.textContent = 'CONTINUER';
+    };
+
+    const waitForVideo = () => {
+        return new Promise((resolve) => {
+            const heroVideo = document.getElementById('hero-video');
+            if (!heroVideo) {
+                resolve();
+                return;
+            }
+
+            if (heroVideo.readyState >= 3) {
+                resolve();
+                return;
+            }
+
+            const onCanPlay = () => {
+                cleanup();
+                resolve();
+            };
+
+            const onError = () => {
+                cleanup();
+                resolve();
+            };
+
+            const cleanup = () => {
+                heroVideo.removeEventListener('canplaythrough', onCanPlay);
+                heroVideo.removeEventListener('error', onError);
+                heroVideo.removeEventListener('loadeddata', onCanPlay);
+            };
+
+            heroVideo.addEventListener('canplaythrough', onCanPlay, { once: true });
+            heroVideo.addEventListener('loadeddata', onCanPlay, { once: true });
+            heroVideo.addEventListener('error', onError, { once: true });
+        });
+    };
+
     if (!shouldShowPreloader()) {
         preloader.style.display = 'none';
         preloader.classList.remove('active');
@@ -377,28 +416,99 @@ const initPreloader = () => {
         document.body.classList.add('is-loading');
         document.body.classList.remove('loaded');
 
-        const easeCurve = (t) => 0.25 * t + 0.75 * (t * t);
+        const TIMEOUT_MS = 12000;
 
-        let startTime = null;
-        const animate = (timestamp) => {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-            const t = Math.min(elapsed / DURATION_MS, 1);
-            const progress = easeCurve(t) * 100;
-            barEl.style.width = progress + '%';
-            if (percentEl) {
-                percentEl.textContent = Math.floor(progress) + '%';
-            }
+        let resolved = false;
+        let timeoutId = null;
+        let progressFrame = null;
 
-            if (t < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                if (percentEl) percentEl.textContent = '100%';
-                dismissPreloader();
+        const setProgress = (progress) => {
+            const p = Math.max(0, Math.min(100, progress));
+            if (barEl) barEl.style.width = p + '%';
+            if (percentEl) percentEl.textContent = Math.floor(p) + '%';
+        };
+
+        const getVideoLoadProgress = () => {
+            const heroVideo = document.getElementById('hero-video');
+            if (!heroVideo || !heroVideo.duration || !isFinite(heroVideo.duration)) return null;
+
+            try {
+                if (heroVideo.buffered && heroVideo.buffered.length > 0) {
+                    const bufferedEnd = heroVideo.buffered.end(heroVideo.buffered.length - 1);
+                    return (bufferedEnd / heroVideo.duration) * 100;
+                }
+            } catch (e) { }
+
+            return null;
+        };
+
+        const showConnectionError = () => {
+            setProgress(100);
+            if (statusEl) statusEl.classList.add('is-visible');
+            if (startBtn) startBtn.classList.add('is-visible');
+        };
+
+        const onVideoProgress = () => {
+            if (resolved) return;
+            const p = getVideoLoadProgress();
+            if (p !== null) {
+                setProgress(p);
+                if (p >= 100) {
+                    resolved = true;
+                    if (timeoutId) clearTimeout(timeoutId);
+                    if (progressFrame) cancelAnimationFrame(progressFrame);
+                    dismissPreloader();
+                }
             }
         };
 
-        requestAnimationFrame(animate);
+        const animateProgress = () => {
+            if (resolved) return;
+            const p = getVideoLoadProgress();
+            if (p !== null) {
+                setProgress(p);
+                if (p >= 100) {
+                    resolved = true;
+                    if (timeoutId) clearTimeout(timeoutId);
+                    dismissPreloader();
+                    return;
+                }
+            }
+            progressFrame = requestAnimationFrame(animateProgress);
+        };
+
+        const heroVideo = document.getElementById('hero-video');
+        if (heroVideo) {
+            heroVideo.addEventListener('progress', onVideoProgress);
+        }
+
+        progressFrame = requestAnimationFrame(animateProgress);
+
+        timeoutId = setTimeout(() => {
+            if (resolved) return;
+            resolved = true;
+            if (progressFrame) cancelAnimationFrame(progressFrame);
+            showConnectionError();
+        }, TIMEOUT_MS);
+
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                if (resolved) return;
+                resolved = true;
+                if (timeoutId) clearTimeout(timeoutId);
+                if (progressFrame) cancelAnimationFrame(progressFrame);
+                dismissPreloader();
+            }, { once: true });
+        }
+
+        waitForVideo().then(() => {
+            if (resolved) return;
+            resolved = true;
+            if (timeoutId) clearTimeout(timeoutId);
+            if (progressFrame) cancelAnimationFrame(progressFrame);
+            setProgress(100);
+            dismissPreloader();
+        });
     }
 };
 

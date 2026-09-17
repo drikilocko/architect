@@ -28,7 +28,9 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    /* Animation classes */
+    color: var(--text-color);
+    overflow-x: hidden;
+    overscroll-behavior: auto;
 }
 
 .faq-item {
