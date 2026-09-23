@@ -885,6 +885,7 @@ body::-webkit-scrollbar {
         top: 25px !important;
         right: 25px !important;
         z-index: 100005 !important;
+        mix-blend-mode: normal !important;
     }
 
     body.nav-open .nav-links {
@@ -894,7 +895,7 @@ body::-webkit-scrollbar {
         inset: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
-        background: rgba(12, 12, 12, 0.97) !important;
+        background: #000000 !important;
         backdrop-filter: blur(25px) !important;
         -webkit-backdrop-filter: blur(25px) !important;
         z-index: 100000 !important;
@@ -935,6 +936,7 @@ body::-webkit-scrollbar {
         filter: none !important;
         display: block !important;
         position: static !important;
+        color: #ffffff !important;
     }
 
     body.nav-open .nav-links a .nav-text-bottom {
@@ -968,6 +970,15 @@ body::-webkit-scrollbar {
 
     body.home:not(.nav-open) .menu-toggle .bar {
         background: #000000 !important;
+    }
+
+    /* Negative color (automatic black/white inversion) for burger button on all non-home pages */
+    body:not(.home) .menu-toggle {
+        mix-blend-mode: difference !important;
+    }
+
+    body:not(.home):not(.nav-open) .menu-toggle .bar {
+        background: #ffffff !important;
     }
 }
 
