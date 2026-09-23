@@ -644,15 +644,18 @@ body.home .nav-links a.btn-contact {
 }
 
 /* ===================== CUSTOM SCROLL INDICATOR ===================== */
-/* Hide native scrollbar */
-html {
+/* Hide native scrollbar globally */
+html,
+body {
     scrollbar-width: none;
-    /* Firefox */
+    -ms-overflow-style: none;
 }
 
-html::-webkit-scrollbar {
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
     display: none;
-    /* Chrome, Safari */
+    width: 0;
+    height: 0;
 }
 
 .scroll-indicator {
@@ -660,7 +663,7 @@ html::-webkit-scrollbar {
     right: 16px;
     top: 0;
     height: 100vh;
-    z-index: 999;
+    z-index: 99999;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -963,8 +966,8 @@ html::-webkit-scrollbar {
         opacity: 1 !important;
     }
 
-    body.home .menu-toggle .bar {
-        background: #ffffff;
+    body.home:not(.nav-open) .menu-toggle .bar {
+        background: #000000 !important;
     }
 }
 
@@ -3264,6 +3267,11 @@ body.loaded .scroll-indicator-wrapper {
     color: #c0392b;
 }
 
+.footer-col.portfolio-info,
+.portfolio-info {
+    display: none !important;
+}
+
 .footer-col h4 {
     font-size: 0.75rem;
     letter-spacing: 3px;
@@ -4264,12 +4272,17 @@ body.loaded .scroll-indicator-wrapper {
 }
 
 .project-modal .pm-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 18px 0;
-    background: #0a0a0a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
 }
 

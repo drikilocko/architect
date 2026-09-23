@@ -1542,5 +1542,45 @@ const initContactForm = () => {
 window.addEventListener('load', () => {
     initMobileMenu();
     initContactForm();
+    initGlobalScrollIndicator();
 });
+
+// ===================== GLOBAL CUSTOM SCROLLBAR INDICATOR =====================
+const initGlobalScrollIndicator = () => {
+    if (!document.getElementById('scroll-indicator')) {
+        const indicator = document.createElement('div');
+        indicator.className = 'scroll-indicator';
+        indicator.id = 'scroll-indicator';
+        indicator.innerHTML = `
+            <div class="scroll-indicator__line"></div>
+            <div class="scroll-indicator__dot" id="scroll-dot"></div>
+        `;
+        document.body.appendChild(indicator);
+    }
+    updateGlobalScrollDot();
+};
+
+const updateGlobalScrollDot = () => {
+    const scrollDot = document.getElementById('scroll-dot');
+    if (!scrollDot) return;
+    const docHeight = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+    );
+    const winHeight = window.innerHeight;
+    const maxScroll = docHeight - winHeight;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const pct = maxScroll > 0 ? Math.min(Math.max(0, scrollY / maxScroll), 1) * 100 : 0;
+    scrollDot.style.top = `${pct}%`;
+};
+
+window.addEventListener('scroll', updateGlobalScrollDot, { passive: true });
+window.addEventListener('resize', updateGlobalScrollDot, { passive: true });
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGlobalScrollIndicator);
+} else {
+    initGlobalScrollIndicator();
+}
+
 
