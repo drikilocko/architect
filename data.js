@@ -8,7 +8,6 @@ window.projectData = {
     details: `<div class="process-phase-group"><div class="process-phase-title">Étude Préliminaire</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Conception & Étude</span><p class="process-desc">Diagnostic complet des surfaces existantes et proposition d'un calepinage en livre ouvert en Blanc Carrare pour les halls.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Planification & Organisation</span><p class="process-desc">Planification des phases de restauration et coordination des équipes sur le site brutaliste.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Estimation & Budget</span><p class="process-desc">Budgetisation précise des travaux de marbrerie et de restauration des façades.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Construction</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Contrôle Qualité</span><p class="process-desc">Contrôle des découpes et des finitions polies miroir avec joints de 0.5 mm.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Gestion de la Sécurité</span><p class="process-desc">Protocoles de sécurité adaptés au site brutaliste et aux zones public accessibles.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Suivi & Livraison</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Rapport de Fin de Travaux</span><p class="process-desc">À la fin du chantier, un rapport détaillé est établi pour garantir que chaque élément respecte les exigences du projet. Cette étape assure transparence, conformité et satisfaction totale du client.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Documentation Technique</span><p class="process-desc">Nous fournissons une documentation complète des travaux réalisés, incluant les spécifications techniques et les informations essentielles liées aux matériaux et aux finitions, afin d'assurer une parfaite traçabilité du projet.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Garantie & Suivi</span><p class="process-desc">Artech Marbrerie reste disponible après la livraison pour accompagner ses clients et assurer la pérennité des réalisations. Notre engagement se poursuit au-delà du chantier grâce à un suivi professionnel et une garantie sur nos prestations.</p></div></div></div>`,
     gallery: [
       { type: 'image', file_path: 'assets/palais des congres/1.jpg' },
-      { type: 'image', file_path: 'assets/palais des congres/2.jpg' },
       { type: 'image', file_path: 'assets/palais des congres/4.jpg' },
       { type: 'video', file_path: 'assets/palais des congres/1.mp4' },
       { type: 'video', file_path: 'assets/palais des congres/2.mp4' }
@@ -80,7 +79,7 @@ window.projectData = {
     id: 5,
     name: "Takoradi",
     desc: "Aménagement du complexe commercial et résidentiel de Takoradi, avec des finitions en marbre et des espaces publics habillés de pierre naturelle.",
-    category: "COMMERCIAL",
+    category: "RÉSIDENTIEL",
     subtitle: "Aménagement d'un complexe commercial et résidentiel",
     details: `<div class="process-phase-group"><div class="process-phase-title">Étude Préliminaire</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Conception & Étude</span><p class="process-desc">Conception des espaces communs, halls et façades du complexe d'Atakoradi.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Planification & Organisation</span><p class="process-desc">Planification de la pose de 3 200 m² de marbre Gris Emperado et Blanc Carrare.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Estimation & Budget</span><p class="process-desc">Budgetisation du projet commercial avec signalétique minérale intégrée.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Construction</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Contrôle Qualité</span><p class="process-desc">Contrôle des finitions et de l'homogénéité des joints sur les surfaces variées.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Gestion de la Sécurité</span><p class="process-desc">Protocoles de sécurité sur un chantier commercial avec zones public accessibles.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Suivi & Livraison</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Rapport de Fin de Travaux</span><p class="process-desc">À la fin du chantier, un rapport détaillé est établi pour garantir que chaque élément respecte les exigences du projet. Cette étape assure transparence, conformité et satisfaction totale du client.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Documentation Technique</span><p class="process-desc">Nous fournissons une documentation complète des travaux réalisés, incluant les spécifications techniques et les informations essentielles liées aux matériaux et aux finitions, afin d'assurer une parfaite traçabilité du projet.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Garantie & Suivi</span><p class="process-desc">Artech Marbrerie reste disponible après la livraison pour accompagner ses clients et assurer la pérennité des réalisations. Notre engagement se poursuit au-delà du chantier grâce à un suivi professionnel et une garantie sur nos prestations.</p></div></div></div>`,
     gallery: [
@@ -127,9 +126,9 @@ window.projectData = {
   7: {
     id: 7,
     name: "Complexe Kégue",
-    desc: "Aménagement du complexe commercial et résidentiel de Kégue avec des finitions en marbre et pierre naturelle.",
-    category: "COMMERCIAL",
-    subtitle: "Aménagement d'un complexe commercial et résidentiel",
+    desc: "Construction d'une résidence de standing à Kégue, avec des finitions en marbre et pierre naturelle.",
+    category: "RÉSIDENTIEL",
+    subtitle: "Construction d'une résidence de standing à Kégue",
     details: `<div class="process-phase-group"><div class="process-phase-title">Étude Préliminaire</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Conception & Étude</span><p class="process-desc">Étude architecturale des espaces publics du complexe de Kégue, définition des calepinages en livre ouvert pour les halls en Blanc Carrare et Gris Emperado.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Planification & Organisation</span><p class="process-desc">Coordination des approvisionnements en marbre, planification des phases de pose sur 3 200 m² de surfaces variées.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Estimation & Budget</span><p class="process-desc">Budgetisation précise de l'ensemble du projet commercial, de la signalétique minérale aux finitions des façades.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Construction</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Contrôle Qualité</span><p class="process-desc">Vérification continue de la planarité des sols, de l'homogénéité des joints et de la résistance des matériaux sur l'ensemble du complexe.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Gestion de la Sécurité</span><p class="process-desc">Management de la sécurité sur un chantier multi-corps d'état avec zones public accessibles.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Suivi & Livraison</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Rapport de Fin de Travaux</span><p class="process-desc">À la fin du chantier, un rapport détaillé est établi pour garantir que chaque élément respecte les exigences du projet. Cette étape assure transparence, conformité et satisfaction totale du client.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Documentation Technique</span><p class="process-desc">Nous fournissons une documentation complète des travaux réalisés, incluant les spécifications techniques et les informations essentielles liées aux matériaux et aux finitions, afin d'assurer une parfaite traçabilité du projet.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Garantie & Suivi</span><p class="process-desc">Artech Marbrerie reste disponible après la livraison pour accompagner ses clients et assurer la pérennité des réalisations. Notre engagement se poursuit au-delà du chantier grâce à un suivi professionnel et une garantie sur nos prestations.</p></div></div></div>`,
     gallery: [
       { type: 'image', file_path: 'assets/kegue/1.jpg' },
@@ -149,7 +148,7 @@ window.projectData = {
   },
   8: {
     id: 8,
-    name: "5 Villa",
+    name: "Cité Renaissance",
     desc: "Ensemble de 5 villas d'exception conçues avec des finitions d'architecture minérale sur mesure.",
     category: "RÉSIDENTIEL",
     subtitle: "Ensemble résidentiel de 5 villas de luxe",
@@ -315,8 +314,7 @@ window.serviceData = {
       { type: 'image', file_path: 'assets/tombe/IMG_6418.jpg' },
       { type: 'image', file_path: 'assets/tombe/IMG_6420.jpg' },
       { type: 'image', file_path: 'assets/tombe/IMG_6428.jpg' },
-      { type: 'image', file_path: 'assets/tombe/IMG_6432.jpg' },
-      { type: 'image', file_path: 'assets/tombe/IMG_6438.jpg' }
+      { type: 'image', file_path: 'assets/tombe/IMG_6432.jpg' }
     ]
   },
   10: {
@@ -751,10 +749,10 @@ window.projectList = [
   { id: 2, name: "Hôtel 2 Février", category: "HÔTELLERIE DE LUXE", image: "projet/2.jpg", available: true },
   { id: 3, name: "Siège de la BIDC", category: "BÂTIMENT INSTITUTIONNEL", image: "projet/3.jpg", available: false },
   { id: 4, name: "Résidence à Accra", category: "RÉSIDENTIEL", image: "projet/4.jpg", available: false },
-  { id: 5, name: "Takoradi", category: "COMMERCIAL", image: "assets/projet takoradi/1.jpg", available: true },
+  { id: 5, name: "Takoradi", category: "RÉSIDENTIEL", image: "assets/projet takoradi/1.jpg", available: true },
   { id: 6, name: "Résidence Baguida", category: "RÉSIDENTIEL", image: "assets/baguida/1.jpg", available: true },
-  { id: 7, name: "Complexe Kégue", category: "COMMERCIAL", image: "assets/kegue/1.jpg", available: true },
-  { id: 8, name: "5 Villa", category: "RÉSIDENTIEL", image: "projet/1.jpg", available: false }
+  { id: 7, name: "Complexe Kégue", category: "RÉSIDENTIEL", image: "assets/kegue/1.jpg", available: true },
+  { id: 8, name: "Cité Renaissance", category: "RÉSIDENTIEL", image: "projet/1.jpg", available: false }
 ];
 
 
