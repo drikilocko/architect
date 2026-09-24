@@ -125,7 +125,7 @@ window.projectData = {
   },
   7: {
     id: 7,
-    name: "Complexe Kégue",
+    name: "Résidence Kégue",
     desc: "Construction d'une résidence de standing à Kégue, avec des finitions en marbre et pierre naturelle.",
     category: "RÉSIDENTIEL",
     subtitle: "Construction d'une résidence de standing à Kégue",
@@ -757,7 +757,7 @@ window.projectList = [
   { id: 4, name: "Résidence à Accra", category: "RÉSIDENTIEL", image: "projet/4.jpg", available: false },
   { id: 5, name: "Takoradi", category: "RÉSIDENTIEL", image: "assets/projet takoradi/1.jpg", available: true },
   { id: 6, name: "Résidence Baguida", category: "RÉSIDENTIEL", image: "assets/baguida/1.jpg", available: true },
-  { id: 7, name: "Complexe Kégue", category: "RÉSIDENTIEL", image: "assets/kegue/1.jpg", available: true },
+  { id: 7, name: "Résidence Kégue", category: "RÉSIDENTIEL", image: "assets/kegue/1.jpg", available: true },
   { id: 8, name: "Cité Renaissance", category: "RÉSIDENTIEL", image: "projet/1.jpg", available: false }
 ];
 
