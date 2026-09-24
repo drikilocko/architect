@@ -325,7 +325,7 @@ window.serviceData = {
     tech_spec: "Plans de travail d'un seul tenant jusqu'à 3 m, chant profilé bec-de-corbin, traitement anti-taches.",
     description: "Des plans de cuisine et îlots centraux taillés sur mesure dans des pierres naturelles d'une robustesse exemplaire.",
     bureau_text: "Un plan de cuisine en pierre naturelle allie robustesse et esthétique raffinée. Nous taillons les ouvrants pour plaques et éviers au millimètre, réalisons le profilage de chant au choix du client, et appliquons un traitement anti-taches et résistant à la chaleur adapté aux contraintes d'une utilisation quotidienne intensive.",
-    product_ids: [18, 32, 31, 35, 38],
+    product_ids: [18, 32, 35, 38],
     gallery: [
       { type: 'image', file_path: 'assets/cuisine/1.jpg' },
       { type: 'image', file_path: 'assets/cuisine/2.jpeg' },
@@ -511,11 +511,11 @@ window.productData = [
   {
     id: 18,
     name: "Crema Julia",
-    category: "Granite",
-    tag: "Granit Résistant",
+    category: "Marbre",
+    tag: "Marbre Résistant",
     origin: "Espagne",
     image_path: "assets/Nos matériaux en stock/CREMA JULIA_n.jpg",
-    description: "Granit rose-beige d'une grande résistance à l'usure, particulièrement adapté aux plans de travail et dalles extérieures.",
+    description: "Marbre rose-beige d'une grande résistance à l'usure, particulièrement adapté aux plans de travail et dalles extérieures.",
     status: "in_stock"
   },
   {
@@ -628,16 +628,7 @@ window.productData = [
     description: "Lignes parallèles rectilignes grises et zébrées pour des créations architecturales d'avant-garde.",
     status: "in_stock"
   },
-  {
-    id: 31,
-    name: "Granite Bethel White",
-    category: "Granite",
-    tag: "Granit Pur",
-    origin: "États-Unis · Vermont",
-    image_path: "assets/Marbre/Granite bethel_white.jpg",
-    description: "Le granit le plus blanc et le plus uniforme au monde, prisé pour les façades monumentales et plans de cuisine de prestige.",
-    status: "in_stock"
-  },
+
   {
     id: 32,
     name: "Grigio Perla",
