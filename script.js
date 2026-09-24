@@ -1583,4 +1583,40 @@ if (document.readyState === 'loading') {
     initGlobalScrollIndicator();
 }
 
+// Touch Swipe Drag Support for Lightbox Modals
+(function initLightboxTouchSwipe() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        const activeLightbox = document.querySelector('.lightbox.active, .pm-lightbox.active');
+        if (!activeLightbox) return;
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        const activeLightbox = document.querySelector('.lightbox.active, .pm-lightbox.active');
+        if (!activeLightbox) return;
+
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        // Trigger swipe if horizontal movement is > 40px and dominant
+        if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (deltaX < 0) {
+                // Swiped Left -> Next
+                const nextBtn = activeLightbox.querySelector('.lightbox-next, #lightbox-next, .pm-lightbox-next');
+                nextBtn?.click();
+            } else {
+                // Swiped Right -> Prev
+                const prevBtn = activeLightbox.querySelector('.lightbox-prev, #lightbox-prev, .pm-lightbox-prev');
+                prevBtn?.click();
+            }
+        }
+    }, { passive: true });
+})();
+
 

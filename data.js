@@ -303,6 +303,7 @@ window.serviceData = {
     bureau_text: "Chaque monument funéraire est une réalisation unique conçue avec respect et dignité. Nous sélectionnons personnellement les blocs de granit pour leur homogénéité de couleur, réalisons la gravure au laser ou au sablage selon le rendu souhaité, et assurons le scellement par chevilles inox marine grade pour une tenue dans le temps exemplaire.",
     product_ids: [37, 26, 34, 42, 32],
     gallery: [
+      { type: 'image', file_path: 'assets/tombe/1new.jpeg' },
       { type: 'image', file_path: 'assets/tombe/IMG_6276.jpg' },
       { type: 'image', file_path: 'assets/tombe/IMG_6280.jpg' },
       { type: 'image', file_path: 'assets/tombe/IMG_6281.jpg' },
@@ -326,7 +327,12 @@ window.serviceData = {
     bureau_text: "Un plan de cuisine en pierre naturelle allie robustesse et esthétique raffinée. Nous taillons les ouvrants pour plaques et éviers au millimètre, réalisons le profilage de chant au choix du client, et appliquons un traitement anti-taches et résistant à la chaleur adapté aux contraintes d'une utilisation quotidienne intensive.",
     product_ids: [18, 32, 31, 35, 38],
     gallery: [
-      { type: 'image', file_path: 'assets/cuisine/1.jpg' }
+      { type: 'image', file_path: 'assets/cuisine/1.jpg' },
+      { type: 'image', file_path: 'assets/cuisine/2.jpeg' },
+      { type: 'image', file_path: 'assets/cuisine/3.jpeg' },
+      { type: 'image', file_path: 'assets/cuisine/4.jpeg' },
+      { type: 'image', file_path: 'assets/cuisine/5.jpeg' },
+      { type: 'image', file_path: 'assets/cuisine/6.jpeg' }
     ]
   }
 };
@@ -404,11 +410,11 @@ window.productData = [
   },
   {
     id: 8,
-    name: "Bianco Carrara Bruyé",
+    name: "Bianco Carrara Brouillé",
     category: "Marbre",
     tag: "Naturel",
     origin: "Italie · Carrare",
-    image_path: "assets/Nos matériaux en stock/BIANCO CARRARA Bruyé_n.jpg",
+    image_path: "assets/Nos matériaux en stock/BIANCO CARRARA Bruyé .jpg",
     description: "Texture minérale unique au fini adouci mettant en valeur le caractère naturel de la pierre de Carrare.",
     status: "in_stock"
   },
@@ -618,7 +624,7 @@ window.productData = [
     category: "Marbre",
     tag: "Graphique",
     origin: "Italie · Carrare",
-    image_path: "assets/Nos matériaux en stock/ZEBRINO A_n.jpg",
+    image_path: "assets/Nos matériaux en stock/new/ZEBRINO.jpg",
     description: "Lignes parallèles rectilignes grises et zébrées pour des créations architecturales d'avant-garde.",
     status: "in_stock"
   },
@@ -734,7 +740,7 @@ window.productData = [
   },
   {
     id: 43,
-    name: "Bianco Carrara Bruillée",
+    name: "Bianco Carrara Brouillée",
     category: "Marbre",
     tag: "Nuageux",
     origin: "Italie · Carrare",
