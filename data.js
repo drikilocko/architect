@@ -721,12 +721,12 @@ window.productData = [
   },
   {
     id: 42,
-    name: "Granite Noir Absolu",
+    name: "Granite Noir Galaxie",
     category: "Granite",
-    tag: "Granit Sombre",
-    origin: "Zimbabwe",
-    image_path: "assets/Nos matériaux en stock/new/granite noir absolu.jpg",
-    description: "Noir profond et uniforme d'une grande densité minérale, idéal pour les monuments, plans et habillages muraux.",
+    tag: "Granit Étoilé",
+    origin: "Inde",
+    image_path: "assets/GRANITE/noir galaxie .jpg",
+    description: "Noir profond parsemé de paillettes cuivrées et dorées rappelant un ciel étoilé, d'une grande élégance et résistance.",
     status: "in_stock"
   },
   {
