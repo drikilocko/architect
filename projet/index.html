@@ -13,8 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
-        <link rel="icon" type="image/jpeg" href="../assets/favicon.jpg">
-<link rel="stylesheet" href="../style.css">
+    <link rel="icon" type="image/jpeg" href="../assets/favicon.jpg">
+    <link rel="stylesheet" href="../style.css">
 
 
 
@@ -515,7 +515,8 @@
             </button>
             <div class="premium-modal-icon">
                 <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
             </div>
             <h2 class="premium-modal-title">Projet Exclusif</h2>
@@ -580,6 +581,8 @@
 
     <!-- Project Modal Lightbox -->
     <div id="pm-lightbox" class="pm-lightbox">
+        <button class="pm-lightbox-prev" id="pm-lightbox-prev" aria-label="Précédent">&#10094;</button>
+        <button class="pm-lightbox-next" id="pm-lightbox-next" aria-label="Suivant">&#10095;</button>
         <div class="pm-lightbox-content">
             <button class="pm-lightbox-close" aria-label="Fermer">&times;</button>
             <img id="pm-lightbox-img" src="" alt="Aperçu Projet ARTECH" onerror="this.src='../projet/1.jpg'">

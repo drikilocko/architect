@@ -1118,15 +1118,15 @@ window.openProjectModal = (id) => {
     const isInProjectSubfolder = /\/projet\/|\/services\/|\/marbres\/|\/contact\//.test(path);
     const assetPrefix = isInProjectSubfolder ? '../' : '';
 
-    row.innerHTML = data.gallery.map((item) => {
+    row.innerHTML = data.gallery.map((item, index) => {
         const src = item.file_path.startsWith('http') ? item.file_path : assetPrefix + item.file_path;
         const fallback = assetPrefix + 'projet/1.jpg';
         if (item.type === 'video') {
             // Videos load lazily (defer src until scrolled into view)
-            return `<div class="pm-media-card"><video data-src="${src}" muted autoplay loop playsinline preload="none"></video></div>`;
+            return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><video data-src="${src}" muted autoplay loop playsinline preload="none"></video></div>`;
         }
         // Images load immediately with direct src — no lazy observer needed in modals
-        return `<div class="pm-media-card"><img src="${src}" alt="Média Projet ARTECH" decoding="async" onerror="this.onerror=null; this.src='${fallback}';"></div>`;
+        return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><img src="${src}" alt="Média Projet ARTECH" decoding="async" onerror="this.onerror=null; this.src='${fallback}';"></div>`;
     }).join('');
 
     nameEl.textContent = data.name || 'Projet sans nom';
@@ -1194,6 +1194,63 @@ const closeProjectModal = () => {
     document.body.style.overflow = '';
     document.querySelectorAll('#project-modal video').forEach(v => v.pause());
     closeLightbox();
+};
+
+let currentProjectLightboxGallery = [];
+let currentProjectLightboxIndex = 0;
+
+window.openProjectLightbox = (projectId, index) => {
+    const data = window.projectData && window.projectData[projectId] ? window.projectData[projectId] : null;
+    if (!data || !data.gallery || !data.gallery.length) return;
+
+    const path = window.location.pathname;
+    const isInProjectSubfolder = /\/projet\/|\/services\/|\/marbres\/|\/contact\//.test(path);
+    const assetPrefix = isInProjectSubfolder ? '../' : '';
+
+    currentProjectLightboxGallery = data.gallery.map(item => {
+        const src = item.file_path.startsWith('http') ? item.file_path : assetPrefix + item.file_path;
+        return { src: src, type: item.type };
+    });
+    currentProjectLightboxIndex = index;
+
+    showProjectLightboxItem(currentProjectLightboxIndex);
+
+    const lightbox = document.getElementById('pm-lightbox');
+    if (lightbox) {
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+const showProjectLightboxItem = (idx) => {
+    if (!currentProjectLightboxGallery.length) return;
+
+    if (idx < 0) idx = currentProjectLightboxGallery.length - 1;
+    if (idx >= currentProjectLightboxGallery.length) idx = 0;
+    currentProjectLightboxIndex = idx;
+
+    const item = currentProjectLightboxGallery[idx];
+    const img = document.getElementById('pm-lightbox-img');
+    const video = document.getElementById('pm-lightbox-video');
+
+    if (img && video) {
+        if (item.type === 'video') {
+            img.style.display = 'none';
+            video.src = item.src;
+            video.style.display = 'block';
+            video.play();
+        } else {
+            video.pause();
+            video.style.display = 'none';
+            video.src = '';
+            img.src = item.src;
+            img.style.display = 'block';
+        }
+    }
+};
+
+window.navigateProjectLightbox = (direction) => {
+    showProjectLightboxItem(currentProjectLightboxIndex + direction);
 };
 
 const openLightbox = (src, type) => {
@@ -1303,6 +1360,14 @@ window.addEventListener('load', () => {
     });
 
     document.querySelector('.pm-lightbox-close')?.addEventListener('click', closeLightbox);
+    document.getElementById('pm-lightbox-prev')?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        window.navigateProjectLightbox(-1);
+    });
+    document.getElementById('pm-lightbox-next')?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        window.navigateProjectLightbox(1);
+    });
     document.getElementById('pm-lightbox')?.addEventListener('click', function (e) {
         if (e.target === this) closeLightbox();
     });

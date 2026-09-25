@@ -4760,17 +4760,18 @@ body.loaded .scroll-indicator-wrapper {
 
 .pm-lightbox-content {
     position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 70vw;
+    max-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: default;
 }
 
 .pm-lightbox-content img,
 .pm-lightbox-content video {
-    max-width: 90vw;
-    max-height: 85vh;
+    max-width: 70vw;
+    max-height: 80vh;
     object-fit: contain;
     display: block;
     border-radius: 0;
@@ -4779,12 +4780,12 @@ body.loaded .scroll-indicator-wrapper {
 
 .pm-lightbox-close {
     position: absolute;
-    top: -40px;
+    top: -45px;
     right: 0;
     background: transparent;
     border: none;
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -4799,11 +4800,51 @@ body.loaded .scroll-indicator-wrapper {
     color: #ff3b30;
 }
 
+/* Arrows anchored to the full-screen .pm-lightbox overlay — always outside the image */
+.pm-lightbox-prev,
+.pm-lightbox-next {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    color: #ffffff !important;
+    font-size: 1.4rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 1000020 !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.pm-lightbox-prev {
+    left: 30px !important;
+    right: auto !important;
+}
+
+.pm-lightbox-next {
+    right: 30px !important;
+    left: auto !important;
+}
+
+.pm-lightbox-prev:hover,
+.pm-lightbox-next:hover {
+    background: #ff3b30 !important;
+    border-color: #ff3b30 !important;
+    transform: translateY(-50%) scale(1.1) !important;
+}
+
 @media (max-width: 768px) {
 
     .pm-lightbox-content img,
     .pm-lightbox-content video {
-        max-width: 95vw;
+        max-width: 88vw;
         max-height: 80vh;
     }
 
@@ -4811,7 +4852,24 @@ body.loaded .scroll-indicator-wrapper {
         top: -35px;
         right: 5px;
     }
+
+    .pm-lightbox-prev,
+    .pm-lightbox-next {
+        width: 44px !important;
+        height: 44px !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        z-index: 1000020 !important;
+    }
+
+    .pm-lightbox-prev {
+        left: 10px !important;
+    }
+
+    .pm-lightbox-next {
+        right: 10px !important;
+    }
 }
+
 
 /* ===================== HOMEPAGE MARBLE HOVER BACKGROUND MOTION ===================== */
 .gallery-hover-bg {
@@ -5305,4 +5363,102 @@ body.loaded .scroll-indicator-wrapper {
 .services-section {
     position: relative;
     z-index: 60;
+}
+
+/* Universal Burger Menu Black Background Overlay for ALL pages & screen sizes */
+body.nav-open .navbar {
+    mix-blend-mode: normal !important;
+    background: transparent !important;
+}
+
+body.nav-open .nav-links {
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: 1000000 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 28px !important;
+    padding: 90px 20px 40px !important;
+    box-sizing: border-box !important;
+}
+
+body.nav-open .nav-links li {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    list-style: none !important;
+}
+
+body.nav-open .nav-links a {
+    color: #ffffff !important;
+    font-size: clamp(1.3rem, 5vw, 1.8rem) !important;
+    font-weight: 700 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+}
+
+body.nav-open .nav-links a .nav-text-wrap {
+    height: auto !important;
+    overflow: visible !important;
+    position: relative !important;
+    display: inline-block !important;
+}
+
+body.nav-open .nav-links a .nav-text-top {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    display: block !important;
+    position: static !important;
+    color: #ffffff !important;
+}
+
+body.nav-open .nav-links a .nav-text-bottom {
+    display: none !important;
+}
+
+body.nav-open .nav-links a.btn-contact {
+    background: #ff3b30 !important;
+    color: #ffffff !important;
+    border-radius: 50px !important;
+    padding: 14px 36px !important;
+    margin-top: 10px !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 2px !important;
+    box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4) !important;
+    display: inline-block !important;
+}
+
+body.nav-open .menu-toggle {
+    position: fixed !important;
+    top: 25px !important;
+    right: 25px !important;
+    z-index: 1000005 !important;
+    mix-blend-mode: normal !important;
+}
+
+body.nav-open .menu-toggle .bar {
+    background: #ffffff !important;
+}
+
+body.nav-open .menu-toggle .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg) !important;
+}
+
+body.nav-open .menu-toggle .bar:nth-child(2) {
+    transform: translateY(-8px) rotate(-45deg) !important;
+    opacity: 1 !important;
 }
