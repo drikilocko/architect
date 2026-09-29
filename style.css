@@ -1368,7 +1368,7 @@ body::-webkit-scrollbar {
     z-index: 2;
 }
 
-/* Branded ARTECH Background Pattern for cards without photos */
+/* Branded ARTECH MARBRERIE AFRIQUE Background Pattern for cards without photos */
 .step-image-box.artech-card-bg {
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -1378,7 +1378,7 @@ body::-webkit-scrollbar {
 }
 
 .step-image-box.artech-card-bg::before {
-    content: 'ARTECH';
+            content: 'ARTECH MARBRERIE AFRIQUE';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1485,7 +1485,7 @@ body::-webkit-scrollbar {
 
 /* Decoration */
 .process-step::before {
-    content: 'ARTECH';
+    content: 'ARTECH MARBRERIE AFRIQUE';
     position: absolute;
     bottom: 20px;
     right: 30px;

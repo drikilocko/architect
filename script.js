@@ -324,7 +324,7 @@ const initPreloader = () => {
 
     if (!preloader) return;
 
-    const PRELOADER_KEY = 'artech_preloader_last_shown';
+    const PRELOADER_KEY = 'artech_marbrerie_afrique_preloader_last_shown';
     const PRELOADER_COOLDOWN = 24 * 60 * 60 * 1000;
 
     const shouldShowPreloader = () => {
@@ -422,8 +422,14 @@ const initPreloader = () => {
         let timeoutId = null;
         let progressFrame = null;
 
+        const mapProgress = (real) => {
+            if (real <= 0) return 0;
+            if (real >= 100) return 100;
+            return 100 * Math.pow(real / 100, 2);
+        };
+
         const setProgress = (progress) => {
-            const p = Math.max(0, Math.min(100, progress));
+            const p = Math.max(0, Math.min(100, mapProgress(progress)));
             if (barEl) barEl.style.width = p + '%';
             if (percentEl) percentEl.textContent = Math.floor(p) + '%';
         };
@@ -1126,7 +1132,7 @@ window.openProjectModal = (id) => {
             return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><video data-src="${src}" muted autoplay loop playsinline preload="none"></video></div>`;
         }
         // Images load immediately with direct src — no lazy observer needed in modals
-        return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><img src="${src}" alt="Média Projet ARTECH" decoding="async" onerror="this.onerror=null; this.src='${fallback}';"></div>`;
+        return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><img src="${src}" alt="Média Projet ARTECH MARBRERIE AFRIQUE" decoding="async" onerror="this.onerror=null; this.src='${fallback}';"></div>`;
     }).join('');
 
     nameEl.textContent = data.name || 'Projet sans nom';
@@ -1540,8 +1546,8 @@ const initContactForm = () => {
     // EmailJS Configuration (100% Client-Side JavaScript)
     const cfg = window.CONFIG || {};
     const EMAILJS_PUBLIC_KEY = cfg.EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
-    const EMAILJS_SERVICE_ID = cfg.EMAILJS_SERVICE_ID || 'service_artech';
-    const EMAILJS_TEMPLATE_ID = cfg.EMAILJS_TEMPLATE_ID || 'template_artech';
+    const EMAILJS_SERVICE_ID = cfg.EMAILJS_SERVICE_ID || 'service_artech_marbrerie_afrique';
+    const EMAILJS_TEMPLATE_ID = cfg.EMAILJS_TEMPLATE_ID || 'template_artech_marbrerie_afrique';
 
     if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
         try {
