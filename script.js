@@ -417,19 +417,24 @@ const initPreloader = () => {
         document.body.classList.remove('loaded');
 
         const TIMEOUT_MS = 12000;
+        const MIN_DURATION_MS = 2500;
 
         let resolved = false;
         let timeoutId = null;
         let progressFrame = null;
+        let startTime = null;
+        let videoReady = false;
 
-        const mapProgress = (real) => {
-            if (real <= 0) return 0;
-            if (real >= 100) return 100;
-            return 100 * Math.pow(real / 100, 2);
+        const customEase = (t) => {
+            if (t <= 0) return 0;
+            if (t >= 1) return 100;
+            if (t < 0.5) return (t / 0.5) * 10;
+            if (t < 0.8) return 10 + ((t - 0.5) / 0.3) * 60;
+            return 70 + ((t - 0.8) / 0.2) * 30;
         };
 
         const setProgress = (progress) => {
-            const p = Math.max(0, Math.min(100, mapProgress(progress)));
+            const p = Math.max(0, Math.min(100, progress));
             if (barEl) barEl.style.width = p + '%';
             if (percentEl) percentEl.textContent = Math.floor(p) + '%';
         };
@@ -454,38 +459,51 @@ const initPreloader = () => {
             if (startBtn) startBtn.classList.add('is-visible');
         };
 
-        const onVideoProgress = () => {
+        const finish = () => {
             if (resolved) return;
-            const p = getVideoLoadProgress();
-            if (p !== null) {
-                setProgress(p);
-                if (p >= 100) {
-                    resolved = true;
-                    if (timeoutId) clearTimeout(timeoutId);
-                    if (progressFrame) cancelAnimationFrame(progressFrame);
-                    dismissPreloader();
-                }
-            }
+            resolved = true;
+            if (timeoutId) clearTimeout(timeoutId);
+            if (progressFrame) cancelAnimationFrame(progressFrame);
+            setProgress(100);
+            dismissPreloader();
         };
 
-        const animateProgress = () => {
+        const animateProgress = (timestamp) => {
             if (resolved) return;
-            const p = getVideoLoadProgress();
-            if (p !== null) {
-                setProgress(p);
-                if (p >= 100) {
-                    resolved = true;
-                    if (timeoutId) clearTimeout(timeoutId);
-                    dismissPreloader();
-                    return;
-                }
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+
+            if (videoReady && elapsed >= MIN_DURATION_MS) {
+                finish();
+                return;
             }
+
+            const videoP = getVideoLoadProgress();
+            if (videoP !== null && videoP >= 100) {
+                videoReady = true;
+            }
+
+            if (videoReady) {
+                const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
+                const t = 1 - remaining / MIN_DURATION_MS;
+                setProgress(customEase(Math.min(t, 1)));
+            } else {
+                const fakeProgress = Math.min((elapsed / MIN_DURATION_MS) * 100, 95);
+                setProgress(fakeProgress);
+            }
+
             progressFrame = requestAnimationFrame(animateProgress);
         };
 
         const heroVideo = document.getElementById('hero-video');
         if (heroVideo) {
-            heroVideo.addEventListener('progress', onVideoProgress);
+            heroVideo.addEventListener('progress', () => {
+                if (resolved) return;
+                const p = getVideoLoadProgress();
+                if (p !== null && p >= 100) {
+                    videoReady = true;
+                }
+            });
         }
 
         progressFrame = requestAnimationFrame(animateProgress);
@@ -500,20 +518,14 @@ const initPreloader = () => {
         if (startBtn) {
             startBtn.addEventListener('click', () => {
                 if (resolved) return;
-                resolved = true;
-                if (timeoutId) clearTimeout(timeoutId);
-                if (progressFrame) cancelAnimationFrame(progressFrame);
-                dismissPreloader();
+                finish();
             }, { once: true });
         }
 
         waitForVideo().then(() => {
+            videoReady = true;
             if (resolved) return;
-            resolved = true;
-            if (timeoutId) clearTimeout(timeoutId);
-            if (progressFrame) cancelAnimationFrame(progressFrame);
-            setProgress(100);
-            dismissPreloader();
+            if (!startTime) startTime = performance.now();
         });
     }
 };
