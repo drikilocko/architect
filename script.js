@@ -2,6 +2,7 @@
 let targetY = window.scrollY;
 let currentY = window.scrollY;
 let isScrollActive = false;
+let cachedMaxScroll = 0; // Cached to avoid forced reflow in mousemove/wheel
 
 const getMaxScroll = () => {
     return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -77,7 +78,6 @@ window.addEventListener('wheel', (e) => {
     e.preventDefault();
     isScrollActive = true;
 
-    const maxScroll = getMaxScroll();
     let delta = e.deltaY;
     if (e.deltaMode === 1) delta *= 35;
     if (e.deltaMode === 2) delta *= window.innerHeight;
@@ -90,7 +90,7 @@ window.addEventListener('wheel', (e) => {
     targetY += clampedDelta * config.multiplier;
 
     // Strict boundary clamping to prevent overscroll bounce
-    targetY = Math.max(0, Math.min(maxScroll, targetY));
+    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
 }, { passive: false });
 
 // Touch momentum scroll support
@@ -110,9 +110,8 @@ window.addEventListener('touchmove', (e) => {
         const delta = touchStartY - touchY;
         touchStartY = touchY;
 
-        const maxScroll = getMaxScroll();
         targetY += delta * 1.5;
-        targetY = Math.max(0, Math.min(maxScroll, targetY));
+        targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
     }
 }, { passive: true });
 
@@ -122,6 +121,9 @@ const isIndexPage = document.body.classList.contains('home') || document.getElem
 
 const renderLoop = () => {
     if (checkIsServicesPage()) return;
+
+    // Refresh cachedMaxScroll each frame (cheap integer arithmetic, no reflow)
+    cachedMaxScroll = getMaxScroll();
 
     if (isModalActive()) {
         isScrollActive = false;
@@ -192,6 +194,8 @@ let marbreHeader = null;
 let faqItems = null;
 let processContainer = null;
 let processSteps = null;
+let cachedImageSection = null; // Cached to avoid querySelector in RAF loop
+let cachedImageEl = null;      // Cached to avoid querySelector in RAF loop
 
 // Initial Load / Reveal Logic
 window.addEventListener('load', () => {
@@ -207,10 +211,18 @@ window.addEventListener('load', () => {
     faqItems = document.querySelectorAll('.faq-item');
     processContainer = document.getElementById('process-container');
     processSteps = document.querySelectorAll('.process-step');
-    // Promote to GPU layer immediately to prevent expensive repaint on scroll
+
+    // Cache image section elements to avoid DOM queries inside the RAF loop
+    cachedImageSection = document.querySelector('.simple-image-section');
+    cachedImageEl = cachedImageSection ? cachedImageSection.querySelector('img') : null;
+
+    // Promote GPU-animated layers to composite layer to avoid expensive repaints
     if (processContainer) processContainer.style.willChange = 'transform';
+    if (galleryTrack) galleryTrack.style.willChange = 'transform';
+    if (maskLayer) maskLayer.style.willChange = 'transform';
 
     updateCachedMetrics();
+    cachedMaxScroll = getMaxScroll();
 
     targetScrollY = window.scrollY;
     currentScrollY = window.scrollY;
@@ -801,7 +813,7 @@ const handleLogoTransition = (scrollPos) => {
 
 // Orchestrated Scroll Logic (Hero sequence)
 const handleSequencedScroll = (scrollPos) => {
-    const vh = window.innerHeight;
+    const vh = cachedMetrics.windowHeight; // Use cached value — avoids forced reflow
 
     // Fade out UI layer on scroll
     const heroUiLayer = document.getElementById('hero-ui-layer');
@@ -915,10 +927,9 @@ let lastScrollPos = 0;
 let imageColorProgress = 0; // For smoothing the final image transition
 
 // Transition Grayscale to Color for final image
+// Uses cachedImageSection / cachedImageEl (set once at load) — no DOM query per frame
 const handleImageGrayscale = (scrollPos) => {
-    const section = document.querySelector('.simple-image-section');
-    const img = section?.querySelector('img');
-    if (!section || !img || cachedMetrics.image.height === 0) return;
+    if (!cachedImageSection || !cachedImageEl || cachedMetrics.image.height === 0) return;
 
     // Start effect when the section starts sticking
     const start = cachedMetrics.image.top;
@@ -928,14 +939,13 @@ const handleImageGrayscale = (scrollPos) => {
     targetProgress = Math.max(0, Math.min(1, targetProgress));
 
     // Internal smoothing for the image specifically
-    // Lower value (0.05) makes it feel "heavier" and smoother
     imageColorProgress += (targetProgress - imageColorProgress) * 0.15;
 
-    img.style.filter = `grayscale(${1 - imageColorProgress})`;
+    cachedImageEl.style.filter = `grayscale(${1 - imageColorProgress})`;
 
     // Internal Parallax to reveal the bottom
     const translateMove = imageColorProgress * 40;
-    img.style.transform = `translate3d(0, -${translateMove}%, 0)`;
+    cachedImageEl.style.transform = `translate3d(0, -${translateMove}%, 0)`;
 };
 // Horizontal Gallery Scroll Logic
 const handleGalleryScroll = (scrollPos) => {
@@ -1454,68 +1464,82 @@ window.addEventListener('load', () => {
     initMarbleHoverBackground();
 
     // Horizontal Drag & Touch Scroll for Horizontal Sections (Projets & Nos Marbres)
+    // Uses a shared RAF-throttled mousemove listener to avoid redundant work per frame.
+    let _dragActiveContainer = null;
+    let _dragStartX = 0;
+    let _dragHasMoved = false;
+    let _dragRafPending = false;
+    let _dragLastDx = 0;
+
+    // Single shared mousemove on window — fires at most once per animation frame
+    window.addEventListener('mousemove', (e) => {
+        if (!_dragActiveContainer) return;
+        _dragLastDx = e.clientX - _dragStartX;
+        _dragStartX = e.clientX;
+        if (_dragRafPending) return; // already scheduled for this frame
+        _dragRafPending = true;
+        requestAnimationFrame(() => {
+            _dragRafPending = false;
+            const dx = _dragLastDx;
+            if (Math.abs(dx) > 1) {
+                _dragHasMoved = true;
+                isScrollActive = true;
+                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
+            }
+        });
+    });
+
+    // Single shared mouseup on window
+    window.addEventListener('mouseup', () => {
+        if (_dragActiveContainer) {
+            _dragActiveContainer.style.cursor = 'grab';
+            document.body.style.userSelect = '';
+            _dragActiveContainer = null;
+        }
+    });
+
     const initHorizontalDragScroll = (containerEl) => {
         if (!containerEl) return;
-        let isDragging = false;
-        let startX = 0;
-        let hasMoved = false;
 
         containerEl.style.cursor = 'grab';
 
         containerEl.addEventListener('mousedown', (e) => {
             if (e.button !== 0) return;
-            isDragging = true;
-            hasMoved = false;
-            startX = e.clientX;
+            _dragActiveContainer = containerEl;
+            _dragHasMoved = false;
+            _dragStartX = e.clientX;
             containerEl.style.cursor = 'grabbing';
+            // Prevent text selection during drag — a major source of lag
+            document.body.style.userSelect = 'none';
         });
 
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            if (Math.abs(dx) > 4) {
-                hasMoved = true;
-                startX = e.clientX;
-                isScrollActive = true;
-                const maxScroll = getMaxScroll();
-                targetY = Math.max(0, Math.min(maxScroll, targetY - dx * 1.8));
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                containerEl.style.cursor = 'grab';
-            }
-        });
-
+        let touchStartX = 0;
         containerEl.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
-                startX = e.touches[0].clientX;
-                hasMoved = false;
+                touchStartX = e.touches[0].clientX;
+                _dragHasMoved = false;
             }
         }, { passive: true });
 
         containerEl.addEventListener('touchmove', (e) => {
             if (e.touches.length === 1) {
                 const touchX = e.touches[0].clientX;
-                const dx = touchX - startX;
+                const dx = touchX - touchStartX;
                 if (Math.abs(dx) > 4) {
-                    hasMoved = true;
-                    startX = touchX;
+                    _dragHasMoved = true;
+                    touchStartX = touchX;
                     isScrollActive = true;
-                    const maxScroll = getMaxScroll();
-                    targetY = Math.max(0, Math.min(maxScroll, targetY - dx * 1.8));
+                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
                 }
             }
         }, { passive: true });
 
         // Prevent opening modal if card was dragged
         containerEl.addEventListener('click', (e) => {
-            if (hasMoved) {
+            if (_dragHasMoved) {
                 e.preventDefault();
                 e.stopPropagation();
-                hasMoved = false;
+                _dragHasMoved = false;
             }
         }, true);
     };
