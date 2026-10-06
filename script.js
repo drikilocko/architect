@@ -447,7 +447,7 @@ const initPreloader = () => {
         document.body.classList.add('is-loading');
         document.body.classList.remove('loaded');
 
-        const TIMEOUT_MS = 12000;
+        const TIMEOUT_MS = 5000;  // 5s avant d'afficher le bouton Actualiser
         const MIN_DURATION_MS = 2500;
 
         let resolved = false;
@@ -487,7 +487,18 @@ const initPreloader = () => {
         const showConnectionError = () => {
             setProgress(100);
             if (statusEl) statusEl.classList.add('is-visible');
-            if (startBtn) startBtn.classList.add('is-visible');
+            if (startBtn) {
+                // Change button to "ACTUALISER" → reloads the page
+                const topText = startBtn.querySelector('.start-text-top');
+                const bottomText = startBtn.querySelector('.start-text-bottom');
+                if (topText) topText.textContent = 'ACTUALISER';
+                if (bottomText) bottomText.textContent = 'ACTUALISER';
+                startBtn.classList.add('is-visible');
+                // Override click: reload instead of entering the site
+                startBtn.addEventListener('click', () => {
+                    window.location.reload();
+                }, { once: true });
+            }
         };
 
         const finish = () => {
@@ -547,6 +558,7 @@ const initPreloader = () => {
         }, TIMEOUT_MS);
 
         if (startBtn) {
+            // Click = enter site only if loading succeeded (not overridden by showConnectionError)
             startBtn.addEventListener('click', () => {
                 if (resolved) return;
                 finish();
