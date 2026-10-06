@@ -1478,7 +1478,7 @@ window.addEventListener('load', () => {
             if (Math.abs(dx) > 1) {
                 _dragHasMoved = true;
                 isScrollActive = true;
-                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 2.5));
+                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 3.5));
             }
         });
     });
@@ -1534,12 +1534,12 @@ window.addEventListener('load', () => {
             if (touchDir === 'h') {
                 _horizontalDragActive = true;
                 e.preventDefault();
-                if (Math.abs(dx) > 2) {
+                if (Math.abs(dx) > 1) {
                     _dragHasMoved = true;
                     touchStartX = touchX;
                     touchStartY = touchY;
                     isScrollActive = true;
-                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 2.5));
+                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 4.5));
                 }
             }
         }, { passive: false });
