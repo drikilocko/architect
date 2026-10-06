@@ -1464,12 +1464,14 @@ window.addEventListener('load', () => {
     let _dragHasMoved = false;
     let _dragRafPending = false;
     let _dragLastDx = 0;
+    let _dragVelocity = 0; // Exponential moving average velocity for flick momentum
 
     // Single shared mousemove on window — fires at most once per animation frame
     window.addEventListener('mousemove', (e) => {
         if (!_dragActiveContainer) return;
         _dragLastDx = e.clientX - _dragStartX;
         _dragStartX = e.clientX;
+        _dragVelocity = _dragVelocity * 0.6 + _dragLastDx * 0.4; // EMA velocity
         if (_dragRafPending) return; // already scheduled for this frame
         _dragRafPending = true;
         requestAnimationFrame(() => {
@@ -1478,7 +1480,7 @@ window.addEventListener('load', () => {
             if (Math.abs(dx) > 1) {
                 _dragHasMoved = true;
                 isScrollActive = true;
-                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
+                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 3.0));
             }
         });
     });
@@ -1516,6 +1518,7 @@ window.addEventListener('load', () => {
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
                 _dragHasMoved = false;
+                _dragVelocity = 0; // Reset velocity on each new touch
                 touchDir = null;
             }
         }, { passive: true });
@@ -1538,20 +1541,33 @@ window.addEventListener('load', () => {
                 // Signal global touchmove to stand down so they don't fight over targetY
                 _horizontalDragActive = true;
                 e.preventDefault();
-                if (Math.abs(dx) > 3) {
+                if (Math.abs(dx) > 2) {
                     _dragHasMoved = true;
+                    // Exponential moving average for smooth flick detection
+                    _dragVelocity = _dragVelocity * 0.5 + dx * 0.5;
                     touchStartX = touchX;
                     touchStartY = touchY;
                     isScrollActive = true;
-                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
+                    // 3.0 multiplier for fast, responsive horizontal drag
+                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 3.0));
                 }
             }
             // 'v' direction: _horizontalDragActive stays false → global touchmove handles it
         }, { passive: false });
 
-        // On touchend: if this was a horizontal drag, resync is handled by the global touchend above
+        // On touchend: apply flick momentum then hand off cleanly
         containerEl.addEventListener('touchend', () => {
             touchDir = null;
+            if (_horizontalDragActive) {
+                // Apply flick momentum — the lerp engine will naturally decelerate it
+                if (Math.abs(_dragVelocity) > 3) {
+                    isScrollActive = true;
+                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - _dragVelocity * 10));
+                }
+                _dragVelocity = 0;
+                // Clear the flag BEFORE global touchend fires so it doesn't reset our momentum
+                _horizontalDragActive = false;
+            }
         }, { passive: true });
 
         // Prevent opening modal if card was dragged
