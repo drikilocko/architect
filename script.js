@@ -1087,35 +1087,10 @@ window.addEventListener('load', () => {
 });
 
 // ===================== HOMEPAGE MARBLE HOVER BACKGROUND MOTION =====================
+// NOTE: hover background effect on marble cards is intentionally disabled on home page
 const initMarbleHoverBackground = () => {
-    const hoverBg = document.getElementById('gallery-hover-bg');
-    const galleryItems = document.querySelectorAll('#gallery-track .gallery-item');
-    const container = document.getElementById('gallery-track-container');
-    const parallaxBg = document.getElementById('gallery-bg');
-    if (!hoverBg || galleryItems.length === 0) return;
-
-    galleryItems.forEach(item => {
-        const img = item.querySelector('img');
-        if (!img) return;
-
-        item.addEventListener('mouseenter', () => {
-            const src = img.getAttribute('src');
-            hoverBg.style.backgroundImage = `url('${src}')`;
-            hoverBg.classList.add('active');
-        });
-
-        item.addEventListener('mouseleave', () => {
-            hoverBg.classList.remove('active');
-        });
-    });
-
-    // Sync horizontal scroll between container and parallax background
-    if (container && parallaxBg) {
-        container.addEventListener('scroll', () => {
-            const scrollLeft = container.scrollLeft;
-            parallaxBg.style.transform = `translateX(${-scrollLeft * 0.3}px)`;
-        });
-    }
+    // Hover background disabled — marble cards on home page do not trigger hover bg
+    // Only keep container→parallaxBg scroll sync if needed elsewhere
 };
 
 // ===================== PROJECT MODAL LOGIC =====================
@@ -1514,25 +1489,44 @@ window.addEventListener('load', () => {
         });
 
         let touchStartX = 0;
+        let touchStartY = 0;
+        let touchDir = null; // 'h' = horizontal drag, 'v' = vertical scroll, null = undecided
+
         containerEl.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
                 touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
                 _dragHasMoved = false;
+                touchDir = null;
             }
         }, { passive: true });
 
+        // passive:false so we can call preventDefault() to block native scroll during horizontal drag
         containerEl.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1) {
-                const touchX = e.touches[0].clientX;
-                const dx = touchX - touchStartX;
-                if (Math.abs(dx) > 4) {
+            if (e.touches.length !== 1) return;
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const dx = touchX - touchStartX;
+            const dy = touchY - touchStartY;
+
+            // Determine direction on first meaningful movement
+            if (touchDir === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                touchDir = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+            }
+
+            if (touchDir === 'h') {
+                // Horizontal drag → block native scroll, drive our custom scroll engine
+                e.preventDefault();
+                if (Math.abs(dx) > 3) {
                     _dragHasMoved = true;
                     touchStartX = touchX;
+                    touchStartY = touchY;
                     isScrollActive = true;
                     targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
                 }
             }
-        }, { passive: true });
+            // 'v' direction: do nothing, let the global touchmove handle vertical scroll
+        }, { passive: false });
 
         // Prevent opening modal if card was dragged
         containerEl.addEventListener('click', (e) => {
