@@ -54,7 +54,7 @@ const getSectionScrollConfig = (yPos) => {
     }
     // 2. Section Projets: Smooth Fluide
     if (yPos >= processTop - 150 && yPos < processEnd - 150) {
-        return { multiplier: 1.1, lerp: 0.11 };
+        return { multiplier: 2.0, lerp: 0.11 };
     }
     // 3. Section en haut de Nos Services: Smooth Rapide
     if (yPos >= processEnd - 150 && yPos < servicesTop - 150) {
@@ -66,7 +66,7 @@ const getSectionScrollConfig = (yPos) => {
     }
     // 5. Section Nos Marbres: Smooth Fluide
     if (yPos >= galleryTop - 150 && yPos < galleryEnd - 100) {
-        return { multiplier: 1.1, lerp: 0.10 };
+        return { multiplier: 2.0, lerp: 0.10 };
     }
     // 6. Section CTA & FAQ: Smooth Fluide
     return { multiplier: 1.1, lerp: 0.10 };
