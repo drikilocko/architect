@@ -3,6 +3,7 @@ let targetY = window.scrollY;
 let currentY = window.scrollY;
 let isScrollActive = false;
 let cachedMaxScroll = 0; // Cached to avoid forced reflow in mousemove/wheel
+let _horizontalDragActive = false; // True while user drags a horizontal section on mobile
 
 const getMaxScroll = () => {
     return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -97,6 +98,8 @@ window.addEventListener('wheel', (e) => {
 let touchStartY = 0;
 window.addEventListener('touchstart', (e) => {
     if (checkIsServicesPage() || isModalActive()) return;
+    // Reset horizontal drag flag on any new touch so vertical scroll always starts fresh
+    _horizontalDragActive = false;
     if (e.touches.length === 1) {
         touchStartY = e.touches[0].clientY;
         isScrollActive = true;
@@ -105,6 +108,9 @@ window.addEventListener('touchstart', (e) => {
 
 window.addEventListener('touchmove', (e) => {
     if (checkIsServicesPage() || isModalActive()) return;
+    // Stand down completely while a horizontal section drag is active —
+    // prevents the global handler from fighting the container handler over targetY
+    if (_horizontalDragActive) return;
     if (e.touches.length === 1) {
         const touchY = e.touches[0].clientY;
         const delta = touchStartY - touchY;
@@ -112,6 +118,19 @@ window.addEventListener('touchmove', (e) => {
 
         targetY += delta * 1.5;
         targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
+    }
+}, { passive: true });
+
+// When any touch ends, if a horizontal drag was active, resync scroll state cleanly
+window.addEventListener('touchend', () => {
+    if (_horizontalDragActive) {
+        _horizontalDragActive = false;
+        // Resync virtual scroll position with where the browser actually is,
+        // so the lerp engine doesn't jump from a stale position
+        const real = window.scrollY;
+        currentY = real;
+        targetY = real;
+        isScrollActive = false;
     }
 }, { passive: true });
 
@@ -1516,6 +1535,8 @@ window.addEventListener('load', () => {
 
             if (touchDir === 'h') {
                 // Horizontal drag → block native scroll, drive our custom scroll engine
+                // Signal global touchmove to stand down so they don't fight over targetY
+                _horizontalDragActive = true;
                 e.preventDefault();
                 if (Math.abs(dx) > 3) {
                     _dragHasMoved = true;
@@ -1525,8 +1546,13 @@ window.addEventListener('load', () => {
                     targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 1.8));
                 }
             }
-            // 'v' direction: do nothing, let the global touchmove handle vertical scroll
+            // 'v' direction: _horizontalDragActive stays false → global touchmove handles it
         }, { passive: false });
+
+        // On touchend: if this was a horizontal drag, resync is handled by the global touchend above
+        containerEl.addEventListener('touchend', () => {
+            touchDir = null;
+        }, { passive: true });
 
         // Prevent opening modal if card was dragged
         containerEl.addEventListener('click', (e) => {
