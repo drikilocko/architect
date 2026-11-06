@@ -208,7 +208,6 @@ let heroVideo = null;
 let videoBlur = null;
 let gallerySection = null;
 let galleryTrack = null;
-let galleryBg = null;
 let marbreHeader = null;
 let faqItems = null;
 let processContainer = null;
@@ -225,7 +224,6 @@ window.addEventListener('load', () => {
     videoBlur = document.getElementById('video-white-blur');
     gallerySection = document.querySelector('.horizontal-gallery-section');
     galleryTrack = document.getElementById('gallery-track');
-    galleryBg = document.getElementById('gallery-bg');
     marbreHeader = document.getElementById('marbre-gallery-header');
     faqItems = document.querySelectorAll('.faq-item');
     processContainer = document.getElementById('process-container');
@@ -791,11 +789,6 @@ const updateCachedMetrics = () => {
         cachedMetrics.gallery.top = getElementDocTop(gallerySection);
         cachedMetrics.gallery.height = gallerySection.offsetHeight;
         cachedMetrics.gallery.scrollWidth = galleryTrack.scrollWidth;
-        if (galleryBg) {
-            cachedMetrics.gallery.bgMoveDistance = galleryBg.offsetWidth - cachedMetrics.windowWidth;
-        } else {
-            cachedMetrics.gallery.bgMoveDistance = 0;
-        }
     }
 };
 
@@ -992,11 +985,6 @@ const handleGalleryScroll = (scrollPos) => {
 
     if (progress > 0 && progress < 1) {
         galleryTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-
-        // Perfectly synchronized background image scroll
-        if (galleryBg && cachedMetrics.gallery.bgMoveDistance > 0) {
-            galleryBg.style.transform = `translate3d(${-progress * cachedMetrics.gallery.bgMoveDistance}px, 0, 0)`;
-        }
     } else if (progress >= 1) {
         galleryTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
     } else {
@@ -1752,5 +1740,4 @@ if (document.readyState === 'loading') {
         }
     }, { passive: true });
 })();
-
 

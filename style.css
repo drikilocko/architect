@@ -2485,26 +2485,6 @@ body.loaded .scroll-indicator-wrapper {
     align-items: center;
 }
 
-.gallery-parallax-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: auto;
-    z-index: 20;
-    pointer-events: none;
-    will-change: transform;
-    display: flex;
-    align-items: center;
-}
-
-.gallery-parallax-bg img {
-    height: 100%;
-    width: auto;
-    object-fit: contain;
-    opacity: 0.9;
-}
-
 .gallery-track-container {
     position: relative;
     z-index: 10;
