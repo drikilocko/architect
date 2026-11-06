@@ -537,7 +537,7 @@
         if (servicesGrid && Object.keys(serviceData).length > 0) {
             const services = Object.values(serviceData);
             servicesGrid.innerHTML = services.map((service, index) => {
-                const number = String(service.id || index + 1).padStart(2, '0');
+                const number = String(index + 1).padStart(2, '0');
                 const imagePath = service.image ? '../' + service.image : '../services/1.jpg';
                 return `
                     <a href="../service/?id=${service.id}" class="service-card">

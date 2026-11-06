@@ -19,7 +19,7 @@ window.projectData = {
     desc: "L'Hôtel 2 Février incarne le luxe ultime de la capitale. ARTECH MARBRERIE AFRIQUE a pris en charge l'habillage intégral du lobby présidentiel, des suites de prestige ainsi que des pièces d'eau communes avec calepinages en livre ouvert.",
     category: "HÔTELLERIE DE LUXE",
     subtitle: "Habillage intégral du lobby présidentiel et suites de prestige",
-    details: `<div class="process-phase-group"><div class="process-phase-title">Étude Préliminaire</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Conception & Étude</span><p class="process-desc">Étude d'intégration des marbres Calacatta Gold et Onyx Vert Translucide dans les espaces de réception et suites.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Planification & Organisation</span><p class="process-desc">Planification de la pose sur 8 400 m² avec coordination des livraisons de marbres nobles.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Estimation & Budget</span><p class="process-desc">Devis détaillé pour l'habillage intégral du lobby et des suites de prestige.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Construction</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Contrôle Qualité</span><p class="process-desc">Vérification des finitions et des calepinages en livre ouvert sur every élément.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Gestion de la Sécurité</span><p class="process-desc">Protocoles de sécurité sur un chantier hôtelier 5 étoiles avec zones public accessibles.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Suivi & Livraison</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Suivi & Livraison</span><p class="process-desc">Livraison clé en main avec système de rétroéclairage LED installé derrière les panneaux d'onyx.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Documentation Technique</span><p class="process-desc">Nous fournissons une documentation complète des travaux réalisés, incluant les spécifications techniques et les informations essentielles liées aux matériaux et aux finitions, afin d'assurer une parfaite traçabilité du projet.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Garantie & Suivi</span><p class="process-desc">Artech Marbrerie reste disponible après la livraison pour accompagner ses clients et assurer la pérennité des réalisations. Notre engagement se poursuit au-delà du chantier grâce à un suivi professionnel et une garantie sur nos prestations.</p></div></div></div>`,
+    details: `<div class="process-phase-group"><div class="process-phase-title">Étude Préliminaire</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Conception & Étude</span><p class="process-desc">Étude d'intégration des marbres Calacatta Gold et Onyx Vert Translucide dans les espaces de réception et suites.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Planification & Organisation</span><p class="process-desc">Planification de la pose sur 8 400 m² avec coordination des livraisons de marbres nobles.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Estimation & Budget</span><p class="process-desc">Devis détaillé pour l'habillage intégral du lobby et des suites de prestige.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Construction</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Contrôle Qualité</span><p class="process-desc">Vérification des finitions et des calepinages en livre ouvert sur chaque élément.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Gestion de la Sécurité</span><p class="process-desc">Protocoles de sécurité sur un chantier hôtelier 5 étoiles avec zones public accessibles.</p></div></div></div><div class="process-phase-group"><div class="process-phase-title">Suivi & Livraison</div><div class="process-steps-row"><div class="process-step"><span class="process-num">01</span><span class="process-title">Suivi & Livraison</span><p class="process-desc">Livraison clé en main avec système de rétroéclairage LED installé derrière les panneaux d'onyx.</p></div><div class="process-step"><span class="process-num">02</span><span class="process-title">Documentation Technique</span><p class="process-desc">Nous fournissons une documentation complète des travaux réalisés, incluant les spécifications techniques et les informations essentielles liées aux matériaux et aux finitions, afin d'assurer une parfaite traçabilité du projet.</p></div><div class="process-step"><span class="process-num">03</span><span class="process-title">Garantie & Suivi</span><p class="process-desc">Artech Marbrerie reste disponible après la livraison pour accompagner ses clients et assurer la pérennité des réalisations. Notre engagement se poursuit au-delà du chantier grâce à un suivi professionnel et une garantie sur nos prestations.</p></div></div></div>`,
     gallery: [
       { type: 'image', file_path: 'assets/Photo_Hotel_2_Fevrier/DSC00411.jpg' },
       { type: 'image', file_path: 'assets/Photo_Hotel_2_Fevrier/DSC00423.jpg' },
@@ -179,19 +179,6 @@ window.serviceData = {
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/10.jpg' }
     ]
   },
-  2: {
-    id: 2,
-    title: "Cloisons & Séparations",
-    image: "assets/CLOISON ET SEPARATION/1.jpg",
-    tech_spec: "Cloisons auto-portantes, claustras minéraux évidés CNC, panneaux rétroéclairés structurels.",
-    description: "Structurer l'espace tout en préservant la luminosité et les lignes de fuite.",
-    bureau_text: "La conception de cloisons en pierre requiert une ingénierie précise des charges autoportantes et des ancrages. Nos techniciens calculent l'épaisseur optimale de chaque panneau et conçoivent les systèmes de fixation discrets pour un résultat structurellement sûr et visuellement épuré.",
-    product_ids: [24, 28, 29, 6, 7],
-    gallery: [
-      { type: 'image', file_path: 'assets/CLOISON ET SEPARATION/1.jpg' },
-      { type: 'image', file_path: 'assets/CLOISON ET SEPARATION/4.jpg' }
-    ]
-  },
   3: {
     id: 3,
     title: "Finitions & Détails",
@@ -243,18 +230,19 @@ window.serviceData = {
   },
   6: {
     id: 6,
-    title: "Revêtements Muraux",
-    image: "assets/murs/1.jpg",
-    tech_spec: "Pose collée sur mortier-colle C2 S1, calepinage en livre ouvert, joints époxy haute résistance.",
-    description: "L'habillage mural en pierre naturelle transforme chaque surface en œuvre d'art minérale, du salon à la façade.",
-    bureau_text: "Nos revêtements muraux en marbre naturel transforment l'atmosphère de chaque espace. Nous réalisons des calepinages en livre ouvert pour créer des effets miroir spectaculaires, et intégrons des systèmes de rétroéclairage LED derrière les panneaux translucides pour un rendu lumineux unique.",
+    title: "Dépôt",
+    image: "assets/depot/WhatsApp Image 2026-11-06 at 15.24.29 (2).jpeg",
+    tech_spec: "Sélection de marbres et pierres naturelles disponibles au dépôt, selon les stocks et les formats.",
+    description: "Découvrez les marbres et pierres naturelles disponibles dans notre dépôt à Lomé, sélectionnés pour vos projets d'aménagement et de décoration.",
+    bureau_text: "Notre équipe vous accompagne dans le choix des matériaux disponibles, la vérification des formats et la préparation de votre commande. Contactez-nous pour confirmer les disponibilités et organiser votre visite au dépôt.",
     product_ids: [3, 24, 15, 21, 12],
     gallery: [
-      { type: 'image', file_path: 'assets/murs/1.jpg' },
-      { type: 'image', file_path: 'assets/murs/2.jpg' },
-      { type: 'image', file_path: 'assets/murs/3.jpg' },
-      { type: 'image', file_path: 'assets/murs/4.jpg' },
-      { type: 'image', file_path: 'assets/murs/5.jpg' }
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.29 (1).jpeg' },
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.29 (2).jpeg' },
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.29 (3).jpeg' },
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.30 (1).jpeg' },
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.30 (2).jpeg' },
+      { type: 'image', file_path: 'assets/depot/WhatsApp Image 2026-11-06 at 15.24.30.jpeg' }
     ]
   },
   7: {
@@ -751,5 +739,3 @@ window.projectList = [
   { id: 7, name: "Résidence Kégue", category: "RÉSIDENTIEL", image: "assets/kegue/1.jpg", available: true },
   { id: 8, name: "Cité Renaissance", category: "RÉSIDENTIEL", image: "projet/1.jpg", available: false }
 ];
-
-

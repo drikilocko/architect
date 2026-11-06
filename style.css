@@ -1942,7 +1942,7 @@ body.loaded .scroll-indicator-wrapper {
 }
 
 /* Remove bottom margin for the last card so it gets covered immediately */
-.service-sticky-card:nth-child(4) {
+.service-sticky-card:last-child {
     margin-bottom: 30vh;
     transition: transform 0.5s ease, filter 0.5s ease;
 }
@@ -2896,7 +2896,7 @@ body.loaded .scroll-indicator-wrapper {
 }
 
 /* Remove margin from last service card */
-.service-sticky-card:nth-child(4) {
+.service-sticky-card:last-child {
     margin-bottom: 0 !important;
 }
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -380,7 +380,9 @@
                     </div>
                     <!-- Project 3 -->
                     <div class="process-step" data-index="03" onclick="openProjectModal(3)">
-                        <div class="step-image-box artech-card-bg">
+                        <div class="step-image-box">
+                            <img src="projet/3.jpg" alt="Siège de la BIDC"
+                                onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
                         </div>
                         <div class="step-content">
                             <div class="step-header">
@@ -506,25 +508,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="service-sticky-card" style="--i: 2;" onclick="window.location.href='service/?id=2'">
-                        <div class="ssc-image-side">
-                            <img src="assets/CLOISON ET SEPARATION/1.jpg" alt="Cloisons & Séparations">
-                            <div class="ssc-wave-separator">
-                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
-                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="ssc-content-side">
-                            <span class="ssc-number">02</span>
-                            <div class="ssc-content">
-                                <h3>Cloisons & Séparations</h3>
-                                <p>Solutions architecturales en pierre et matériaux nobles, alliant esthétique, solidité
-                                    et fonctionnalité.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="service-sticky-card" style="--i: 3;" onclick="window.location.href='service/?id=3'">
+                    <div class="service-sticky-card" style="--i: 2;" onclick="window.location.href='service/?id=3'">
                         <div class="ssc-image-side">
                             <img src="assets/FINITION ET DETAILS/4.jpg" alt="Finitions & Détails">
                             <div class="ssc-wave-separator">
@@ -534,7 +518,7 @@
                             </div>
                         </div>
                         <div class="ssc-content-side">
-                            <span class="ssc-number">03</span>
+                            <span class="ssc-number">02</span>
                             <div class="ssc-content">
                                 <h3>Finitions & Détails</h3>
                                 <p>Un soin particulier apporté aux finitions pour garantir un rendu propre, précis et
@@ -542,7 +526,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="service-sticky-card" style="--i: 4;" onclick="window.location.href='service/?id=4'">
+                    <div class="service-sticky-card" style="--i: 3;" onclick="window.location.href='service/?id=4'">
                         <div class="ssc-image-side">
                             <img src="assets/PROJET STRUCTUREL/2.jpg" alt="Projets structurels sur mesure">
                             <div class="ssc-wave-separator">
@@ -552,11 +536,29 @@
                             </div>
                         </div>
                         <div class="ssc-content-side">
-                            <span class="ssc-number">04</span>
+                            <span class="ssc-number">03</span>
                             <div class="ssc-content">
                                 <h3>Projets structurels sur mesure</h3>
                                 <p>Réalisation de projets complexes adaptés aux exigences des institutions et grands
                                     chantiers.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-sticky-card" style="--i: 4;" onclick="window.location.href='service/?id=5'">
+                        <div class="ssc-image-side">
+                            <img src="assets/escalier/1.jpg" alt="Escaliers en Marbre">
+                            <div class="ssc-wave-separator">
+                                <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+                                    <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ssc-content-side">
+                            <span class="ssc-number">04</span>
+                            <div class="ssc-content">
+                                <h3>Escaliers en Marbre</h3>
+                                <p>Des escaliers sculptés dans la pierre, alliant élégance et maîtrise technique pour
+                                    sublimer chaque niveau.</p>
                             </div>
                         </div>
                     </div>
@@ -921,23 +923,23 @@
     <!-- Project Detail Modal -->
     <div id="project-modal" class="project-modal">
         <div class="pm-header">
-            <span class="pm-header-title">Awwwards</span>
+            <span class="pm-header-title">ARTECH MARBRERIE</span>
             <button class="pm-close-btn" aria-label="Fermer">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
-                Close
+                Fermer
             </button>
         </div>
         <div class="pm-subtitle" id="modal-project-subtitle"></div>
         <div class="pm-media-wrapper">
             <div class="pm-media-row" id="modal-media-row"></div>
-            <button class="pm-arrow pm-arrow-left" aria-label="Previous">
+            <button class="pm-arrow pm-arrow-left" aria-label="Précédent">
                 <svg viewBox="0 0 24 24">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
-            <button class="pm-arrow pm-arrow-right" aria-label="Next">
+            <button class="pm-arrow pm-arrow-right" aria-label="Suivant">
                 <svg viewBox="0 0 24 24">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
@@ -951,7 +953,7 @@
                 </div>
                 <h2 class="pm-project-name" id="modal-project-name"></h2>
                 <p class="pm-project-desc" id="modal-project-desc"></p>
-                <a href="javascript:void(0)" class="pm-read-more">Read More</a>
+                <a href="javascript:void(0)" class="pm-read-more">En savoir plus</a>
             </div>
             <a href="contact/" class="pm-project-request">Nous Contacter</a>
         </div>

@@ -1376,11 +1376,11 @@ window.addEventListener('load', () => {
         if (isActive) {
             details.classList.remove('active');
             modal.classList.remove('read-more-active');
-            this.textContent = 'Read More';
+            this.textContent = 'En savoir plus';
         } else {
             details.classList.add('active');
             modal.classList.add('read-more-active');
-            this.textContent = 'Read Less';
+            this.textContent = 'Réduire';
         }
     });
 
@@ -1390,7 +1390,7 @@ window.addEventListener('load', () => {
         if (details) details.classList.remove('active');
         if (modal) modal.classList.remove('read-more-active');
         const readMoreBtn = document.querySelector('.pm-read-more');
-        if (readMoreBtn) readMoreBtn.textContent = 'Read More';
+        if (readMoreBtn) readMoreBtn.textContent = 'En savoir plus';
     });
 
     document.querySelector('.pm-lightbox-close')?.addEventListener('click', closeLightbox);
