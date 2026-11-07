@@ -29,7 +29,7 @@ body {
     background-position: center;
     background-attachment: fixed;
     color: var(--text-color);
-    overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior: auto;
 }
 
@@ -92,7 +92,7 @@ body {
 body {
     /* Keeps it global for all sections */
     color: var(--text-color);
-    overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior: none;
 }
 
