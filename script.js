@@ -14,12 +14,9 @@ const checkIsServicesPage = () => {
 };
 
 const isModalActive = () => {
-    return !!(
-        document.querySelector('.project-modal.active') ||
-        document.querySelector('.premium-modal.active') ||
-        document.querySelector('.marble-modal.active') ||
-        document.querySelector('.modal.active') ||
-        document.querySelector('#pm-lightbox.active')
+    // Single combined query (runs every frame)
+    return !!document.querySelector(
+        '.project-modal.active, .premium-modal.active, .marble-modal.active, .modal.active, #pm-lightbox.active'
     );
 };
 
@@ -31,41 +28,54 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// Vertical scrolling is 100% NATIVE (wheel, trackpad, touch, keyboard):
-// the browser's own scroll is the most responsive and keeps the same speed
-// across every section. JS only drives:
-//   - the horizontal sections (their translateX is derived from window.scrollY)
-//   - drag / swipe on those sections, plus the short inertia glide after a drag.
-const DRAG_GLIDE_LERP = 0.14;
+// Scrolling model:
+//  - Touch devices (mobile/tablet): 100% NATIVE scroll, untouched.
+//  - Desktop mouse / trackpad: Lenis-style smooth wheel — one uniform speed on
+//    every section, frame-rate independent exponential easing (lerp 0.1 @60fps).
+//  - Drag on horizontal sections: direct 1:1 + inertia glide (same easing loop).
+const SMOOTH_LERP = 0.1;          // Lenis default feel
+const WHEEL_MULTIPLIER = 1;       // uniform speed everywhere
+const LINE_HEIGHT_PX = 100 / 6;   // deltaMode 1 normalisation (same as Lenis)
 
-// Any real user scroll input cancels a running drag glide immediately
+// Smooth wheel only where a real mouse/trackpad drives the page
+const smoothWheelMQ = window.matchMedia('(hover: hover) and (pointer: fine)');
+const isSmoothWheelEnabled = () => smoothWheelMQ.matches;
+
+// Touch / keyboard input cancels any running glide so native scroll takes over
 const cancelGlide = () => {
     if (!isScrollActive) return;
     isScrollActive = false;
     currentY = targetY = window.scrollY;
 };
 
+const clampScroll = (y) => Math.max(0, Math.min(cachedMaxScroll || getMaxScroll(), y));
+
 window.addEventListener('wheel', (e) => {
     if (checkIsServicesPage() || isModalActive()) return;
-    cancelGlide();
+    if (e.ctrlKey) return; // pinch-zoom on trackpad: leave to the browser
 
-    // Vertical intent -> let the browser scroll natively
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    const unit = e.deltaMode === 1 ? LINE_HEIGHT_PX : e.deltaMode === 2 ? window.innerHeight : 1;
+    let delta;
 
-    // Trackpad left/right swipe over a horizontal section: move the track 1:1
-    const hSection = e.target.closest
-        ? e.target.closest('.process-section, .horizontal-gallery-section')
-        : null;
-    if (!hSection) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // Trackpad left/right swipe over a horizontal section: drive that track
+        const hSection = e.target.closest
+            ? e.target.closest('.process-section, .horizontal-gallery-section')
+            : null;
+        if (!hSection) return; // let the browser handle other horizontal gestures
+        const trackEl = hSection.classList.contains('process-section')
+            ? document.getElementById('process-container')
+            : document.getElementById('gallery-track');
+        delta = e.deltaX * unit * getHorizontalScrollRatio(trackEl);
+    } else {
+        if (!isSmoothWheelEnabled()) return; // native vertical scroll
+        delta = e.deltaY * unit * WHEEL_MULTIPLIER;
+    }
 
-    e.preventDefault(); // also blocks the browser "swipe back" gesture here
-    const unit = e.deltaMode === 1 ? 35 : e.deltaMode === 2 ? window.innerHeight : 1;
-    const trackEl = hSection.classList.contains('process-section')
-        ? document.getElementById('process-container')
-        : document.getElementById('gallery-track');
-    const y = Math.max(0, Math.min(getMaxScroll(), window.scrollY + e.deltaX * unit * getHorizontalScrollRatio(trackEl)));
-    currentY = targetY = y;
-    window.scrollTo(0, y);
+    e.preventDefault();
+    if (!isScrollActive) currentY = targetY = window.scrollY;
+    targetY = clampScroll(targetY + delta);
+    isScrollActive = true;
 }, { passive: false });
 
 window.addEventListener('touchstart', () => {
@@ -92,11 +102,24 @@ const isServicesPage = checkIsServicesPage();
 
 const isIndexPage = document.body.classList.contains('home') || document.getElementById('video-wrapper') !== null;
 
-const renderLoop = () => {
+// Max scroll only changes when the document resizes: observe it instead of
+// reading scrollHeight every frame (that read forced a style/layout flush per frame)
+if (!checkIsServicesPage()) {
+    cachedMaxScroll = getMaxScroll();
+    const refreshMaxScroll = () => { cachedMaxScroll = getMaxScroll(); };
+    window.addEventListener('resize', refreshMaxScroll, { passive: true });
+    window.addEventListener('load', refreshMaxScroll);
+    if ('ResizeObserver' in window) new ResizeObserver(refreshMaxScroll).observe(document.body);
+}
+
+let _lastFrameTime = performance.now();
+
+const renderLoop = (now = performance.now()) => {
     if (checkIsServicesPage()) return;
 
-    // Refresh cachedMaxScroll each frame (cheap integer arithmetic, no reflow)
-    cachedMaxScroll = getMaxScroll();
+    // Frame-rate independent easing: same feel on 60Hz, 120Hz (ProMotion) and 144Hz screens
+    const dt = Math.min(64, now - _lastFrameTime);
+    _lastFrameTime = now;
 
     if (isModalActive()) {
         isScrollActive = false;
@@ -105,7 +128,8 @@ const renderLoop = () => {
     } else if (isScrollActive) {
         const diff = targetY - currentY;
         if (Math.abs(diff) > 0.5) {
-            currentY += diff * DRAG_GLIDE_LERP;
+            const ease = 1 - Math.pow(1 - SMOOTH_LERP, dt / (1000 / 60));
+            currentY += diff * ease;
             window.scrollTo(0, currentY);
         } else {
             currentY = targetY;
