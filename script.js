@@ -79,9 +79,22 @@ window.addEventListener('wheel', (e) => {
     e.preventDefault();
     isScrollActive = true;
 
-    let delta = e.deltaY;
-    if (e.deltaMode === 1) delta *= 35;
-    if (e.deltaMode === 2) delta *= window.innerHeight;
+    const unit = e.deltaMode === 1 ? 35 : e.deltaMode === 2 ? window.innerHeight : 1;
+
+    // Trackpad left/right swipe over a horizontal section: move the track 1:1
+    const hSection = Math.abs(e.deltaX) > Math.abs(e.deltaY) && e.target.closest
+        ? e.target.closest('.process-section, .horizontal-gallery-section')
+        : null;
+    if (hSection) {
+        const trackEl = hSection.classList.contains('process-section')
+            ? document.getElementById('process-container')
+            : document.getElementById('gallery-track');
+        targetY += e.deltaX * unit * getHorizontalScrollRatio(trackEl);
+        targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
+        return;
+    }
+
+    let delta = e.deltaY * unit;
 
     // Hard Scroll Speed Limit: clamp maximum single stroke wheel delta
     const MAX_WHEEL_DELTA = 220;
@@ -123,16 +136,19 @@ window.addEventListener('touchmove', (e) => {
 
 // When any touch ends, if a horizontal drag was active, resync scroll state cleanly
 window.addEventListener('touchend', () => {
-    if (_horizontalDragActive) {
-        _horizontalDragActive = false;
-        // Resync virtual scroll position with where the browser actually is,
-        // so the lerp engine doesn't jump from a stale position
-        const real = window.scrollY;
-        currentY = real;
-        targetY = real;
-        isScrollActive = false;
-    }
+    // Horizontal drag keeps currentY in sync itself and may have launched an
+    // inertia glide (targetY) - only release the flag here.
+    _horizontalDragActive = false;
 }, { passive: true });
+
+// Vertical scroll px needed to move a horizontal track by 1 px on screen
+const getHorizontalScrollRatio = (el) => {
+    const m = el && el.id === 'gallery-track' ? cachedMetrics.gallery : cachedMetrics.process;
+    const travelY = (m.height || 0) - (cachedMetrics.windowHeight || window.innerHeight);
+    const travelX = (m.scrollWidth || 0) - (cachedMetrics.windowWidth || window.innerWidth);
+    if (travelY <= 0 || travelX <= 0) return 1;
+    return travelY / travelX;
+};
 
 const isServicesPage = checkIsServicesPage();
 
@@ -1458,65 +1474,108 @@ window.addEventListener('load', () => {
     initMarbleHoverBackground();
 
     // Horizontal Drag & Touch Scroll for Horizontal Sections (Projets & Nos Marbres)
-    // Uses a shared RAF-throttled mousemove listener to avoid redundant work per frame.
-    let _dragActiveContainer = null;
-    let _dragStartX = 0;
-    let _dragHasMoved = false;
-    let _dragRafPending = false;
-    let _dragLastDx = 0;
+    // 1:1 direct manipulation: the track follows the finger / cursor exactly,
+    // then glides with inertia on release (velocity-based momentum).
+    const DRAG_CLICK_THRESHOLD = 6;   // px before a press counts as a drag (keeps clicks working)
+    const MOMENTUM_MS = 320;          // how far the glide carries (velocity * ms)
+    const MAX_MOMENTUM_PX = 1400;     // cap glide distance in horizontal px
 
-    // Single shared mousemove on window — fires at most once per animation frame
+    let _dragActiveContainer = null;
+    let _dragHasMoved = false;
+    let _dragTotal = 0;
+    let _dragSamples = [];
+
+    const clampY = (y) => Math.max(0, Math.min(cachedMaxScroll, y));
+
+    const pushDragSample = (x) => {
+        const t = performance.now();
+        _dragSamples.push({ x, t });
+        while (_dragSamples.length > 2 && t - _dragSamples[0].t > 100) _dragSamples.shift();
+    };
+
+    const startDrag = (containerEl, x) => {
+        _dragActiveContainer = containerEl;
+        _dragHasMoved = false;
+        _dragTotal = 0;
+        _dragSamples = [];
+        pushDragSample(x);
+        // Freeze any running glide so the track sticks to the pointer immediately
+        isScrollActive = false;
+        currentY = targetY = window.scrollY;
+    };
+
+    // Horizontal px -> vertical scroll px, so the drag maps 1:1 on screen
+    const moveDrag = (containerEl, dx, x) => {
+        if (!dx) return;
+        _dragTotal += Math.abs(dx);
+        if (_dragTotal > DRAG_CLICK_THRESHOLD) _dragHasMoved = true;
+        pushDragSample(x);
+        const y = clampY(currentY - dx * getHorizontalScrollRatio(containerEl));
+        currentY = targetY = y;
+        isScrollActive = false;
+        window.scrollTo(0, y);
+    };
+
+    const endDrag = (containerEl) => {
+        const s = _dragSamples;
+        _dragSamples = [];
+        if (s.length < 2) return;
+        const first = s[0], last = s[s.length - 1];
+        const dt = last.t - first.t;
+        // Pointer stopped before release -> no glide
+        if (dt <= 0 || performance.now() - last.t > 80) return;
+        const velocity = (last.x - first.x) / dt; // px per ms
+        const glide = Math.max(-MAX_MOMENTUM_PX, Math.min(MAX_MOMENTUM_PX, velocity * MOMENTUM_MS));
+        targetY = clampY(currentY - glide * getHorizontalScrollRatio(containerEl));
+        isScrollActive = true; // render loop eases toward targetY (inertia)
+    };
+
+    let _lastMouseX = 0;
     window.addEventListener('mousemove', (e) => {
-        if (!_dragActiveContainer) return;
-        _dragLastDx = e.clientX - _dragStartX;
-        _dragStartX = e.clientX;
-        if (_dragRafPending) return;
-        _dragRafPending = true;
-        requestAnimationFrame(() => {
-            _dragRafPending = false;
-            const dx = _dragLastDx;
-            if (Math.abs(dx) > 1) {
-                _dragHasMoved = true;
-                isScrollActive = true;
-                targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 3.5));
-            }
-        });
+        if (!_dragActiveContainer || _horizontalDragActive) return;
+        const dx = e.clientX - _lastMouseX;
+        _lastMouseX = e.clientX;
+        moveDrag(_dragActiveContainer, dx, e.clientX);
     });
 
-    // Single shared mouseup on window
     window.addEventListener('mouseup', () => {
-        if (_dragActiveContainer) {
-            _dragActiveContainer.style.cursor = 'grab';
-            document.body.style.userSelect = '';
-            _dragActiveContainer = null;
-        }
+        if (!_dragActiveContainer) return;
+        const el = _dragActiveContainer;
+        el.style.cursor = 'grab';
+        document.body.style.userSelect = '';
+        _dragActiveContainer = null;
+        endDrag(el);
     });
 
     const initHorizontalDragScroll = (containerEl) => {
         if (!containerEl) return;
 
         containerEl.style.cursor = 'grab';
+        // Browser keeps native vertical panning; JS owns horizontal panning
+        containerEl.style.touchAction = 'pan-y';
+
+        // Stop native image ghost-drag from hijacking the gesture
+        containerEl.addEventListener('dragstart', (e) => e.preventDefault());
 
         containerEl.addEventListener('mousedown', (e) => {
             if (e.button !== 0) return;
-            _dragActiveContainer = containerEl;
-            _dragHasMoved = false;
-            _dragStartX = e.clientX;
+            _lastMouseX = e.clientX;
+            startDrag(containerEl, e.clientX);
             containerEl.style.cursor = 'grabbing';
             document.body.style.userSelect = 'none';
         });
 
+        let touchLastX = 0;
         let touchStartX = 0;
         let touchStartY = 0;
         let touchDir = null;
 
         containerEl.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                _dragHasMoved = false;
-                touchDir = null;
-            }
+            if (e.touches.length !== 1) return;
+            touchStartX = touchLastX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchDir = null;
+            _dragHasMoved = false;
         }, { passive: true });
 
         // passive:false so we can preventDefault() during horizontal drag
@@ -1524,30 +1583,36 @@ window.addEventListener('load', () => {
             if (e.touches.length !== 1) return;
             const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
-            const dx = touchX - touchStartX;
-            const dy = touchY - touchStartY;
 
-            if (touchDir === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-                touchDir = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+            if (touchDir === null) {
+                const dx0 = touchX - touchStartX;
+                const dy0 = touchY - touchStartY;
+                if (Math.abs(dx0) < 4 && Math.abs(dy0) < 4) return;
+                touchDir = Math.abs(dx0) > Math.abs(dy0) ? 'h' : 'v';
+                if (touchDir === 'h') {
+                    _horizontalDragActive = true;
+                    startDrag(containerEl, touchStartX);
+                    touchLastX = touchStartX;
+                }
             }
 
             if (touchDir === 'h') {
-                _horizontalDragActive = true;
                 e.preventDefault();
-                if (Math.abs(dx) > 1) {
-                    _dragHasMoved = true;
-                    touchStartX = touchX;
-                    touchStartY = touchY;
-                    isScrollActive = true;
-                    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY - dx * 4.5));
-                }
+                const dx = touchX - touchLastX;
+                touchLastX = touchX;
+                moveDrag(containerEl, dx, touchX);
             }
         }, { passive: false });
 
-        // On touchend: reset direction — global touchend handles the scroll state resync
-        containerEl.addEventListener('touchend', () => {
+        const onTouchEnd = () => {
+            if (touchDir === 'h') {
+                _dragActiveContainer = null;
+                endDrag(containerEl);
+            }
             touchDir = null;
-        }, { passive: true });
+        };
+        containerEl.addEventListener('touchend', onTouchEnd, { passive: true });
+        containerEl.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
         // Prevent opening modal if card was dragged
         containerEl.addEventListener('click', (e) => {
