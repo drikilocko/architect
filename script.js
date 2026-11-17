@@ -77,8 +77,28 @@ const cancelGlide = () => {
 
 const clampScroll = (y) => Math.max(0, Math.min(cachedMaxScroll || getMaxScroll(), y));
 
+// True when the wheel happens over an inner scrollable box (dropdown, modal
+// panel, table...) that can still scroll in that direction: let it scroll natively
+const canScrollInside = (el, dy) => {
+    while (el && el !== document.body && el !== document.documentElement) {
+        if (el.scrollHeight > el.clientHeight + 1) {
+            const oy = getComputedStyle(el).overflowY;
+            if (oy === 'auto' || oy === 'scroll') {
+                if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+            }
+        }
+        el = el.parentElement;
+    }
+    return false;
+};
+
+// Same smooth wheel on every page of the site (desktop mouse / trackpad only)
+// A page that locked scrolling (lightbox / popup open) must not move underneath
+const isScrollLocked = () =>
+    document.body.style.overflow === 'hidden' || document.documentElement.style.overflow === 'hidden';
+
 window.addEventListener('wheel', (e) => {
-    if (checkIsServicesPage() || isModalActive()) return;
+    if (isModalActive() || isScrollLocked()) return;
     if (e.ctrlKey) return; // pinch-zoom on trackpad: leave to the browser
 
     const unit = e.deltaMode === 1 ? LINE_HEIGHT_PX : e.deltaMode === 2 ? window.innerHeight : 1;
@@ -96,6 +116,7 @@ window.addEventListener('wheel', (e) => {
         delta = e.deltaX * unit * getHorizontalScrollRatio(trackEl);
     } else {
         if (!isSmoothWheelEnabled()) return; // native vertical scroll
+        if (canScrollInside(e.target, e.deltaY)) return;
         delta = e.deltaY * unit * WHEEL_MULTIPLIER;
     }
 
@@ -131,7 +152,7 @@ const isIndexPage = document.body.classList.contains('home') || document.getElem
 
 // Max scroll only changes when the document resizes: observe it instead of
 // reading scrollHeight every frame (that read forced a style/layout flush per frame)
-if (!checkIsServicesPage()) {
+{
     cachedMaxScroll = getMaxScroll();
     const refreshMaxScroll = () => { cachedMaxScroll = getMaxScroll(); };
     window.addEventListener('resize', refreshMaxScroll, { passive: true });
@@ -142,8 +163,6 @@ if (!checkIsServicesPage()) {
 let _lastFrameTime = performance.now();
 
 const renderLoop = (now = performance.now()) => {
-    if (checkIsServicesPage()) return;
-
     // Frame-rate independent easing: same feel on 60Hz, 120Hz (ProMotion) and 144Hz screens
     const dt = Math.min(64, now - _lastFrameTime);
     _lastFrameTime = now;
@@ -186,18 +205,8 @@ const renderLoop = (now = performance.now()) => {
     requestAnimationFrame(renderLoop);
 };
 
-if (!checkIsServicesPage()) {
-    requestAnimationFrame(renderLoop);
-} else {
-    window.addEventListener('scroll', () => {
-        const scY = window.scrollY;
-        if (scY > 50) {
-            mainHeader?.classList.add('scrolled');
-        } else {
-            mainHeader?.classList.remove('scrolled');
-        }
-    }, { passive: true });
-}
+// Runs on every page: smooth wheel easing + header state (+ homepage scenes)
+requestAnimationFrame(renderLoop);
 
 // DOM Elements
 const mainHeader = document.querySelector('#main-header');
