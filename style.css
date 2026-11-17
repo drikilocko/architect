@@ -5243,22 +5243,21 @@ body.loaded .scroll-indicator-wrapper {
     letter-spacing: -4px;
 }
 
-/* ===================== STICKY TEXT REVEAL OVERFLIGHT SEQUENCE ===================== */
+/* ===================== TEXT REVEAL (no sticky, flows with the page) ===================== */
 .text-reveal-section {
     position: relative;
-    height: 250vh;
+    height: auto;
+    min-height: 0;
+    padding: clamp(100px, 18vh, 200px) 1cm;
     z-index: 40;
     background: transparent;
 }
 
 .text-reveal-container-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
 }
 
 .simple-image-section {
@@ -5442,4 +5441,78 @@ body.nav-open .menu-toggle .bar:nth-child(1) {
 body.nav-open .menu-toggle .bar:nth-child(2) {
     transform: translateY(-8px) rotate(-45deg) !important;
     opacity: 1 !important;
+}
+/* ===================== SAFARI WHEEL / TRACKPAD FIX =====================
+   WebKit hit-tests scrollable areas even when their fixed overlay is hidden
+   with opacity/visibility. Closed modals with overflow:auto were capturing
+   trackpad & mouse-wheel events (keyboard scroll still worked), so the page
+   could not scroll on secondary pages. Inactive overlays must neither be
+   scroll containers nor wheel targets. */
+.project-modal:not(.active),
+.premium-modal:not(.active),
+.marble-modal:not(.active),
+.modal:not(.active),
+.pm-lightbox:not(.active) {
+    pointer-events: none !important;
+}
+
+.project-modal:not(.active),
+.premium-modal:not(.active) .premium-modal-container,
+.marble-modal:not(.active) .modal-info-side,
+.modal:not(.active) .modal-scroll-area {
+    overflow: hidden !important;
+}
+
+/* ===================== HERO LEFT STACK (title > subtext > CTA) ===================== */
+.hero-left-stack {
+    top: 5vh;
+    left: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: min(560px, 90vw);
+}
+
+.hero-left-stack > * {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+.hero-left-stack .hero-bottom-text {
+    margin-top: clamp(18px, 2.6vh, 30px);
+    max-width: 420px;
+}
+
+.hero-left-stack .hero-center-action {
+    margin-top: clamp(22px, 3.4vh, 38px);
+}
+
+.hero-left-stack .btn-callnow {
+    padding: 14px 34px;
+    font-size: 0.85rem;
+    letter-spacing: 2.5px;
+    white-space: nowrap;
+}
+
+body.loaded .hero-left-stack .btn-callnow {
+    animation-delay: 3.65s !important;
+}
+
+@media (max-width: 768px) {
+    .hero-left-stack {
+        top: 5vh;
+        left: 5vw;
+    }
+
+    .hero-left-stack .hero-center-action {
+        margin-top: 24px;
+    }
+
+    .hero-left-stack .btn-callnow {
+        padding: 12px 26px;
+        font-size: 0.75rem;
+    }
 }

@@ -256,8 +256,8 @@ window.addEventListener('load', () => {
                 stagger: 0.1,
                 scrollTrigger: {
                     trigger: '.text-reveal-section',
-                    start: "top top",
-                    end: "bottom 50%",
+                    start: "top 75%",
+                    end: "bottom 60%",
                     scrub: 1, // 1:1 scroll synchronization
                 }
             });
