@@ -739,3 +739,66 @@ window.projectList = [
   { id: 7, name: "Résidence Kégue", category: "RÉSIDENTIEL", image: "assets/kegue/1.jpg", available: true },
   { id: 8, name: "Cité Renaissance", category: "RÉSIDENTIEL", image: "projet/1.jpg", available: false }
 ];
+
+// ===================== TÉMOIGNAGES (section page d'accueil) =====================
+// Un témoignage par projet présenté sur la page d'accueil.
+// IMPORTANT : les textes marqués `draft: true` sont des BROUILLONS de mise en page.
+// Ils ne s'affichent qu'en local (localhost). Remplacez `quote`, `author` et `role`
+// par les vraies paroles du client, puis passez `draft` à false pour les publier.
+window.testimonialsData = [
+  {
+    projectId: 1,
+    index: "01",
+    project: "Palais des Congrès",
+    category: "Patrimoine",
+    image: "projet/1.jpg",
+    quote: "Sur un bâtiment patrimonial, chaque pierre compte. L'équipe a restauré les revêtements en respectant l'histoire du lieu, avec un calepinage d'une grande précision.",
+    author: "",
+    role: "Maître d'ouvrage",
+    draft: true
+  },
+  {
+    projectId: 2,
+    index: "02",
+    project: "Hôtel 2 Février",
+    category: "Hôtellerie",
+    image: "projet/2.jpg",
+    quote: "Les halls et les suites devaient refléter un standing international. Le choix des marbres, la finesse des joints et le respect du planning ont été à la hauteur de nos exigences.",
+    author: "",
+    role: "Direction de l'établissement",
+    draft: true
+  },
+  {
+    projectId: 3,
+    index: "03",
+    project: "Siège BIDC",
+    category: "Institutionnel",
+    image: "projet/3.jpg",
+    quote: "Un chantier exigeant, mené avec rigueur : études, échantillons validés, pose soignée. Le siège a gagné en élégance comme en durabilité.",
+    author: "",
+    role: "Maîtrise d'œuvre",
+    draft: true
+  },
+  {
+    projectId: 5,
+    index: "04",
+    project: "Takoradi",
+    category: "Commercial",
+    image: "assets/projet takoradi/1.jpg",
+    quote: "Réactivité, conseil sur les matériaux et finitions impeccables : nos espaces commerciaux ont pris une vraie dimension de prestige, tout en restant simples à entretenir.",
+    author: "",
+    role: "Promoteur",
+    draft: true
+  },
+  {
+    projectId: 4,
+    index: "05",
+    project: "Résidence Accra",
+    category: "Résidentiel",
+    image: "",
+    quote: "De la sélection des dalles jusqu'à la pose, nous avons été accompagnés à chaque étape. La maison a aujourd'hui un caractère unique.",
+    author: "",
+    role: "Propriétaire",
+    draft: true
+  }
+];

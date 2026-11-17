@@ -1898,3 +1898,134 @@ if (document.readyState === 'loading') {
     }, { passive: true });
 })();
 
+
+// ===================== TESTIMONIALS (homepage) =====================
+// One testimonial per homepage project. Entries flagged `draft` (placeholder
+// copy awaiting the client's real words) are only rendered on localhost.
+(function initTestimonials() {
+    const section = document.getElementById('testimonials');
+    if (!section || !Array.isArray(window.testimonialsData)) return;
+
+    const isLocal = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname) || location.protocol === 'file:';
+    const items = window.testimonialsData.filter(t => t && t.quote && (!t.draft || isLocal));
+    if (!items.length) return; // nothing publishable: section stays hidden
+    section.hidden = false;
+
+    const tabsEl = document.getElementById('testi-tabs');
+    const mediaEl = document.getElementById('testi-media');
+    const cardEl = document.getElementById('testi-card');
+    const quoteEl = document.getElementById('testi-quote');
+    const authorEl = document.getElementById('testi-author');
+    const roleEl = document.getElementById('testi-role');
+    const linkEl = document.getElementById('testi-link');
+    const badgeEl = document.getElementById('testi-draft-badge');
+    const fallbackImg = (window.productData && window.productData[0] && window.productData[0].image_path) || '';
+
+    const esc = (str) => String(str || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    tabsEl.innerHTML = items.map((t, i) => `
+        <button type="button" class="testi-tab" role="tab" id="testi-tab-${i}" aria-selected="false" data-i="${i}">
+            <span class="testi-tab-index">${esc(t.index || String(i + 1).padStart(2, '0'))}</span>
+            <span class="testi-tab-text">
+                <span class="testi-tab-name">${esc(t.project)}</span>
+                <span class="testi-tab-cat">${esc(t.category)}</span>
+            </span>
+            <span class="testi-tab-progress" aria-hidden="true"></span>
+        </button>`).join('');
+    const tabs = Array.from(tabsEl.querySelectorAll('.testi-tab'));
+
+    // Two stacked image layers for a clean cross-fade
+    mediaEl.innerHTML = '<div class="testi-media-layer"></div><div class="testi-media-layer"></div>';
+    const layers = Array.from(mediaEl.children);
+    let front = 0;
+
+    const AUTO_MS = 8000;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = -1;
+    let timer = null;
+    let paused = false;
+    let inView = false;
+
+    const show = (i) => {
+        i = (i + items.length) % items.length;
+        if (i === current) return;
+        current = i;
+        const t = items[i];
+
+        tabs.forEach((b, k) => {
+            const on = k === i;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-selected', on ? 'true' : 'false');
+            b.tabIndex = on ? 0 : -1;
+        });
+
+        const img = t.image || fallbackImg;
+        const next = layers[1 - front];
+        next.style.backgroundImage = img ? `url("${encodeURI(img)}")` : 'none';
+        next.classList.add('is-visible');
+        layers[front].classList.remove('is-visible');
+        front = 1 - front;
+
+        cardEl.classList.remove('is-in');
+        void cardEl.offsetWidth; // restart the entrance animation
+        quoteEl.textContent = t.quote;
+        authorEl.textContent = t.author || t.project;
+        roleEl.textContent = [t.role, t.author ? t.project : t.category].filter(Boolean).join(' · ');
+        linkEl.onclick = (e) => {
+            e.preventDefault();
+            if (typeof window.openProjectModal === 'function') window.openProjectModal(t.projectId);
+        };
+        badgeEl.hidden = !t.draft;
+        cardEl.classList.add('is-in');
+
+        restart();
+    };
+
+    const restart = () => {
+        clearTimeout(timer);
+        tabsEl.classList.remove('is-running');
+        if (reduceMotion || paused || !inView || items.length < 2) return;
+        void tabsEl.offsetWidth; // restart the CSS progress bar
+        tabsEl.classList.add('is-running');
+        timer = setTimeout(() => show(current + 1), AUTO_MS);
+    };
+
+    tabsEl.style.setProperty('--testi-auto', `${AUTO_MS}ms`);
+
+    tabs.forEach((b, i) => b.addEventListener('click', () => show(i)));
+    tabsEl.addEventListener('keydown', (e) => {
+        if (!['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(e.key)) return;
+        e.preventDefault();
+        show(current + (e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : -1));
+        tabs[current].focus();
+    });
+    document.getElementById('testi-prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('testi-next').addEventListener('click', () => show(current + 1));
+
+    // Pause while the visitor reads / interacts
+    section.addEventListener('mouseenter', () => { paused = true; restart(); });
+    section.addEventListener('mouseleave', () => { paused = false; restart(); });
+    section.addEventListener('focusin', () => { paused = true; restart(); });
+    section.addEventListener('focusout', () => { paused = false; restart(); });
+
+    // Swipe on the quote card (mobile)
+    let sx = 0, sy = 0;
+    cardEl.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    cardEl.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    // Only auto-rotate while the section is on screen
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+            inView = entries[0].isIntersecting;
+            restart();
+        }, { threshold: 0.35 }).observe(section);
+    } else {
+        inView = true;
+    }
+
+    show(0);
+})();
