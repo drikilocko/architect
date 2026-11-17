@@ -22,7 +22,7 @@ html {
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Manrope', sans-serif;
     background-color: var(--bg-dark);
     background-image: var(--bg-global);
     background-size: cover;
@@ -2070,7 +2070,7 @@ body.loaded .scroll-indicator-wrapper {
     font-weight: 900;
     opacity: 0.07;
     line-height: 1;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Manrope', sans-serif;
     pointer-events: none;
     z-index: -1;
 }
@@ -5033,7 +5033,7 @@ body.loaded .scroll-indicator-wrapper {
     letter-spacing: 1px;
     text-transform: capitalize;
     transition: all 0.3s ease;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Manrope', sans-serif;
     border-radius: 0;
 }
 
@@ -5466,10 +5466,12 @@ body.nav-open .menu-toggle .bar:nth-child(2) {
 /* ===================== HERO LEFT STACK (title > subtext > CTA) ===================== */
 .hero-left-stack {
     top: 5vh;
+    bottom: 6vh;
     left: 2vw;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: space-between;
     max-width: min(560px, 90vw);
 }
 
@@ -5482,19 +5484,29 @@ body.nav-open .menu-toggle .bar:nth-child(2) {
 }
 
 .hero-left-stack .hero-bottom-text {
-    margin-top: clamp(18px, 2.6vh, 30px);
+    padding: clamp(24px, 4vh, 48px) 0;
     max-width: 420px;
 }
 
 .hero-left-stack .hero-center-action {
-    margin-top: clamp(22px, 3.4vh, 38px);
+    padding-top: clamp(16px, 3vh, 36px);
 }
 
 .hero-left-stack .btn-callnow {
-    padding: 14px 34px;
+    padding: 16px 38px;
     font-size: 0.85rem;
     letter-spacing: 2.5px;
     white-space: nowrap;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.hero-left-stack .btn-callnow:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
 }
 
 body.loaded .hero-left-stack .btn-callnow {
@@ -5504,15 +5516,85 @@ body.loaded .hero-left-stack .btn-callnow {
 @media (max-width: 768px) {
     .hero-left-stack {
         top: 5vh;
+        bottom: auto;
         left: 5vw;
+        justify-content: flex-start;
     }
 
     .hero-left-stack .hero-center-action {
-        margin-top: 24px;
+        padding-top: 24px;
     }
 
     .hero-left-stack .btn-callnow {
         padding: 12px 26px;
         font-size: 0.75rem;
     }
+}
+
+/* ===================== PREMIUM TYPOGRAPHY =====================
+   Titles: Cormorant Garamond (elegant serif, medium weight)
+   Body / UI: Manrope (clean corporate sans) */
+:root {
+    --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+    --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
+}
+
+h1, h2, h3,
+.hero-left-list,
+.architect-bg-text,
+.reveal-text,
+.step-title,
+.step-number,
+.projects-title,
+.huge-title-stacked,
+.parallax-overlay-text,
+.service-card-title,
+.service-card-number,
+.services-next-title,
+.ssc-content h3,
+.ssc-number,
+.marbre-info h4,
+.zigzag-title,
+.project-grid-title,
+.projects-grid-title h1,
+.premium-modal-title,
+.marble-modal .marble-title,
+.marble-modal .success-title,
+.project-modal .pm-project-name,
+.project-modal .pm-project-number,
+.project-modal .pm-details-text .process-title,
+.fpc-title,
+.hero-title,
+.intro-title,
+.section-title,
+.cta-text h2,
+.marbre-name,
+.gallery-item-title,
+.details-left h2,
+.gallery-section h2,
+.contact-info h2,
+.legal-page-header h1,
+.legal-section h2,
+.modal-content h2,
+.stat-num {
+    font-family: var(--font-display) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* Large uppercase display titles breathe a little more */
+.hero-left-list,
+.reveal-text,
+.step-title,
+.projects-title,
+.huge-title-stacked,
+.hero-title {
+    letter-spacing: 0.01em !important;
+    line-height: 1.02 !important;
+}
+
+/* Smaller FAQ / card headings stay readable */
+.faq-question h3 {
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
 }
