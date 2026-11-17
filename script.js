@@ -1,3 +1,30 @@
+// ===================== HOMEPAGE ALWAYS STARTS AT SCROLL 0 =====================
+// The browser restored the previous scroll position on reload and jumped to the
+// #hero anchor (links like "../#hero"), so the page started slightly scrolled.
+if (document.body.classList.contains('home')) {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash === '#hero' || location.hash === '') {
+        if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+        // Never yank the page back once the visitor has started scrolling
+        let userScrolled = false;
+        const markScrolled = () => { userScrolled = true; };
+        ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, markScrolled, { passive: true, once: true }));
+        const resetToTop = () => { if (!userScrolled) window.scrollTo(0, 0); };
+        resetToTop();
+        document.addEventListener('DOMContentLoaded', resetToTop);
+        window.addEventListener('load', resetToTop);
+        window.addEventListener('pageshow', (e) => { if (e.persisted) resetToTop(); });
+    }
+
+    // "Accueil" (#hero) link on the homepage: glide to the very top, no hash jump
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest && e.target.closest('a[href="#hero"]');
+        if (!link) return;
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
 // ===================== CUSTOM SMOOTH MOMENTUM SCROLL ENGINE =====================
 let targetY = window.scrollY;
 let currentY = window.scrollY;
@@ -949,6 +976,7 @@ const handleImageGrayscale = (scrollPos) => {
     cachedImageEl.style.transform = `translate3d(0, -${translateMove}%, 0)`;
 };
 // Horizontal Gallery Scroll Logic
+const galleryHud = { fill: null, current: null, total: 1, lastP: -1, lastIdx: -1 };
 const handleGalleryScroll = (scrollPos) => {
     if (!gallerySection || !galleryTrack || cachedMetrics.gallery.height === 0) return;
 
@@ -966,6 +994,25 @@ const handleGalleryScroll = (scrollPos) => {
         galleryTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
     } else {
         galleryTrack.style.transform = `translate3d(0, 0, 0)`;
+    }
+
+    // HUD progress bar + "01 / 06" counter (writes only when values change)
+    if (!galleryHud.fill) {
+        galleryHud.fill = document.getElementById('mgh-bar-fill');
+        galleryHud.current = document.getElementById('mgh-current');
+        galleryHud.total = galleryTrack.querySelectorAll('.gallery-item').length || 1;
+    }
+    if (galleryHud.fill) {
+        const p = Math.round(progress * 1000) / 1000;
+        if (p !== galleryHud.lastP) {
+            galleryHud.lastP = p;
+            galleryHud.fill.style.transform = `scaleX(${p})`;
+        }
+        const idx = Math.min(galleryHud.total, Math.floor(progress * galleryHud.total) + 1);
+        if (idx !== galleryHud.lastIdx && galleryHud.current) {
+            galleryHud.lastIdx = idx;
+            galleryHud.current.textContent = String(idx).padStart(2, '0');
+        }
     }
 
     if (marbreHeader) {
@@ -1084,9 +1131,83 @@ window.addEventListener('load', () => {
 
 // ===================== HOMEPAGE MARBLE HOVER BACKGROUND MOTION =====================
 // NOTE: hover background effect on marble cards is intentionally disabled on home page
+// Homepage "Nos Marbres": hovering a marble shows it full-bleed in the background
+// (reduced opacity, cross-faded between two layers) and fills the info HUD.
 const initMarbleHoverBackground = () => {
-    // Hover background disabled — marble cards on home page do not trigger hover bg
-    // Only keep container→parallaxBg scroll sync if needed elsewhere
+    const track = document.getElementById('gallery-track');
+    const bgA = document.getElementById('gallery-hover-bg');
+    if (!track || !bgA || !window.productData) return;
+
+    // Header / HUD counts
+    const countEl = document.getElementById('marbre-count');
+    if (countEl) countEl.textContent = window.productData.length;
+    const totalEl = document.getElementById('mgh-total');
+    if (totalEl) totalEl.textContent = String(track.querySelectorAll('.gallery-item').length).padStart(2, '0');
+
+    const hud = {
+        tag: document.getElementById('mgh-tag'),
+        name: document.getElementById('mgh-name'),
+        origin: document.getElementById('mgh-origin')
+    };
+    const hudDefault = {
+        tag: hud.tag ? hud.tag.textContent : '',
+        name: hud.name ? hud.name.textContent : '',
+        origin: hud.origin ? hud.origin.textContent : ''
+    };
+    const setHud = (d) => {
+        if (hud.tag) hud.tag.textContent = d.tag;
+        if (hud.name) hud.name.textContent = d.name;
+        if (hud.origin) hud.origin.textContent = d.origin;
+    };
+
+    // Only real pointer devices get the hover background (mobile untouched)
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const bgB = bgA.cloneNode(false);
+    bgB.removeAttribute('id');
+    bgA.parentNode.insertBefore(bgB, bgA.nextSibling);
+    const layers = [bgA, bgB];
+    let front = 0;
+    let currentId = null;
+    let hideTimer = null;
+
+    const show = (product) => {
+        clearTimeout(hideTimer);
+        if (currentId === product.id) return;
+        currentId = product.id;
+        const next = layers[1 - front];
+        const prev = layers[front];
+        next.style.backgroundImage = `url("${encodeURI(product.image_path)}")`;
+        next.classList.add('active');
+        prev.classList.remove('active');
+        front = 1 - front;
+        setHud({
+            tag: product.tag || product.category || '',
+            name: product.name || '',
+            origin: product.origin || ''
+        });
+    };
+
+    const hide = () => {
+        hideTimer = setTimeout(() => {
+            currentId = null;
+            layers.forEach(l => l.classList.remove('active'));
+            setHud(hudDefault);
+        }, 120);
+    };
+
+    track.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.gallery-item');
+        if (!item || !track.contains(item)) return;
+        const product = window.productData.find(p => String(p.id) === item.dataset.id);
+        if (product) show(product);
+    });
+
+    track.addEventListener('mouseout', (e) => {
+        const from = e.target.closest('.gallery-item');
+        const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.gallery-item') : null;
+        if (from && from !== to) hide();
+    });
 };
 
 // ===================== PROJECT MODAL LOGIC =====================
@@ -1413,9 +1534,9 @@ window.addEventListener('load', () => {
     const galleryTrack = document.getElementById('gallery-track');
     if (galleryTrack && window.productData && window.productData.length) {
         const itemsHtml = window.productData.slice(0, 6).map(product => `
-            <div class="gallery-item" onclick="openMarbleModal(${product.id})">
+            <div class="gallery-item" data-id="${product.id}" onclick="openMarbleModal(${product.id})">
                 <img src="${product.image_path}" alt="${product.name}" loading="lazy">
-                <div class="gallery-item-label"><span>${product.name}</span></div>
+                <div class="gallery-item-label"><span>${product.name}</span>${product.origin ? `<em>${product.origin}</em>` : ''}</div>
             </div>
         `).join('');
         galleryTrack.innerHTML = itemsHtml + `

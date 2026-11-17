@@ -586,12 +586,27 @@
             <div class="gallery-sticky-wrapper">
                 <!-- Section Header (visible at start) -->
                 <div class="marbre-gallery-header" id="marbre-gallery-header">
+                    <span class="marbre-eyebrow"><span class="marbre-eyebrow-line"></span>Collection ·
+                        <b id="marbre-count">40</b>&nbsp;références</span>
                     <div class="huge-title-stacked">NOS<br>MARBRES</div>
                     <span class="projects-label">Une collection de pierres naturelles d'exception</span>
                     <a href="marbres/" class="marbre-gallery-link">Voir la collection complète →</a>
                 </div>
 
                 <div class="gallery-hover-bg" id="gallery-hover-bg"></div>
+
+                <!-- Info HUD: hovered marble + progress through the collection -->
+                <div class="marbre-gallery-hud" id="marbre-gallery-hud" aria-live="polite">
+                    <div class="mgh-info">
+                        <span class="mgh-tag" id="mgh-tag">Sélection</span>
+                        <span class="mgh-name" id="mgh-name">Pierres d'exception</span>
+                        <span class="mgh-origin" id="mgh-origin">Survolez une pierre pour la découvrir</span>
+                    </div>
+                    <div class="mgh-progress">
+                        <span class="mgh-count"><b id="mgh-current">01</b> / <span id="mgh-total">06</span></span>
+                        <span class="mgh-bar"><span class="mgh-bar-fill" id="mgh-bar-fill"></span></span>
+                    </div>
+                </div>
                 <div class="gallery-track-container">
                     <div class="gallery-track" id="gallery-track">
                         <!-- Dynamically generated catalogue track of items -->
