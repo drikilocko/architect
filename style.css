@@ -164,6 +164,7 @@ body.is-loading #main-content {
     letter-spacing: 6px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -285,11 +286,13 @@ ul {
     align-items: center;
     transition: var(--transition);
     background: rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
 #main-header.scrolled {
     background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--glass-border);
 }
@@ -452,11 +455,13 @@ ul {
 /* Home-specific navbar overrides */
 body.home #main-header {
     background: transparent;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
 
 body.home #main-header.scrolled {
     background: transparent;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border-bottom: none;
 }
@@ -1562,6 +1567,7 @@ body::-webkit-scrollbar {
     padding: 15px 40px;
     border-radius: 50px;
     text-transform: uppercase;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     transition: var(--transition);
 }
@@ -3636,6 +3642,7 @@ body.loaded .scroll-indicator-wrapper {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -3740,6 +3747,7 @@ body.loaded .scroll-indicator-wrapper {
     position: absolute;
     inset: 0;
     background: rgba(15, 15, 15, 0.88);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
 }
 
@@ -4113,6 +4121,7 @@ body.loaded .scroll-indicator-wrapper {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
 }
 
@@ -4367,6 +4376,7 @@ body.loaded .scroll-indicator-wrapper {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
 }
 
@@ -5532,10 +5542,10 @@ body.loaded .hero-left-stack .btn-callnow {
 }
 
 /* ===================== PREMIUM TYPOGRAPHY =====================
-   Titles: Cormorant Garamond (elegant serif, medium weight)
+   Titles: Inter Tight (refined corporate sans-serif, medium weight)
    Body / UI: Manrope (clean corporate sans) */
 :root {
-    --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+    --font-display: 'Inter Tight', 'Manrope', system-ui, -apple-system, sans-serif;
     --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
 }
 
@@ -5579,7 +5589,7 @@ h1, h2, h3,
 .stat-num {
     font-family: var(--font-display) !important;
     font-weight: 500 !important;
-    letter-spacing: -0.01em !important;
+    letter-spacing: -0.02em !important;
 }
 
 /* Large uppercase display titles breathe a little more */
@@ -5589,8 +5599,8 @@ h1, h2, h3,
 .projects-title,
 .huge-title-stacked,
 .hero-title {
-    letter-spacing: 0.01em !important;
-    line-height: 1.02 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1 !important;
 }
 
 /* Smaller FAQ / card headings stay readable */

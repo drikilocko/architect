@@ -31,113 +31,51 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// Dynamic section-by-section scroll configuration matching user specifications:
-// - Section 1: Smooth Rapide
-// - Section Projets: Smooth Lent
-// - Section en haut de Nos Services: Smooth Rapide
-// - Section Nos Services: Smooth Rapide mais amorti à l'arrivée
-// - Section Nos Marbres: Smooth Lent
-// - Section CTA et FAQ: Smooth Lent
-const getSectionScrollConfig = (yPos) => {
-    const processTop = cachedMetrics.process.top || 800;
-    const processEnd = processTop + (cachedMetrics.process.height || 2000);
+// Vertical scrolling is 100% NATIVE (wheel, trackpad, touch, keyboard):
+// the browser's own scroll is the most responsive and keeps the same speed
+// across every section. JS only drives:
+//   - the horizontal sections (their translateX is derived from window.scrollY)
+//   - drag / swipe on those sections, plus the short inertia glide after a drag.
+const DRAG_GLIDE_LERP = 0.14;
 
-    const servicesTop = cachedMetrics.servicesTop || (processEnd + 1000);
-    const servicesEnd = servicesTop + (cachedMetrics.servicesHeight || 2000);
-
-    const galleryTop = cachedMetrics.gallery.top || (servicesEnd + 500);
-    const galleryEnd = galleryTop + (cachedMetrics.gallery.height || 2000);
-
-    // 1. Section 1 (Hero & Intro): Smooth Rapide
-    if (yPos < processTop - 150) {
-        return { multiplier: 1.4, lerp: 0.12 };
-    }
-    // 2. Section Projets: Smooth Fluide
-    if (yPos >= processTop - 150 && yPos < processEnd - 150) {
-        return { multiplier: 2.0, lerp: 0.11 };
-    }
-    // 3. Section en haut de Nos Services: Smooth Rapide
-    if (yPos >= processEnd - 150 && yPos < servicesTop - 150) {
-        return { multiplier: 1.4, lerp: 0.12 };
-    }
-    // 4. Section Nos Services: Smooth Fluide
-    if (yPos >= servicesTop - 150 && yPos < servicesEnd - 100) {
-        return { multiplier: 1.2, lerp: 0.11 };
-    }
-    // 5. Section Nos Marbres: Smooth Fluide
-    if (yPos >= galleryTop - 150 && yPos < galleryEnd - 100) {
-        return { multiplier: 2.0, lerp: 0.10 };
-    }
-    // 6. Section CTA & FAQ: Smooth Fluide
-    return { multiplier: 1.1, lerp: 0.10 };
+// Any real user scroll input cancels a running drag glide immediately
+const cancelGlide = () => {
+    if (!isScrollActive) return;
+    isScrollActive = false;
+    currentY = targetY = window.scrollY;
 };
 
-// Intercept wheel events for controlled section-customized momentum scroll with hard velocity cap
 window.addEventListener('wheel', (e) => {
     if (checkIsServicesPage() || isModalActive()) return;
+    cancelGlide();
 
-    e.preventDefault();
-    isScrollActive = true;
-
-    const unit = e.deltaMode === 1 ? 35 : e.deltaMode === 2 ? window.innerHeight : 1;
+    // Vertical intent -> let the browser scroll natively
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
 
     // Trackpad left/right swipe over a horizontal section: move the track 1:1
-    const hSection = Math.abs(e.deltaX) > Math.abs(e.deltaY) && e.target.closest
+    const hSection = e.target.closest
         ? e.target.closest('.process-section, .horizontal-gallery-section')
         : null;
-    if (hSection) {
-        const trackEl = hSection.classList.contains('process-section')
-            ? document.getElementById('process-container')
-            : document.getElementById('gallery-track');
-        targetY += e.deltaX * unit * getHorizontalScrollRatio(trackEl);
-        targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
-        return;
-    }
+    if (!hSection) return;
 
-    let delta = e.deltaY * unit;
-
-    // Hard Scroll Speed Limit: clamp maximum single stroke wheel delta
-    const MAX_WHEEL_DELTA = 220;
-    const clampedDelta = Math.sign(delta) * Math.min(Math.abs(delta), MAX_WHEEL_DELTA);
-
-    const config = getSectionScrollConfig(targetY);
-    targetY += clampedDelta * config.multiplier;
-
-    // Strict boundary clamping to prevent overscroll bounce
-    targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
+    e.preventDefault(); // also blocks the browser "swipe back" gesture here
+    const unit = e.deltaMode === 1 ? 35 : e.deltaMode === 2 ? window.innerHeight : 1;
+    const trackEl = hSection.classList.contains('process-section')
+        ? document.getElementById('process-container')
+        : document.getElementById('gallery-track');
+    const y = Math.max(0, Math.min(getMaxScroll(), window.scrollY + e.deltaX * unit * getHorizontalScrollRatio(trackEl)));
+    currentY = targetY = y;
+    window.scrollTo(0, y);
 }, { passive: false });
 
-// Touch momentum scroll support
-let touchStartY = 0;
-window.addEventListener('touchstart', (e) => {
-    if (checkIsServicesPage() || isModalActive()) return;
-    // Reset horizontal drag flag on any new touch so vertical scroll always starts fresh
+window.addEventListener('touchstart', () => {
     _horizontalDragActive = false;
-    if (e.touches.length === 1) {
-        touchStartY = e.touches[0].clientY;
-        isScrollActive = true;
-    }
+    cancelGlide();
 }, { passive: true });
 
-window.addEventListener('touchmove', (e) => {
-    if (checkIsServicesPage() || isModalActive()) return;
-    // Stand down completely while a horizontal section drag is active —
-    // prevents the global handler from fighting the container handler over targetY
-    if (_horizontalDragActive) return;
-    if (e.touches.length === 1) {
-        const touchY = e.touches[0].clientY;
-        const delta = touchStartY - touchY;
-        touchStartY = touchY;
+window.addEventListener('keydown', cancelGlide, { passive: true });
 
-        targetY += delta * 1.5;
-        targetY = Math.max(0, Math.min(cachedMaxScroll, targetY));
-    }
-}, { passive: true });
-
-// When any touch ends, if a horizontal drag was active, resync scroll state cleanly
 window.addEventListener('touchend', () => {
-    // Horizontal drag keeps currentY in sync itself and may have launched an
-    // inertia glide (targetY) - only release the flag here.
     _horizontalDragActive = false;
 }, { passive: true });
 
@@ -165,10 +103,9 @@ const renderLoop = () => {
         targetY = window.scrollY;
         currentY = window.scrollY;
     } else if (isScrollActive) {
-        const config = getSectionScrollConfig(currentY);
         const diff = targetY - currentY;
-        if (Math.abs(diff) > 0.1) {
-            currentY += diff * config.lerp;
+        if (Math.abs(diff) > 0.5) {
+            currentY += diff * DRAG_GLIDE_LERP;
             window.scrollTo(0, currentY);
         } else {
             currentY = targetY;
@@ -1478,7 +1415,8 @@ window.addEventListener('load', () => {
     // then glides with inertia on release (velocity-based momentum).
     const DRAG_CLICK_THRESHOLD = 6;   // px before a press counts as a drag (keeps clicks working)
     const MOMENTUM_MS = 320;          // how far the glide carries (velocity * ms)
-    const MAX_MOMENTUM_PX = 1400;     // cap glide distance in horizontal px
+    const MAX_MOMENTUM_PX = 1600;     // cap glide distance in horizontal px
+    const DRAG_GAIN = 1.25;           // track moves slightly faster than the pointer = snappier feel
 
     let _dragActiveContainer = null;
     let _dragHasMoved = false;
@@ -1510,7 +1448,7 @@ window.addEventListener('load', () => {
         _dragTotal += Math.abs(dx);
         if (_dragTotal > DRAG_CLICK_THRESHOLD) _dragHasMoved = true;
         pushDragSample(x);
-        const y = clampY(currentY - dx * getHorizontalScrollRatio(containerEl));
+        const y = clampY(currentY - dx * DRAG_GAIN * getHorizontalScrollRatio(containerEl));
         currentY = targetY = y;
         isScrollActive = false;
         window.scrollTo(0, y);
@@ -1526,7 +1464,7 @@ window.addEventListener('load', () => {
         if (dt <= 0 || performance.now() - last.t > 80) return;
         const velocity = (last.x - first.x) / dt; // px per ms
         const glide = Math.max(-MAX_MOMENTUM_PX, Math.min(MAX_MOMENTUM_PX, velocity * MOMENTUM_MS));
-        targetY = clampY(currentY - glide * getHorizontalScrollRatio(containerEl));
+        targetY = clampY(currentY - glide * DRAG_GAIN * getHorizontalScrollRatio(containerEl));
         isScrollActive = true; // render loop eases toward targetY (inertia)
     };
 
