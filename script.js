@@ -1508,36 +1508,212 @@ window.addEventListener('load', () => {
         if (e.target === this) closeLightbox();
     });
 
-    // Marble modal logic
-    window.openMarbleModal = function (productId) {
-        const modalEl = document.getElementById('marble-detail-modal');
-        const productsDb = window.productData || [];
-        const product = productsDb.find(p => parseInt(p.id) === parseInt(productId));
-        if (!product || !modalEl) return;
+    // Marble modal logic (fiche produit) — with previous / next navigation:
+    // lateral buttons, trackpad horizontal swipe, mouse drag, touch swipe, ← → keys.
+    const mmPrefix = /\/projet\/|\/services\/|\/marbres\/|\/contact\//.test(window.location.pathname) ? '../' : '';
+    let mmCurrentId = null;
+    let mmBusy = false;
 
-        const path = window.location.pathname;
-        const isInSubfolder = /\/projet\/|\/services\/|\/marbres\/|\/contact\//.test(path);
-        const assetPrefix = isInSubfolder ? '../' : '';
-        const src = product.image_path.startsWith('http') ? product.image_path : (assetPrefix + product.image_path);
+    // Products the visitor can browse = the cards visible on the page, in order
+    // (respects the search / Marbres / Granites filters); falls back to all products.
+    const mmGetList = () => {
+        const ids = [];
+        document.querySelectorAll('[onclick*="openMarbleModal("]').forEach(el => {
+            if (el.closest('#marble-detail-modal') || el.offsetParent === null) return;
+            const m = /openMarbleModal\((\d+)\)/.exec(el.getAttribute('onclick'));
+            if (m && !ids.includes(+m[1])) ids.push(+m[1]);
+        });
+        return ids.length ? ids : (window.productData || []).map(p => +p.id);
+    };
 
-        const titleEl = document.getElementById('modal-marble-title');
-        const tagEl = document.getElementById('modal-marble-tag');
-        const originEl = document.getElementById('modal-marble-origin');
-        const descEl = document.getElementById('modal-marble-desc');
+    const mmFill = (product) => {
+        const src = product.image_path.startsWith('http') ? product.image_path : (mmPrefix + product.image_path);
+        const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+        set('modal-marble-title', product.name || '');
+        set('modal-marble-tag', product.tag || 'Premium');
+        set('modal-marble-origin', product.origin || '');
+        set('modal-marble-desc', product.description || '');
         const imgEl = document.getElementById('modal-marble-img');
-
-        if (titleEl) titleEl.textContent = product.name || '';
-        if (tagEl) tagEl.textContent = product.tag || 'Premium';
-        if (originEl) originEl.textContent = product.origin || '';
-        if (descEl) descEl.textContent = product.description || '';
         if (imgEl) {
             imgEl.src = src;
             imgEl.alt = product.name || '';
         }
+        mmCurrentId = +product.id;
 
+        const list = mmGetList();
+        const idx = list.indexOf(mmCurrentId);
+        const counter = document.getElementById('mm-counter');
+        if (counter) counter.textContent = idx >= 0 ? `${String(idx + 1).padStart(2, '0')} / ${String(list.length).padStart(2, '0')}` : '';
+        const single = list.length < 2;
+        document.querySelectorAll('.mm-nav').forEach(btn => { btn.hidden = single; });
+
+        // Warm the neighbours' images so the next slide is instant
+        if (!single && idx >= 0) {
+            [list[(idx + 1) % list.length], list[(idx - 1 + list.length) % list.length]].forEach(id => {
+                const p = (window.productData || []).find(x => +x.id === id);
+                if (p) new Image().src = p.image_path.startsWith('http') ? p.image_path : mmPrefix + p.image_path;
+            });
+        }
+    };
+
+    window.openMarbleModal = function (productId) {
+        const modalEl = document.getElementById('marble-detail-modal');
+        const product = (window.productData || []).find(p => parseInt(p.id) === parseInt(productId));
+        if (!product || !modalEl) return;
+        mmEnsureNav(modalEl);
+        mmFill(product);
         modalEl.classList.add('active');
         document.body.style.overflow = 'hidden';
     };
+
+    // dir: 1 = next, -1 = previous (loops around)
+    window.navigateMarbleModal = function (dir) {
+        const modalEl = document.getElementById('marble-detail-modal');
+        if (!modalEl || !modalEl.classList.contains('active') || mmBusy) return;
+        const list = mmGetList();
+        if (list.length < 2) return;
+        let idx = list.indexOf(mmCurrentId);
+        if (idx < 0) idx = 0;
+        const nextId = list[(idx + dir + list.length) % list.length];
+        const product = (window.productData || []).find(p => +p.id === nextId);
+        if (!product) return;
+
+        const wrapper = modalEl.querySelector('.modal-wrapper');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!wrapper || reduce) { mmFill(product); return; }
+
+        mmBusy = true;
+        wrapper.style.removeProperty('--mm-drag');
+        wrapper.classList.remove('mm-in-next', 'mm-in-prev', 'mm-dragging');
+        wrapper.classList.add(dir > 0 ? 'mm-out-next' : 'mm-out-prev');
+        setTimeout(() => {
+            mmFill(product);
+            const info = modalEl.querySelector('.modal-info-side');
+            if (info) info.scrollTop = 0;
+            wrapper.classList.remove('mm-out-next', 'mm-out-prev');
+            void wrapper.offsetWidth;
+            wrapper.classList.add(dir > 0 ? 'mm-in-next' : 'mm-in-prev');
+            setTimeout(() => {
+                wrapper.classList.remove('mm-in-next', 'mm-in-prev');
+                mmBusy = false;
+            }, 420);
+        }, 200);
+    };
+
+    // Build the lateral buttons + counter once, and wire every input method
+    function mmEnsureNav(modalEl) {
+        if (modalEl.dataset.mmNav) return;
+        modalEl.dataset.mmNav = '1';
+
+        const arrow = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="${d}"/></svg>`;
+        const prev = document.createElement('button');
+        prev.type = 'button';
+        prev.className = 'mm-nav mm-prev';
+        prev.setAttribute('aria-label', 'Produit précédent');
+        prev.innerHTML = arrow('M19 12H5M12 19l-7-7 7-7');
+        const next = document.createElement('button');
+        next.type = 'button';
+        next.className = 'mm-nav mm-next';
+        next.setAttribute('aria-label', 'Produit suivant');
+        next.innerHTML = arrow('M5 12h14M12 5l7 7-7 7');
+        prev.addEventListener('click', (e) => { e.stopPropagation(); window.navigateMarbleModal(-1); });
+        next.addEventListener('click', (e) => { e.stopPropagation(); window.navigateMarbleModal(1); });
+        modalEl.appendChild(prev);
+        modalEl.appendChild(next);
+
+        const imageSide = modalEl.querySelector('.modal-image-side');
+        if (imageSide && !document.getElementById('mm-counter')) {
+            const counter = document.createElement('span');
+            counter.id = 'mm-counter';
+            counter.className = 'mm-counter';
+            imageSide.appendChild(counter);
+        }
+
+        const isOpen = () => modalEl.classList.contains('active');
+        const wrapper = modalEl.querySelector('.modal-wrapper');
+
+        // Keyboard: ← → to browse, Esc to close
+        window.addEventListener('keydown', (e) => {
+            if (!isOpen()) return;
+            const t = e.target;
+            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+            if (e.key === 'ArrowRight') { e.preventDefault(); window.navigateMarbleModal(1); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); window.navigateMarbleModal(-1); }
+            else if (e.key === 'Escape') window.closeMarbleModal();
+        });
+
+        // Trackpad: two-finger horizontal swipe (one product per gesture)
+        let wheelAcc = 0;
+        let wheelLockUntil = 0;
+        let wheelResetTimer = null;
+        modalEl.addEventListener('wheel', (e) => {
+            if (!isOpen() || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+            e.preventDefault(); // also blocks the browser "swipe back" gesture
+            const now = performance.now();
+            clearTimeout(wheelResetTimer);
+            wheelResetTimer = setTimeout(() => { wheelAcc = 0; }, 180);
+            if (now < wheelLockUntil) return; // ignore the inertia tail of the same swipe
+            wheelAcc += e.deltaX;
+            if (Math.abs(wheelAcc) > 70) {
+                window.navigateMarbleModal(wheelAcc > 0 ? 1 : -1);
+                wheelAcc = 0;
+                wheelLockUntil = now + 650;
+            }
+        }, { passive: false });
+
+        // Mouse drag + touch swipe on the sheet (the card follows the pointer)
+        if (wrapper) {
+            wrapper.style.touchAction = 'pan-y';
+            let startX = 0, startY = 0, dx = 0, axis = null, active = false, pid = null;
+            const interactive = 'a, button, input, textarea, select, label, .order-form';
+
+            wrapper.addEventListener('pointerdown', (e) => {
+                if (!isOpen() || mmBusy || (e.pointerType === 'mouse' && e.button !== 0)) return;
+                if (e.target.closest(interactive)) return;
+                active = true; axis = null; dx = 0; pid = e.pointerId;
+                startX = e.clientX; startY = e.clientY;
+            });
+
+            wrapper.addEventListener('pointermove', (e) => {
+                if (!active || e.pointerId !== pid) return;
+                const mx = e.clientX - startX;
+                const my = e.clientY - startY;
+                if (axis === null) {
+                    if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+                    axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+                    if (axis === 'x') {
+                        wrapper.classList.add('mm-dragging');
+                        try { wrapper.setPointerCapture(pid); } catch (err) { }
+                    }
+                }
+                if (axis !== 'x') return;
+                dx = mx;
+                // Rubber-band feel: follows the pointer, slightly damped
+                wrapper.style.setProperty('--mm-drag', `${dx * 0.45}px`);
+            });
+
+            const end = () => {
+                if (!active) return;
+                active = false;
+                wrapper.classList.remove('mm-dragging');
+                if (axis === 'x' && Math.abs(dx) > 70) {
+                    window.navigateMarbleModal(dx < 0 ? 1 : -1);
+                } else {
+                    wrapper.style.removeProperty('--mm-drag');
+                }
+                axis = null;
+            };
+            wrapper.addEventListener('pointerup', end);
+            wrapper.addEventListener('pointercancel', end);
+            wrapper.addEventListener('lostpointercapture', end);
+
+            // A drag must not also count as a click on the sheet
+            wrapper.addEventListener('click', (e) => {
+                if (Math.abs(dx) > 8) { e.stopPropagation(); e.preventDefault(); dx = 0; }
+            }, true);
+            wrapper.addEventListener('dragstart', (e) => e.preventDefault());
+        }
+    }
 
     window.closeMarbleModal = function () {
         const modalEl = document.getElementById('marble-detail-modal');

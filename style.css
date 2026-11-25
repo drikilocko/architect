@@ -6768,3 +6768,200 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         animation: none;
     }
 }
+
+/* ===================== FICHE PRODUIT: PREVIOUS / NEXT NAVIGATION ===================== */
+/* The sheet follows the pointer while dragging (--mm-drag set by script.js) */
+.marble-modal.active .modal-wrapper {
+    transform: translate(calc(-50% + var(--mm-drag, 0px)), 0);
+}
+
+.marble-modal .modal-wrapper.mm-dragging {
+    transition: none;
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.marble-modal .modal-image-side img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+/* Slide transition between two products */
+.marble-modal .modal-wrapper.mm-out-next .modal-image-side img,
+.marble-modal .modal-wrapper.mm-out-next .modal-info-side > * {
+    animation: mmOutNext 0.2s ease-in forwards;
+}
+
+.marble-modal .modal-wrapper.mm-out-prev .modal-image-side img,
+.marble-modal .modal-wrapper.mm-out-prev .modal-info-side > * {
+    animation: mmOutPrev 0.2s ease-in forwards;
+}
+
+.marble-modal .modal-wrapper.mm-in-next .modal-image-side img,
+.marble-modal .modal-wrapper.mm-in-next .modal-info-side > * {
+    animation: mmInNext 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.marble-modal .modal-wrapper.mm-in-prev .modal-image-side img,
+.marble-modal .modal-wrapper.mm-in-prev .modal-info-side > * {
+    animation: mmInPrev 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.marble-modal .modal-wrapper.mm-in-next .modal-info-side > *:nth-child(2),
+.marble-modal .modal-wrapper.mm-in-prev .modal-info-side > *:nth-child(2) {
+    animation-delay: 0.03s;
+}
+
+.marble-modal .modal-wrapper.mm-in-next .modal-info-side > *:nth-child(n + 3),
+.marble-modal .modal-wrapper.mm-in-prev .modal-info-side > *:nth-child(n + 3) {
+    animation-delay: 0.06s;
+}
+
+@keyframes mmOutNext {
+    to { opacity: 0; transform: translateX(-40px); }
+}
+
+@keyframes mmOutPrev {
+    to { opacity: 0; transform: translateX(40px); }
+}
+
+@keyframes mmInNext {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes mmInPrev {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Lateral buttons, vertically centred on the sheet */
+.mm-nav {
+    position: absolute;
+    top: 54vh;
+    z-index: 20;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.4s ease 0.15s, background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mm-nav[hidden] {
+    display: none;
+}
+
+.marble-modal.active .mm-nav {
+    opacity: 1;
+}
+
+.mm-nav svg {
+    width: 22px;
+    height: 22px;
+}
+
+.mm-prev {
+    left: clamp(12px, 2.5vw, 40px);
+}
+
+.mm-next {
+    right: clamp(12px, 2.5vw, 40px);
+}
+
+@media (hover: hover) {
+    .mm-nav:hover {
+        background: #fff;
+        color: #000;
+    }
+}
+
+.mm-nav:active {
+    transform: translateY(-50%) scale(0.94);
+}
+
+.mm-nav:focus-visible {
+    outline: 2px solid #c0392b;
+    outline-offset: 3px;
+}
+
+/* "03 / 40" counter on the image */
+.mm-counter {
+    position: absolute;
+    left: 20px;
+    bottom: 18px;
+    z-index: 3;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.45);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
+
+.mm-counter:empty {
+    display: none;
+}
+
+/* Sheet narrower than the screen: the buttons sit just outside it */
+@media (min-width: 1360px) {
+    .mm-prev {
+        left: calc(50% - 600px - 84px);
+    }
+
+    .mm-next {
+        right: calc(50% - 600px - 84px);
+    }
+}
+
+/* Mobile / tablet: buttons over the product image */
+@media (max-width: 991px) {
+    .mm-nav {
+        top: calc(10vh + 100px);
+        width: 44px;
+        height: 44px;
+        background: rgba(0, 0, 0, 0.35);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .mm-prev {
+        left: calc(2.5% + 10px);
+    }
+
+    .mm-next {
+        right: calc(2.5% + 10px);
+    }
+
+    .mm-nav svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mm-counter {
+        left: 14px;
+        bottom: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marble-modal .modal-wrapper[class*="mm-"] .modal-image-side img,
+    .marble-modal .modal-wrapper[class*="mm-"] .modal-info-side > * {
+        animation: none !important;
+    }
+}
