@@ -789,16 +789,5 @@ window.testimonialsData = [
     author: "",
     role: "Promoteur",
     draft: true
-  },
-  {
-    projectId: 4,
-    index: "05",
-    project: "Résidence Accra",
-    category: "Résidentiel",
-    image: "",
-    quote: "De la sélection des dalles jusqu'à la pose, nous avons été accompagnés à chaque étape. La maison a aujourd'hui un caractère unique.",
-    author: "",
-    role: "Propriétaire",
-    draft: true
   }
 ];
