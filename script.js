@@ -2055,3 +2055,82 @@ if (document.readyState === 'loading') {
 
     show(0);
 })();
+
+// ===================== HERO MARBLE SLIDER (square under the socials) =====================
+// Cycles through every marble & granite of "Nos Marbres" (window.productData),
+// alternating the two families, using light 240px WebP thumbnails.
+(function initHeroMarbleSlider() {
+    const box = document.getElementById('hero-marble-slider');
+    if (!box || !Array.isArray(window.productData) || !window.productData.length) return;
+
+    const isGranite = (p) => /granit/i.test(p.category || '');
+    const marbles = window.productData.filter(p => !isGranite(p));
+    const granites = window.productData.filter(isGranite);
+    // Interleave so both families show up regularly: M, M, G, M, M, G...
+    const list = [];
+    let g = 0;
+    marbles.forEach((m, i) => {
+        list.push(m);
+        if (i % 2 === 1 && g < granites.length) list.push(granites[g++]);
+    });
+    while (g < granites.length) list.push(granites[g++]);
+
+    const thumb = (p) => `assets/marbres-thumbs/${p.id}.webp`;
+    const caption = box.querySelector('.hs-caption');
+    const first = box.querySelector('.hs-layer');
+    const second = first.cloneNode(false);
+    second.classList.remove('is-on');
+    second.removeAttribute('src');
+    box.insertBefore(second, caption);
+    const layers = [first, second];
+    let front = 0;
+    let index = 0;
+
+    const setCaption = (p) => {
+        if (caption) caption.textContent = p.name + (isGranite(p) ? ' · Granit' : ' · Marbre');
+        box.setAttribute('aria-label', `Découvrir nos marbres et granits — ${p.name}`);
+    };
+    setCaption(list[0]);
+
+    const INTERVAL_MS = 2600;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const next = () => {
+        const nextIndex = (index + 1) % list.length;
+        const p = list[nextIndex];
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => {
+            const back = layers[1 - front];
+            back.src = img.src;
+            back.alt = p.name;
+            back.classList.add('is-on');
+            layers[front].classList.remove('is-on');
+            front = 1 - front;
+            index = nextIndex;
+            setCaption(p);
+            // Warm the following thumbnail so the next fade is instant
+            new Image().src = thumb(list[(index + 1) % list.length]);
+        };
+        img.onerror = () => { index = nextIndex; };
+        img.src = thumb(p);
+    };
+
+    // Only run while the hero is on screen and the tab is visible
+    let timer = null;
+    let heroVisible = true;
+    const start = () => {
+        if (timer || reduceMotion || document.hidden || !heroVisible) return;
+        timer = setInterval(next, INTERVAL_MS);
+    };
+    const stop = () => { clearInterval(timer); timer = null; };
+
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+            heroVisible = entries[0].isIntersecting;
+            heroVisible ? start() : stop();
+        }).observe(box);
+    }
+    start();
+})();
