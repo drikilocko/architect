@@ -6304,16 +6304,19 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
 }
 
 /* ===================== PREV / NEXT BUTTONS — PROJETS & NOS MARBRES ===================== */
+/* Full-size overlay: prev on the left edge, next on the right edge, both vertically centred */
 .hnav {
     position: absolute;
-    right: 1cm;
-    bottom: 4vh;
+    inset: 0;
     z-index: 40;
-    display: flex;
-    gap: 10px;
+    pointer-events: none;
 }
 
 .hnav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: auto;
     width: 54px;
     height: 54px;
     display: grid;
@@ -6343,8 +6346,16 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
     }
 }
 
+.hnav-btn[data-dir="-1"] {
+    left: clamp(12px, 2vw, 32px);
+}
+
+.hnav-btn[data-dir="1"] {
+    right: clamp(12px, 2vw, 32px);
+}
+
 .hnav-btn:not(:disabled):active {
-    transform: scale(0.94);
+    transform: translateY(-50%) scale(0.94);
 }
 
 .hnav-btn:focus-visible {
@@ -6358,15 +6369,14 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
     box-shadow: none;
 }
 
-/* Marbres: the info HUD sits bottom-right too — keep it clear of the buttons */
-.marbre-gallery-hud {
-    right: calc(1cm + 140px);
-}
 
 @media (max-width: 768px) {
-    .hnav {
-        right: 16px;
-        bottom: 3vh;
+    .hnav-btn[data-dir="-1"] {
+        left: 8px;
+    }
+
+    .hnav-btn[data-dir="1"] {
+        right: 8px;
     }
 
     .hnav-btn {
