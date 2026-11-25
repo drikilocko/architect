@@ -7194,3 +7194,38 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         font-size: 0.68rem;
     }
 }
+
+/* ===================== NAVIGATION FEEDBACK (click on an internal link) ===================== */
+/* Thin red progress bar at the top + slight fade: the click is acknowledged instantly */
+html.is-navigating::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #c0392b;
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: navProgress 2.4s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+    z-index: 2147483647;
+    pointer-events: none;
+}
+
+html.is-navigating body {
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+    cursor: progress;
+}
+
+@keyframes navProgress {
+    0% { transform: scaleX(0); }
+    40% { transform: scaleX(0.6); }
+    100% { transform: scaleX(0.92); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.is-navigating body {
+        transition: none;
+    }
+}

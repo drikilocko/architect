@@ -1232,7 +1232,7 @@
                 return `
                     <div class="marbre-card" onclick="openMarbleModal(${m.id})">
                         <div class="marbre-img-wrap">
-                            <img src="../${m.image_path}" alt="${m.name}" loading="lazy" decoding="async" onerror="this.src='../produit/1.avif'">
+                            <img src="../assets/marbres-thumbs/${m.id}-640.webp" alt="${m.name}" loading="lazy" decoding="async" width="640" onerror="this.onerror=null; this.src='../${m.image_path}'">
                         </div>
                         <div class="marbre-info">
                             <span class="marbre-tag">${m.tag || 'Premium'}</span>

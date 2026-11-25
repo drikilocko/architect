@@ -53,6 +53,7 @@ window.addEventListener('scroll', () => {
         targetY = window.scrollY;
         currentY = window.scrollY;
     }
+    if (typeof wakeRenderLoop === 'function') wakeRenderLoop();
 }, { passive: true });
 
 // Scrolling model:
@@ -124,6 +125,7 @@ window.addEventListener('wheel', (e) => {
     if (!isScrollActive) currentY = targetY = window.scrollY;
     targetY = clampScroll(targetY + delta);
     isScrollActive = true;
+    wakeRenderLoop();
 }, { passive: false });
 
 window.addEventListener('touchstart', () => {
@@ -161,6 +163,16 @@ const isIndexPage = document.body.classList.contains('home') || document.getElem
 }
 
 let _lastFrameTime = performance.now();
+// Homepage scenes need every frame; other pages only need frames while a
+// smooth-wheel glide runs, so the loop sleeps when idle (frees the main thread
+// -> clicks respond faster, better INP) and wakes on wheel / scroll.
+let _loopRunning = false;
+const wakeRenderLoop = () => {
+    if (_loopRunning) return;
+    _loopRunning = true;
+    _lastFrameTime = performance.now();
+    requestAnimationFrame(renderLoop);
+};
 
 const renderLoop = (now = performance.now()) => {
     // Frame-rate independent easing: same feel on 60Hz, 120Hz (ProMotion) and 144Hz screens
@@ -202,11 +214,15 @@ const renderLoop = (now = performance.now()) => {
         mainHeader?.classList.remove('scrolled');
     }
 
-    requestAnimationFrame(renderLoop);
+    if (isIndexPage || isScrollActive) {
+        requestAnimationFrame(renderLoop);
+    } else {
+        _loopRunning = false;
+    }
 };
 
 // Runs on every page: smooth wheel easing + header state (+ homepage scenes)
-requestAnimationFrame(renderLoop);
+wakeRenderLoop();
 
 // DOM Elements
 const mainHeader = document.querySelector('#main-header');
@@ -2508,4 +2524,82 @@ if (document.readyState === 'loading') {
     window.addEventListener('resize', updateStates, { passive: true });
     window.addEventListener('load', updateStates);
     updateStates();
+})();
+
+
+// ===================== INSTANT NAVIGATION (all pages) =====================
+// 1. Prefetch the next page as soon as the visitor shows intent (hover / touch),
+//    so it is often already downloaded when the click happens.
+// 2. Immediate visual feedback on click (progress bar + slight fade) so the
+//    site never looks frozen while the next page loads.
+(function initInstantNavigation() {
+    const isInternalPage = (a) => {
+        if (!a || !a.href || a.hasAttribute('download')) return false;
+        if (a.target && a.target !== '_self') return false;
+        if (a.origin !== location.origin) return false;
+        if (!/^https?:$/.test(a.protocol)) return false;
+        // same page (anchor jump) -> not a navigation
+        if (a.pathname === location.pathname && a.search === location.search) return false;
+        return !/\.(jpe?g|png|webp|avif|gif|mp4|pdf|zip)$/i.test(a.pathname);
+    };
+
+    // Chromium: Speculation Rules, prefetch on hover / pointerdown ("moderate")
+    let speculation = false;
+    try {
+        if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+            const rules = document.createElement('script');
+            rules.type = 'speculationrules';
+            rules.textContent = JSON.stringify({
+                prefetch: [{
+                    source: 'document',
+                    where: {
+                        and: [
+                            { href_matches: '/*' },
+                            { not: { selector_matches: '[target="_blank"], [download], [href^="mailto:"], [href^="tel:"], [href^="#"]' } }
+                        ]
+                    },
+                    eagerness: 'moderate'
+                }]
+            });
+            document.head.appendChild(rules);
+            speculation = true;
+        }
+    } catch (e) { }
+
+    // Other browsers: <link rel="prefetch"> on hover (after a short delay) or touch
+    if (!speculation) {
+        const done = new Set();
+        const prefetch = (a) => {
+            if (!isInternalPage(a)) return;
+            const url = a.href.split('#')[0];
+            if (done.has(url)) return;
+            done.add(url);
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+        };
+        let hoverTimer = null;
+        document.addEventListener('mouseover', (e) => {
+            const a = e.target.closest && e.target.closest('a[href]');
+            if (!a) return;
+            clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(() => prefetch(a), 80);
+        }, { passive: true });
+        document.addEventListener('mouseout', () => clearTimeout(hoverTimer), { passive: true });
+        document.addEventListener('touchstart', (e) => {
+            const a = e.target.closest && e.target.closest('a[href]');
+            if (a) prefetch(a);
+        }, { passive: true });
+    }
+
+    // Instant feedback on click
+    document.addEventListener('click', (e) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const a = e.target.closest && e.target.closest('a[href]');
+        if (!isInternalPage(a)) return;
+        document.documentElement.classList.add('is-navigating');
+    });
+    // Coming back with the browser's back button (bfcache): clear the state
+    window.addEventListener('pageshow', () => document.documentElement.classList.remove('is-navigating'));
 })();
