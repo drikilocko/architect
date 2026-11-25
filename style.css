@@ -6,7 +6,7 @@
     /* Black, White, Red, Grey palette */
     --text-color: #1a1a1a;
     --bg-dark: #ffffff;
-    --bg-global: url('bg/1.png');
+    --bg-global: url('bg/1.webp');
     --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -6152,4 +6152,101 @@ h1, h2, h3,
         width: 42px;
         height: 42px;
     }
+}
+
+/* ===================== RETURNING VISITOR: FAST INTRO (LCP) =====================
+   html.no-intro is set in <head> before first paint when the intro was seen < 24h ago:
+   no preloader, no blur, hero reveals start ~2.4s sooner. First visit is unchanged. */
+html.no-intro #new-preloader {
+    display: none !important;
+}
+
+html.no-intro body.is-loading #main-content,
+html.no-intro #main-content {
+    filter: none !important;
+    transition: none !important;
+}
+
+html.no-intro body.loaded .logo {
+    animation-delay: 0.1s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(1) {
+    animation-delay: 0.16s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(2) {
+    animation-delay: 0.19s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(3) {
+    animation-delay: 0.22s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(4) {
+    animation-delay: 0.25s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(5) {
+    animation-delay: 0.28s !important;
+}
+
+html.no-intro body.loaded .nav-links li:nth-child(6) {
+    animation-delay: 0.31s !important;
+}
+
+html.no-intro body.loaded .hero-left-list span:nth-child(1) {
+    animation-delay: 0.4s !important;
+}
+
+html.no-intro body.loaded .hero-left-list span:nth-child(2) {
+    animation-delay: 0.46s !important;
+}
+
+html.no-intro body.loaded .hero-left-list span:nth-child(3) {
+    animation-delay: 0.52s !important;
+}
+
+html.no-intro body.loaded .hero-bottom-text p:nth-child(1) {
+    animation-delay: 0.58s !important;
+}
+
+html.no-intro body.loaded .hero-bottom-text p:nth-child(2) {
+    animation-delay: 0.64s !important;
+}
+
+html.no-intro body.loaded .hero-bottom-text p:nth-child(3) {
+    animation-delay: 0.7s !important;
+}
+
+html.no-intro body.loaded .btn-callnow {
+    animation-delay: 0.7s !important;
+}
+
+html.no-intro body.loaded .slider-square {
+    animation-delay: 0.76s !important;
+}
+
+html.no-intro body.loaded .hero-socials a:nth-child(1) {
+    animation-delay: 0.88s !important;
+}
+
+html.no-intro body.loaded .hero-socials a:nth-child(2) {
+    animation-delay: 0.91s !important;
+}
+
+html.no-intro body.loaded .hero-socials a:nth-child(3) {
+    animation-delay: 0.94s !important;
+}
+
+html.no-intro body.loaded .hero-socials a:nth-child(4) {
+    animation-delay: 0.97s !important;
+}
+
+html.no-intro body.loaded .scroll-indicator-wrapper {
+    animation-delay: 0.94s !important;
+}
+
+html.no-intro body.loaded .hero-left-stack .btn-callnow {
+    animation-delay: 0.79s !important;
 }

@@ -465,7 +465,10 @@ const initPreloader = () => {
         let timeoutId = null;
         let progressFrame = null;
         let startTime = null;
-        let videoReady = false;
+        // The hero video has a poster image that stands in until it plays,
+        // so the intro never waits on the video download (only MIN_DURATION_MS).
+        const _heroVid = document.getElementById('hero-video');
+        let videoReady = !!(_heroVid && _heroVid.getAttribute('poster'));
 
         const customEase = (t) => {
             if (t <= 0) return 0;
@@ -1757,14 +1760,34 @@ const initContactForm = () => {
     const EMAILJS_SERVICE_ID = cfg.EMAILJS_SERVICE_ID || 'service_artech_marbrerie_afrique';
     const EMAILJS_TEMPLATE_ID = cfg.EMAILJS_TEMPLATE_ID || 'template_artech_marbrerie_afrique';
 
-    if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-        try {
-            emailjs.init(EMAILJS_PUBLIC_KEY);
-        } catch (e) { }
-    }
+    // EmailJS SDK is loaded on demand (pages that don't include it in <head>):
+    // warmed up when the visitor focuses the form, awaited on submit.
+    const EMAILJS_SDK = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    let emailJsPromise = null;
+    const ensureEmailJs = () => {
+        if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') return Promise.resolve(false);
+        if (!emailJsPromise) {
+            emailJsPromise = new Promise((resolve) => {
+                if (window.emailjs) return resolve(true);
+                const sc = document.createElement('script');
+                sc.src = EMAILJS_SDK;
+                sc.async = true;
+                sc.onload = () => resolve(!!window.emailjs);
+                sc.onerror = () => { emailJsPromise = null; resolve(false); };
+                document.head.appendChild(sc);
+            }).then((ok) => {
+                if (ok) { try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch (e) { } }
+                return ok;
+            });
+        }
+        return emailJsPromise;
+    };
+    if (window.emailjs) ensureEmailJs();
 
     forms.forEach(form => {
         const responseBox = form.querySelector('#contact-form-response') || form.parentElement.querySelector('#contact-form-response');
+
+        form.addEventListener('focusin', () => { ensureEmailJs(); }, { once: true });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1782,6 +1805,9 @@ const initContactForm = () => {
             }
 
             try {
+                if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY' && !(await ensureEmailJs())) {
+                    throw new Error('EmailJS SDK could not be loaded');
+                }
                 if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
                     // 100% JS delivery via EmailJS
                     await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form);

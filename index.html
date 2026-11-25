@@ -11,19 +11,22 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
-    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="stylesheet" href="style.css">
 
     <!-- GSAP for Animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-    <!-- EmailJS SDK for 100% Client-Side Email Delivery -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="config.js"></script>
+    <!-- EmailJS is loaded on demand (form focus / submit) by script.js -->
+    <script defer src="config.js"></script>
+    <!-- Returning visitor (intro already seen < 24h): skip preloader & long hero delays before first paint -->
+    <script>try{var t=localStorage.getItem('artech_marbrerie_afrique_preloader_last_shown');if(t&&Date.now()-parseInt(t,10)<864e5)document.documentElement.classList.add('no-intro')}catch(e){}</script>
+    <link rel="preload" as="image" href="video/1-poster.webp" fetchpriority="high">
     <style>
         .process-step,
         .service-sticky-card {
@@ -200,10 +203,10 @@
     <!-- Split Preloader -->
     <div id="new-preloader">
         <div class="preloader-panel left-panel">
-            <img src="produit/1.avif" alt="Preloader Left">
+            <img src="produit/1.avif" alt="Preloader Left" fetchpriority="high">
         </div>
         <div class="preloader-panel right-panel">
-            <img src="produit/2.avif" alt="Preloader Right">
+            <img src="produit/2.avif" alt="Preloader Right" fetchpriority="high">
         </div>
         <div id="preloader-percent">0%</div>
         <div id="preloader-status">Vérifiez votre état de connexion</div>
@@ -254,8 +257,9 @@
         <div class="scroll-container">
             <section id="hero" class="hero-section">
                 <div class="video-wrapper" id="video-wrapper">
-                    <video autoplay muted loop playsinline id="hero-video">
-                        <source src="video/1.mp4" type="video/mp4">
+                    <video autoplay muted loop playsinline preload="auto" poster="video/1-poster.webp" id="hero-video">
+                        <source src="video/1-mobile.mp4" type="video/mp4" media="(max-width: 768px)">
+                        <source src="video/1-web.mp4" type="video/mp4">
                         Votre navigateur ne supporte pas la lecture de vidéos.
                     </video>
                     <div class="video-overlay"></div>
@@ -314,16 +318,16 @@
                                 </a>
                             </div>
                             <a href="marbres.html" class="slider-square">
-                                <img src="produit/1.avif" alt="Produit 1" class="slide-img slide-1">
-                                <img src="produit/3.avif" alt="Produit 3" class="slide-img slide-2">
-                                <img src="produit/5.avif" alt="Produit 5" class="slide-img slide-3">
-                                <img src="produit/7.avif" alt="Produit 7" class="slide-img slide-4">
+                                <img loading="lazy" decoding="async" src="produit/1.avif" alt="Produit 1" class="slide-img slide-1">
+                                <img loading="lazy" decoding="async" src="produit/3.avif" alt="Produit 3" class="slide-img slide-2">
+                                <img loading="lazy" decoding="async" src="produit/5.avif" alt="Produit 5" class="slide-img slide-3">
+                                <img loading="lazy" decoding="async" src="produit/7.avif" alt="Produit 7" class="slide-img slide-4">
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="image-mask-layer" id="image-mask-layer">
-                    <img src="paralax/1.png" alt="Architecture" class="parallax-img">
+                    <img loading="lazy" decoding="async" src="paralax/1.png" alt="Architecture" class="parallax-img">
                 </div>
             </section>
         </div>
@@ -352,7 +356,7 @@
                     <!-- Project 1 -->
                     <div class="process-step" data-index="01" onclick="openProjectModal(1)">
                         <div class="step-image-box">
-                            <img src="projet/1.jpg" alt="Palais des Congrès"
+                            <img loading="lazy" decoding="async" src="projet/1.jpg" alt="Palais des Congrès"
                                 onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
                         </div>
                         <div class="step-content">
@@ -368,7 +372,7 @@
                     <!-- Project 2 -->
                     <div class="process-step" data-index="02" onclick="openProjectModal(2)">
                         <div class="step-image-box">
-                            <img src="projet/2.jpg" alt="Hôtel 2 Février"
+                            <img loading="lazy" decoding="async" src="projet/2.jpg" alt="Hôtel 2 Février"
                                 onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
                         </div>
                         <div class="step-content">
@@ -384,7 +388,7 @@
                     <!-- Project 3 -->
                     <div class="process-step" data-index="03" onclick="openProjectModal(3)">
                         <div class="step-image-box">
-                            <img src="projet/3.jpg" alt="Siège de la BIDC"
+                            <img loading="lazy" decoding="async" src="projet/3.jpg" alt="Siège de la BIDC"
                                 onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
                         </div>
                         <div class="step-content">
@@ -400,7 +404,7 @@
                     <!-- Project 4 -->
                     <div class="process-step" data-index="04" onclick="openProjectModal(5)">
                         <div class="step-image-box">
-                            <img src="assets/projet takoradi/1.jpg" alt="Projet Takoradi"
+                            <img loading="lazy" decoding="async" src="assets/projet takoradi/1.jpg" alt="Projet Takoradi"
                                 onerror="this.parentElement.classList.add('artech-card-bg'); this.style.display='none';">
                         </div>
                         <div class="step-content">
@@ -445,20 +449,20 @@
         <section class="logo-carousel">
             <div class="logo-track">
                 <!-- Set 1 -->
-                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
-                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
-                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
-                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/5.png" alt="Logo 4"></div>
                 <!-- Set 2 -->
-                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
-                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
-                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
-                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/5.png" alt="Logo 4"></div>
                 <!-- Set 3 -->
-                <div class="logo-item"><img src="logo/1.png" alt="Logo 1"></div>
-                <div class="logo-item"><img src="logo/2.png" alt="Logo 2"></div>
-                <div class="logo-item"><img src="logo/3.png" alt="Logo 3"></div>
-                <div class="logo-item"><img src="logo/5.png" alt="Logo 4"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/1.png" alt="Logo 1"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/2.png" alt="Logo 2"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/3.png" alt="Logo 3"></div>
+                <div class="logo-item"><img loading="lazy" decoding="async" src="logo/5.png" alt="Logo 4"></div>
             </div>
         </section>
 
@@ -488,7 +492,7 @@
                 <div class="services-sticky-container">
                     <div class="service-sticky-card" style="--i: 1;" onclick="window.location.href='service/?id=1'">
                         <div class="ssc-image-side">
-                            <img src="assets/HABILAGE ET FACADE/7.jpg" alt="Habillage & Façades">
+                            <img loading="lazy" decoding="async" src="assets/HABILAGE ET FACADE/7.jpg" alt="Habillage & Façades">
                             <div class="ssc-wave-separator">
                                 <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
                                     <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
@@ -506,7 +510,7 @@
                     </div>
                     <div class="service-sticky-card" style="--i: 2;" onclick="window.location.href='service/?id=3'">
                         <div class="ssc-image-side">
-                            <img src="assets/FINITION ET DETAILS/4.jpg" alt="Finitions & Détails">
+                            <img loading="lazy" decoding="async" src="assets/FINITION ET DETAILS/4.jpg" alt="Finitions & Détails">
                             <div class="ssc-wave-separator">
                                 <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
                                     <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
@@ -524,7 +528,7 @@
                     </div>
                     <div class="service-sticky-card" style="--i: 3;" onclick="window.location.href='service/?id=4'">
                         <div class="ssc-image-side">
-                            <img src="assets/PROJET STRUCTUREL/2.jpg" alt="Projets structurels sur mesure">
+                            <img loading="lazy" decoding="async" src="assets/PROJET STRUCTUREL/2.jpg" alt="Projets structurels sur mesure">
                             <div class="ssc-wave-separator">
                                 <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
                                     <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
@@ -542,7 +546,7 @@
                     </div>
                     <div class="service-sticky-card" style="--i: 4;" onclick="window.location.href='service/?id=5'">
                         <div class="ssc-image-side">
-                            <img src="assets/escalier/1.jpg" alt="Escaliers en Marbre">
+                            <img loading="lazy" decoding="async" src="assets/escalier/1.jpg" alt="Escaliers en Marbre">
                             <div class="ssc-wave-separator">
                                 <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
                                     <path d="M0,0 Q50,500 0,1000 L100,1000 L100,0 Z" fill="currentColor" />
@@ -934,7 +938,7 @@
 
     <!-- Include shared popup details modal -->
 
-    <script src="data.js"></script>
+    <script defer src="data.js"></script>
 
     <!-- Premium Coming Soon Modal -->
     <div id="premium-modal" class="premium-modal">
@@ -1017,7 +1021,7 @@
         <button class="pm-lightbox-next" id="pm-lightbox-next" aria-label="Suivant">&#10095;</button>
         <div class="pm-lightbox-content">
             <button class="pm-lightbox-close" aria-label="Fermer">&times;</button>
-            <img id="pm-lightbox-img" src="" alt="Aperçu Projet ARTECH MARBRERIE AFRIQUE">
+            <img loading="lazy" decoding="async" id="pm-lightbox-img" src="" alt="Aperçu Projet ARTECH MARBRERIE AFRIQUE">
             <video id="pm-lightbox-video" src="" controls autoplay muted></video>
         </div>
     </div>
@@ -1029,7 +1033,7 @@
             <button class="modal-close-btn" onclick="closeMarbleModal()">&times;</button>
             <div class="modal-image-side">
                 <span class="stock-badge" id="modal-stock-badge">En stock</span>
-                <img src="produit/1.avif" alt="Marble Image" id="modal-marble-img">
+                <img loading="lazy" decoding="async" src="produit/1.avif" alt="Marble Image" id="modal-marble-img">
             </div>
             <div class="modal-info-side">
                 <span class="marble-tag" id="modal-marble-tag">Premium</span>
@@ -1045,9 +1049,9 @@
     </div>
 
     <!-- Project Data -->
-    <script src="data.js"></script>
+    <script defer src="data.js"></script>
 
-    <script src="script.js"></script>
+    <script defer src="script.js"></script>
 </body>
 
 </html>
