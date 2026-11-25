@@ -164,18 +164,17 @@ window.serviceData = {
   1: {
     id: 1,
     title: "Habillage & Façades",
-    image: "assets/HABILAGE ET FACADE/1.jpg",
+    image: "assets/HABILAGE ET FACADE/7.jpg",
     tech_spec: "Pose agrafée sur consoles inox, pose ventilée, fixations sismiques certifiées CSTB.",
     description: "L'habillage mural et la conception de façades ventilées représentent le summum de l'élégance technique.",
     bureau_text: "Notre atelier d'études analyse chaque surface à revêtir : orientation, hygrométrie, charges admissibles. Nous proposons des calepinages DAO sur mesure pour chaque façade ou mur intérieur, garantissant des joints parfaitement alignés et une continuité de veine optimisée sur l'ensemble de la surface.",
     product_ids: [12, 3, 14, 15, 24],
     gallery: [
-      { type: 'image', file_path: 'assets/HABILAGE ET FACADE/1.jpg' },
+      { type: 'image', file_path: 'assets/HABILAGE ET FACADE/7.jpg' },
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/2.jpg' },
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/4.jpg' },
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/5.jpg' },
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/6.jpg' },
-      { type: 'image', file_path: 'assets/HABILAGE ET FACADE/7.jpg' },
       { type: 'image', file_path: 'assets/HABILAGE ET FACADE/10.jpg' }
     ]
   },
