@@ -1,19 +1,45 @@
-// ===================== HOMEPAGE ALWAYS STARTS AT SCROLL 0 =====================
-// The browser restored the previous scroll position on reload and jumped to the
-// #hero anchor (links like "../#hero"), so the page started slightly scrolled.
+// ===================== HOMEPAGE START POSITION =====================
+// - New visit / reload / "../#hero" link: always start at scroll 0.
+// - RETURN to the homepage ("← Accueil" button or browser back): land exactly
+//   where the visitor was before leaving (position saved in sessionStorage).
+const HOME_SCROLL_KEY = 'artech_home_scroll';
+const HOME_RETURN_KEY = 'artech_return_home';
 if (document.body.classList.contains('home')) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+    // Remember where the visitor is when leaving the homepage
+    window.addEventListener('pagehide', () => {
+        try { sessionStorage.setItem(HOME_SCROLL_KEY, String(Math.round(window.scrollY))); } catch (e) { }
+    });
+
+    let isReturn = false;
+    let savedY = 0;
+    try {
+        const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        isReturn = sessionStorage.getItem(HOME_RETURN_KEY) === '1' || (nav && nav.type === 'back_forward');
+        savedY = parseInt(sessionStorage.getItem(HOME_SCROLL_KEY) || '0', 10) || 0;
+        sessionStorage.removeItem(HOME_RETURN_KEY);
+    } catch (e) { }
+    if (!isReturn) savedY = 0;
+
     if (location.hash === '#hero' || location.hash === '') {
         if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-        // Never yank the page back once the visitor has started scrolling
+        // Never yank the page once the visitor has started scrolling
         let userScrolled = false;
         const markScrolled = () => { userScrolled = true; };
         ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, markScrolled, { passive: true, once: true }));
-        const resetToTop = () => { if (!userScrolled) window.scrollTo(0, 0); };
-        resetToTop();
-        document.addEventListener('DOMContentLoaded', resetToTop);
-        window.addEventListener('load', resetToTop);
-        window.addEventListener('pageshow', (e) => { if (e.persisted) resetToTop(); });
+        // Re-applied as the page grows (fonts, images, sections) so a deep
+        // position is reached exactly
+        const applyStart = () => {
+            if (userScrolled) return;
+            const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            window.scrollTo(0, Math.min(savedY, maxY));
+        };
+        applyStart();
+        document.addEventListener('DOMContentLoaded', applyStart);
+        window.addEventListener('load', () => { applyStart(); setTimeout(applyStart, 250); });
+        // Restored from the back/forward cache: the page is already exactly as
+        // it was (scroll included), so leave it alone.
     }
 
     // "Accueil" (#hero) link on the homepage: glide to the very top, no hash jump
@@ -2640,6 +2666,19 @@ if (document.readyState === 'loading') {
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
         '<span>Accueil</span></span>';
     document.body.appendChild(btn);
+
+    // Going back home = return to the exact scroll position the visitor left.
+    // history.back() restores the homepage as it was (bfcache when available);
+    // the flag tells the homepage to restore its saved position otherwise.
+    btn.addEventListener('click', (e) => {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        try { sessionStorage.setItem(HOME_RETURN_KEY, '1'); } catch (err) { }
+        if (window.history.length > 1) {
+            e.preventDefault();
+            document.documentElement.classList.add('is-navigating');
+            history.back();
+        }
+    });
 
     // Sit just under the fixed navbar
     const nav = document.querySelector('.navbar');
