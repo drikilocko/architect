@@ -757,7 +757,12 @@
                     const category = project.category || 'PROJET';
                     const imageFile = project.gallery && project.gallery[0] ? project.gallery[0].file_path : 'projet/1.jpg';
                     const isUnavailable = project.available === false;
-                    const imageHtml = isUnavailable ? `
+                    // Unavailable projects can still show a cover image (data.js: cover)
+                    const imageHtml = (isUnavailable && project.cover) ? `
+                        <div class="zigzag-image">
+                            <img src="../${project.cover}" alt="${project.name}" loading="lazy" decoding="async" onerror="this.src='../projet/1.jpg'">
+                        </div>
+                    ` : isUnavailable ? `
                         <div class="zigzag-image zigzag-unavailable">
                         </div>
                     ` : `

@@ -49,6 +49,7 @@ window.projectData = {
   },
   3: {
     id: 3,
+    cover: "projet/3.jpg",
     name: "Siège de la BIDC",
     desc: "Pour le siège d'une institution financière majeure de l'Afrique de l'Ouest, ARTECH MARBRERIE AFRIQUE a conçu un concept architectural mariant rigueur géométrique et prestige minéral avec le marbre Gris Emperado.",
     category: "BÂTIMENT INSTITUTIONNEL",
