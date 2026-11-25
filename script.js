@@ -2613,3 +2613,41 @@ if (document.readyState === 'loading') {
     // Coming back with the browser's back button (bfcache): clear the state
     window.addEventListener('pageshow', () => document.documentElement.classList.remove('is-navigating'));
 })();
+
+// ===================== "← ACCUEIL" BUTTON (only when arriving from the homepage) =====================
+// Shown top-left on a secondary page reached directly from the homepage, with
+// the snake border. Navigating on to another page: the referrer is no longer
+// the homepage, so the button is not shown there.
+(function initBackHomeButton() {
+    if (document.body.classList.contains('home')) return;
+    const logo = document.querySelector('.nav-logo, .logo a');
+    const homeUrl = new URL(logo ? logo.getAttribute('href') || '../' : '../', location.href);
+    let fromHome = false;
+    try {
+        if (document.referrer) {
+            const ref = new URL(document.referrer);
+            const norm = (p) => p.replace(/index\.html$/, '');
+            fromHome = ref.origin === location.origin && norm(ref.pathname) === norm(homeUrl.pathname);
+        }
+    } catch (e) { }
+    if (!fromHome) return;
+
+    const btn = document.createElement('a');
+    btn.className = 'back-home';
+    btn.href = homeUrl.pathname;
+    btn.setAttribute('aria-label', "Retour à l'accueil");
+    btn.innerHTML = '<span class="back-home-pill">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+        '<span>Accueil</span></span>';
+    document.body.appendChild(btn);
+
+    // Sit just under the fixed navbar
+    const nav = document.querySelector('.navbar');
+    const place = () => {
+        const h = nav ? Math.round(nav.getBoundingClientRect().bottom) : 80;
+        btn.style.top = Math.max(12, h + 6) + 'px';
+    };
+    place();
+    window.addEventListener('resize', place, { passive: true });
+    requestAnimationFrame(() => btn.classList.add('is-visible'));
+})();

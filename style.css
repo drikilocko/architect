@@ -7443,3 +7443,140 @@ html.is-navigating body {
         background: rgba(0, 0, 0, 0.15);
     }
 }
+
+/* ===================== "← ACCUEIL" BUTTON (arrived from the homepage) ===================== */
+.back-home {
+    position: fixed;
+    left: calc(1cm - 14px);
+    top: 90px;
+    z-index: 9990;
+    padding: 14px;
+    /* large transparent hit area around the pill */
+    text-decoration: none;
+    color: var(--text-color);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.back-home.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.back-home-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 18px 10px 14px;
+    border-radius: 40px;
+    overflow: hidden;
+    isolation: isolate;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+/* Snake border: same technique as the "Continuer" pill */
+.back-home-pill::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300%;
+    aspect-ratio: 1;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 250deg,
+            rgba(192, 57, 43, 0.15) 280deg,
+            #c0392b 335deg,
+            #111 358deg,
+            transparent 360deg);
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation: hnavSnake 2.4s linear infinite;
+    z-index: -2;
+}
+
+.back-home-pill::after {
+    content: "";
+    position: absolute;
+    inset: 1.5px;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    transition: background 0.3s ease;
+    z-index: -1;
+}
+
+.back-home-pill > * {
+    position: relative;
+}
+
+.back-home-pill svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+    .back-home:hover .back-home-pill {
+        color: #fff;
+    }
+
+    .back-home:hover .back-home-pill::after {
+        background: var(--text-color);
+    }
+
+    .back-home:hover .back-home-pill svg {
+        transform: translateX(-3px);
+    }
+}
+
+.back-home:active .back-home-pill {
+    transform: scale(0.96);
+}
+
+.back-home:focus-visible {
+    outline: none;
+}
+
+.back-home:focus-visible .back-home-pill {
+    outline: 2px solid #c0392b;
+    outline-offset: 3px;
+}
+
+/* Hidden while a full-screen menu / sticky toolbar is in the way */
+body.nav-open .back-home,
+body.collection-stuck .back-home {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .back-home {
+        left: 2px;
+    }
+
+    .back-home-pill {
+        padding: 8px 14px 8px 11px;
+        font-size: 0.62rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .back-home-pill::before {
+        animation: none;
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    .back-home {
+        transition: none;
+    }
+}
