@@ -783,11 +783,11 @@ window.testimonialsData = [
     projectId: 5,
     index: "04",
     project: "Takoradi",
-    category: "Commercial",
+    category: "Résidentiel",
     image: "assets/projet takoradi/1.jpg",
-    quote: "Réactivité, conseil sur les matériaux et finitions impeccables : nos espaces commerciaux ont pris une vraie dimension de prestige, tout en restant simples à entretenir.",
+    quote: "Réactivité, conseil sur les matériaux et finitions impeccables : notre résidence a pris une vraie dimension de prestige, tout en restant simple à entretenir au quotidien.",
     author: "",
-    role: "Promoteur",
+    role: "Propriétaire",
     draft: true
   }
 ];
