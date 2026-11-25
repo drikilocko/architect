@@ -6965,3 +6965,35 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         animation: none !important;
     }
 }
+
+/* ===================== PAGE PROJETS: IMAGE SHADOW + TITLE BELOW IMAGE ON MOBILE ===================== */
+/* Soft shadow anchored to the bottom-left corner of every project image */
+.zigzag-image {
+    box-shadow: -22px 22px 44px -14px rgba(0, 0, 0, 0.32);
+}
+
+@media (max-width: 768px) {
+    /* Title / category sit in the section under the image, the image is shown in full */
+    .zigzag-row {
+        gap: 18px;
+    }
+
+    .zigzag-text {
+        position: static;
+        padding: 6px 0 0;
+        background: none;
+    }
+
+    .zigzag-category {
+        color: rgba(0, 0, 0, 0.55);
+        margin-bottom: 8px;
+    }
+
+    .zigzag-title {
+        color: #000;
+    }
+
+    .zigzag-image {
+        box-shadow: -14px 14px 30px -10px rgba(0, 0, 0, 0.3);
+    }
+}
