@@ -6447,3 +6447,191 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         background: rgba(255, 255, 255, 0.03);
     }
 }
+
+/* ===================== NEXT PAGE (end of secondary pages, before footer) ===================== */
+.next-page {
+    position: relative;
+    z-index: 5;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.next-page-link {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: clamp(280px, 42vh, 420px);
+    padding: clamp(56px, 10vh, 110px) clamp(24px, 5vw, 80px);
+    color: var(--text-color);
+    text-decoration: none;
+    isolation: isolate;
+}
+
+/* Image of the next page, revealed on hover behind a dark veil */
+.next-page-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -2;
+}
+
+.next-page-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.35));
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+}
+
+.next-page-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 1400px;
+}
+
+.next-page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c0392b;
+    transition: color 0.5s ease;
+}
+
+.next-page-line {
+    width: 36px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.5s ease;
+}
+
+.next-page-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.next-page-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 9vw, 8rem);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    transition: color 0.5s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.next-page-arrow {
+    flex-shrink: 0;
+    width: clamp(56px, 7vw, 96px);
+    height: clamp(56px, 7vw, 96px);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.next-page-arrow svg {
+    width: 40%;
+    height: 40%;
+}
+
+.next-page-desc {
+    max-width: 520px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.55);
+    transition: color 0.5s ease;
+}
+
+/* Hover (desktop) / always on (touch): image + white text */
+@media (hover: hover) {
+    .next-page-link:hover .next-page-media,
+    .next-page-link:focus-visible .next-page-media {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .next-page-link:hover::after,
+    .next-page-link:focus-visible::after {
+        opacity: 1;
+    }
+
+    .next-page-link:hover,
+    .next-page-link:focus-visible {
+        color: #fff;
+    }
+
+    .next-page-link:hover .next-page-eyebrow,
+    .next-page-link:hover .next-page-desc,
+    .next-page-link:focus-visible .next-page-eyebrow,
+    .next-page-link:focus-visible .next-page-desc {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .next-page-link:hover .next-page-line {
+        width: 60px;
+    }
+
+    .next-page-link:hover .next-page-title {
+        transform: translateX(12px);
+    }
+
+    .next-page-link:hover .next-page-arrow {
+        background: #fff;
+        border-color: #fff;
+        color: #000;
+        transform: rotate(-45deg);
+    }
+}
+
+@media (hover: none) {
+    .next-page-media {
+        opacity: 1;
+        transform: none;
+    }
+
+    .next-page-link::after {
+        opacity: 1;
+    }
+
+    .next-page-link,
+    .next-page-eyebrow,
+    .next-page-desc {
+        color: #fff;
+    }
+
+    .next-page-desc,
+    .next-page-eyebrow {
+        color: rgba(255, 255, 255, 0.85);
+    }
+}
+
+.next-page-link:focus-visible {
+    outline: 2px solid #c0392b;
+    outline-offset: -4px;
+}
+
+@media (max-width: 768px) {
+    .next-page-link {
+        min-height: 240px;
+        padding: 56px 20px;
+    }
+
+    .next-page-row {
+        align-items: flex-end;
+    }
+}
