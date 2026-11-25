@@ -6997,3 +6997,200 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         box-shadow: -14px 14px 30px -10px rgba(0, 0, 0, 0.3);
     }
 }
+
+/* ===================== FAQ "VOS RÉPONSES": ANSWER LINKS + MOBILE REDESIGN ===================== */
+/* Link under each answer, to the page that details / confirms it */
+.faq-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #c0392b;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(192, 57, 43, 0.35);
+    padding-bottom: 4px;
+    transition: gap 0.3s ease, border-color 0.3s ease;
+}
+
+.faq-link svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.3s ease;
+}
+
+.faq-link:hover {
+    gap: 14px;
+    border-color: #c0392b;
+}
+
+.faq-link:hover svg {
+    transform: translateX(2px);
+}
+
+.faq-link:focus-visible {
+    outline: 2px solid #c0392b;
+    outline-offset: 4px;
+}
+
+/* Room for the answer + its link */
+.faq-item.active .faq-answer {
+    max-height: 600px;
+}
+
+@media (max-width: 768px) {
+    .faq-section {
+        padding: 64px 16px 72px;
+    }
+
+    /* Title: left aligned, compact, label above it */
+    .faq-section .section-title-wrapper.with-pagination {
+        justify-content: flex-start;
+        align-items: flex-start;
+        text-align: left;
+        margin-bottom: 28px;
+    }
+
+    .faq-section .title-content {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+
+    .faq-section .section-title-wrapper .huge-title-stacked {
+        text-align: left;
+        font-size: clamp(2.8rem, 15vw, 4.2rem);
+        line-height: 0.9;
+        margin-bottom: 0;
+    }
+
+    .faq-section .projects-label {
+        color: #c0392b;
+        font-weight: 600;
+        letter-spacing: 3px;
+    }
+
+    /* All questions in one list (no pagination on a phone) */
+    .faq-container-wrapper {
+        margin-top: 0;
+    }
+
+    .faq-grid {
+        min-height: 0;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .faq-page,
+    .faq-page.active {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .faq-pagination {
+        display: none;
+    }
+
+    /* Questions as cards */
+    .faq-item {
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 16px;
+        background: #f7f7f5;
+        padding: 0;
+        transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .faq-item.active {
+        background: #fff;
+        border-color: rgba(0, 0, 0, 0.14);
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+    }
+
+    .faq-question {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas: "cat icon" "q icon";
+        column-gap: 14px;
+        row-gap: 6px;
+        align-items: center;
+        padding: 18px 16px 18px 18px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .faq-question .faq-category {
+        grid-area: cat;
+        margin-bottom: 0;
+        font-size: 0.62rem;
+    }
+
+    .faq-question h3 {
+        grid-area: q;
+        font-size: 1.02rem;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+    }
+
+    .faq-icon {
+        grid-area: icon;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        transition: background 0.35s ease, border-color 0.35s ease;
+    }
+
+    .faq-icon span:first-child {
+        width: 12px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 1.5px;
+    }
+
+    .faq-icon span:last-child {
+        height: 12px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 1.5px;
+    }
+
+    .faq-item.active .faq-icon {
+        background: #000;
+        border-color: #000;
+    }
+
+    .faq-item.active .faq-icon span {
+        background: #fff;
+    }
+
+    .faq-item.active .faq-icon span:last-child {
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .faq-answer {
+        padding: 0 18px;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 0 18px 20px;
+    }
+
+    .faq-answer p {
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .faq-link {
+        margin-top: 14px;
+        font-size: 0.68rem;
+    }
+}

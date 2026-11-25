@@ -1055,14 +1055,30 @@ const initFaq = () => {
 
     // Accordion Logic (Global)
     const faqItems = document.querySelectorAll('.faq-item');
+    // Links inside a closed answer must not be reachable with Tab
+    const syncFaqLinks = () => faqItems.forEach(i => {
+        i.querySelectorAll('.faq-answer a').forEach(a => { a.tabIndex = i.classList.contains('active') ? 0 : -1; });
+    });
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
+        question.setAttribute('role', 'button');
+        question.tabIndex = 0;
+        const toggle = () => {
             const isActive = item.classList.contains('active');
-            faqItems.forEach(i => i.classList.remove('active'));
-            if (!isActive) item.classList.add('active');
+            faqItems.forEach(i => { i.classList.remove('active'); i.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false'); });
+            if (!isActive) {
+                item.classList.add('active');
+                question.setAttribute('aria-expanded', 'true');
+            }
+            syncFaqLinks();
+        };
+        question.setAttribute('aria-expanded', 'false');
+        question.addEventListener('click', toggle);
+        question.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
         });
     });
+    syncFaqLinks();
 
     // Pagination Function
     const goToPage = (pageNumber) => {
