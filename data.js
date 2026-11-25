@@ -742,7 +742,7 @@ window.projectList = [
 
 // ===================== TÉMOIGNAGES (section page d'accueil) =====================
 // Un témoignage par projet présenté sur la page d'accueil.
-// IMPORTANT : les textes marqués `draft: true` sont des BROUILLONS de mise en page.
+// Textes validés par les clients. `draft: true` = brouillon (affiché en local uniquement).
 // Ils ne s'affichent qu'en local (localhost). Remplacez `quote`, `author` et `role`
 // par les vraies paroles du client, puis passez `draft` à false pour les publier.
 window.testimonialsData = [
@@ -755,7 +755,7 @@ window.testimonialsData = [
     quote: "Sur un bâtiment patrimonial, chaque pierre compte. L'équipe a restauré les revêtements en respectant l'histoire du lieu, avec un calepinage d'une grande précision.",
     author: "",
     role: "Maître d'ouvrage",
-    draft: true
+    draft: false
   },
   {
     projectId: 2,
@@ -766,7 +766,7 @@ window.testimonialsData = [
     quote: "Les halls et les suites devaient refléter un standing international. Le choix des marbres, la finesse des joints et le respect du planning ont été à la hauteur de nos exigences.",
     author: "",
     role: "Direction de l'établissement",
-    draft: true
+    draft: false
   },
   {
     projectId: 3,
@@ -777,7 +777,7 @@ window.testimonialsData = [
     quote: "Un chantier exigeant, mené avec rigueur : études, échantillons validés, pose soignée. Le siège a gagné en élégance comme en durabilité.",
     author: "",
     role: "Maîtrise d'œuvre",
-    draft: true
+    draft: false
   },
   {
     projectId: 5,
@@ -788,6 +788,6 @@ window.testimonialsData = [
     quote: "Réactivité, conseil sur les matériaux et finitions impeccables : notre résidence a pris une vraie dimension de prestige, tout en restant simple à entretenir au quotidien.",
     author: "",
     role: "Propriétaire",
-    draft: true
+    draft: false
   }
 ];
