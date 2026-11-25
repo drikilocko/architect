@@ -936,6 +936,33 @@
             font-size: 1.1rem;
         }
 
+        /* When the toolbar sticks, the ARTECH navbar gets the same frosted white
+           background so both read as ONE header block */
+        .navbar {
+            transition: background 0.35s ease, -webkit-backdrop-filter 0.35s ease, backdrop-filter 0.35s ease;
+        }
+
+        body.collection-stuck:not(.nav-open) .navbar {
+            mix-blend-mode: normal;
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            backdrop-filter: blur(16px) saturate(160%);
+        }
+
+        body.collection-stuck:not(.nav-open) .nav-logo,
+        body.collection-stuck:not(.nav-open) .nav-back,
+        body.collection-stuck:not(.nav-open) .nav-links a:not(.btn-contact) {
+            color: #000 !important;
+        }
+
+        body.collection-stuck:not(.nav-open) .menu-toggle {
+            mix-blend-mode: normal !important;
+        }
+
+        body.collection-stuck:not(.nav-open) .menu-toggle .bar {
+            background: #000 !important;
+        }
+
         @media (max-width: 768px) {
             .collection-header {
                 margin: 0 -12px;
@@ -1407,7 +1434,10 @@
                 if (io) io.disconnect();
                 if (!('IntersectionObserver' in window)) return;
                 io = new IntersectionObserver(([entry]) => {
-                    header.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < h);
+                    const stuck = !entry.isIntersecting && entry.boundingClientRect.top < h;
+                    header.classList.toggle('is-stuck', stuck);
+                    // Navbar background joins the sticky toolbar at the same moment
+                    document.body.classList.toggle('collection-stuck', stuck);
                 }, { rootMargin: `-${h}px 0px 0px 0px`, threshold: 0 });
                 io.observe(sentinel);
             };
