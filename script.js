@@ -70,6 +70,9 @@ const smoothWheelMQ = window.matchMedia('(hover: hover) and (pointer: fine)');
 const isSmoothWheelEnabled = () => smoothWheelMQ.matches;
 
 // Touch / keyboard input cancels any running glide so native scroll takes over
+// Easing of the current glide: wheel = SMOOTH_LERP, slide buttons = faster
+let glideLerp = SMOOTH_LERP;
+
 const cancelGlide = () => {
     if (!isScrollActive) return;
     isScrollActive = false;
@@ -124,12 +127,16 @@ window.addEventListener('wheel', (e) => {
     e.preventDefault();
     if (!isScrollActive) currentY = targetY = window.scrollY;
     targetY = clampScroll(targetY + delta);
+    glideLerp = SMOOTH_LERP;
     isScrollActive = true;
     wakeRenderLoop();
 }, { passive: false });
 
-window.addEventListener('touchstart', () => {
+window.addEventListener('touchstart', (e) => {
     _horizontalDragActive = false;
+    // Taps on the slide / continue / popup buttons keep the current glide, so
+    // fast repeated taps chain card after card instead of cancelling each other
+    if (e.target.closest && e.target.closest('.hnav, .mm-nav, .testi-arrow')) return;
     cancelGlide();
 }, { passive: true });
 
@@ -186,7 +193,7 @@ const renderLoop = (now = performance.now()) => {
     } else if (isScrollActive) {
         const diff = targetY - currentY;
         if (Math.abs(diff) > 0.5) {
-            const ease = 1 - Math.pow(1 - SMOOTH_LERP, dt / (1000 / 60));
+            const ease = 1 - Math.pow(1 - glideLerp, dt / (1000 / 60));
             currentY += diff * ease;
             window.scrollTo(0, currentY);
         } else {
@@ -1907,6 +1914,7 @@ window.addEventListener('load', () => {
         const velocity = (last.x - first.x) / dt; // px per ms
         const glide = Math.max(-MAX_MOMENTUM_PX, Math.min(MAX_MOMENTUM_PX, velocity * MOMENTUM_MS));
         targetY = clampY(currentY - glide * DRAG_GAIN * getHorizontalScrollRatio(containerEl));
+        glideLerp = SMOOTH_LERP;
         isScrollActive = true; // render loop eases toward targetY (inertia)
     };
 
@@ -2471,6 +2479,7 @@ if (document.readyState === 'loading') {
                 ? next.getBoundingClientRect().top + window.scrollY
                 : st.m.top + st.m.height;
             targetY = Math.max(0, Math.min(maxY, y));
+            glideLerp = 0.14;
             isScrollActive = true;
         };
         if (dir === 'down') return goDown();
@@ -2484,6 +2493,7 @@ if (document.readyState === 'loading') {
             if (tx === undefined) tx = 0;
         }
         targetY = Math.max(0, Math.min(maxY, st.m.top + (tx / st.maxX) * st.travelY));
+        glideLerp = 0.2; // snappy: each press lands on its card quickly
         isScrollActive = true;
     };
 
