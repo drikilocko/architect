@@ -1254,7 +1254,7 @@ window.openProjectModal = (id) => {
     const isInProjectSubfolder = /\/projet\/|\/services\/|\/marbres\/|\/contact\//.test(path);
     const assetPrefix = isInProjectSubfolder ? '../' : '';
 
-    row.innerHTML = data.gallery.map((item, index) => {
+    const cardsHtml = data.gallery.map((item, index) => {
         const src = item.file_path.startsWith('http') ? item.file_path : assetPrefix + item.file_path;
         const fallback = assetPrefix + 'projet/1.jpg';
         if (item.type === 'video') {
@@ -1264,6 +1264,7 @@ window.openProjectModal = (id) => {
         // Images load immediately with direct src — no lazy observer needed in modals
         return `<div class="pm-media-card" onclick="openProjectLightbox(${id}, ${index})"><img src="${src}" alt="Média Projet ARTECH MARBRERIE AFRIQUE" decoding="async" onerror="this.onerror=null; this.src='${fallback}';"></div>`;
     }).join('');
+    row.innerHTML = cardsHtml;
 
     nameEl.textContent = data.name || 'Projet sans nom';
     descEl.textContent = data.desc;
@@ -1276,10 +1277,14 @@ window.openProjectModal = (id) => {
     numberEl.textContent = `${currentIndex} / ${totalIndex}`;
     categoryEl.textContent = data.category || '';
 
-    document.getElementById('project-modal').classList.add('active');
+    const projectModalEl = document.getElementById('project-modal');
+    projectModalEl.classList.add('active');
+    projectModalEl.scrollTop = 0;
     document.body.style.overflow = 'hidden';
 
     initModalSlider(row);
+    // Always start on image 1, and loop endlessly (end -> start -> end...)
+    setupModalInfiniteLoop(row, cardsHtml);
 
     const arrowLeft = row.parentElement.querySelector('.pm-arrow-left');
     const arrowRight = row.parentElement.querySelector('.pm-arrow-right');
@@ -1437,9 +1442,77 @@ const closePremiumPopup = () => {
     document.body.style.overflow = '';
 };
 
+// ===== Project popup gallery: infinite loop =====
+// Layout: [copy of all images] [original images] [copy of all images].
+// The row opens on the first ORIGINAL image; whenever the visitor drifts into
+// one of the copies, the position is shifted by exactly one set width while
+// the row is idle, which is invisible (same images at the same place).
+const setupModalInfiniteLoop = (row, cardsHtml) => {
+    row.dataset.loopWidth = '';
+    const resetToFirst = () => {
+        row.style.scrollSnapType = 'none';
+        row.scrollLeft = 0;
+        requestAnimationFrame(() => { row.style.scrollSnapType = ''; });
+    };
+
+    const originals = row.querySelectorAll('.pm-media-card');
+    if (originals.length < 2) { resetToFirst(); return; }
+
+    const first = originals[0];
+    const last = originals[originals.length - 1];
+    const gap = parseFloat(getComputedStyle(row).columnGap) || 16;
+    const setWidth = (last.offsetLeft + last.offsetWidth + gap) - first.offsetLeft;
+    // Everything already fits on screen: nothing to loop
+    if (setWidth <= row.clientWidth + 1) { resetToFirst(); return; }
+
+    const cloneSet = () => {
+        const tpl = document.createElement('div');
+        tpl.innerHTML = cardsHtml;
+        tpl.querySelectorAll('.pm-media-card').forEach(c => {
+            c.dataset.clone = '1';
+            c.setAttribute('aria-hidden', 'true');
+        });
+        return Array.from(tpl.children);
+    };
+    row.prepend(...cloneSet());
+    row.append(...cloneSet());
+
+    row.dataset.loopWidth = String(setWidth);
+    // Open exactly on image 1 (first original card), no animation
+    row.style.scrollSnapType = 'none';
+    row.scrollLeft = first.offsetLeft - row.querySelector('.pm-media-card').offsetLeft;
+    requestAnimationFrame(() => { row.style.scrollSnapType = ''; });
+};
+
+const normalizeModalLoop = (row) => {
+    const w = parseFloat(row.dataset.loopWidth);
+    if (!w) return;
+    let x = row.scrollLeft;
+    if (x < w * 0.5) x += w;
+    else if (x >= w * 1.5) x -= w;
+    else return;
+    row.style.scrollSnapType = 'none';
+    row.scrollLeft = x;
+    requestAnimationFrame(() => { row.style.scrollSnapType = ''; });
+};
+
 const initModalSlider = (row) => {
     if (row.dataset.sliderInitialized) return;
     row.dataset.sliderInitialized = 'true';
+
+    // Re-centre on the original set once scrolling settles (smooth arrows,
+    // trackpad / touch momentum and snapping are all finished by then)
+    let loopTimer = null;
+    row.addEventListener('scroll', () => {
+        clearTimeout(loopTimer);
+        loopTimer = setTimeout(() => normalizeModalLoop(row), 140);
+    }, { passive: true });
+    if ('onscrollend' in window) {
+        row.addEventListener('scrollend', () => {
+            clearTimeout(loopTimer);
+            normalizeModalLoop(row);
+        });
+    }
 
     row.addEventListener('click', (e) => {
         const card = e.target.closest('.pm-media-card');
