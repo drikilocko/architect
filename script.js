@@ -2178,9 +2178,18 @@ if (document.readyState === 'loading') {
         const maxY = cachedMaxScroll || getMaxScroll();
         if (!isScrollActive) currentY = window.scrollY;
 
-        // End of the track (or "Continuer"): glide down to the next section
+        // End of the track (or "Continuer"): glide to the top of the NEXT section,
+        // measured live (cached metrics can be stale after images/sections load)
         const goDown = () => {
-            targetY = Math.max(0, Math.min(maxY, st.m.top + st.m.height));
+            const section = st.track.closest('section');
+            let next = section ? section.nextElementSibling : null;
+            while (next && (next.hidden || next.offsetHeight === 0 || !/^(SECTION|FOOTER|DIV)$/.test(next.tagName))) {
+                next = next.nextElementSibling;
+            }
+            const y = next
+                ? next.getBoundingClientRect().top + window.scrollY
+                : st.m.top + st.m.height;
+            targetY = Math.max(0, Math.min(maxY, y));
             isScrollActive = true;
         };
         if (dir === 'down') return goDown();
@@ -2205,7 +2214,10 @@ if (document.readyState === 'loading') {
             const [prev, next] = nav.querySelectorAll('.hnav-btn');
             const cont = nav.querySelector('.hnav-continue');
             const atStart = x <= 2;
-            const atEnd = x >= st.maxX - 2;
+            // "End" cue only while the track is still pinned at its last card:
+            // as soon as the visitor scrolls on by himself, the cue fades out.
+            const pastEnd = window.scrollY - (st.m.top + st.travelY);
+            const atEnd = x >= st.maxX - 2 && pastEnd < 24;
             if (prev.disabled !== atStart) prev.disabled = atStart;
             // At the end the "next" button turns into a down arrow (page continues below)
             if (nav.classList.contains('is-end') !== atEnd) {
