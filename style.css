@@ -6635,3 +6635,36 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         align-items: flex-end;
     }
 }
+
+/* ===================== HOMEPAGE BURGER: FIXED RIGHT, ALWAYS VISIBLE (mobile / tablet) ===================== */
+@media (max-width: 991px) {
+    body.home .menu-toggle,
+    body.home.nav-open .menu-toggle {
+        position: fixed !important;
+        top: 14px !important;
+        right: 16px !important;
+        z-index: 1000005 !important;
+        width: 46px;
+        height: 46px;
+        padding: 14px 11px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.78);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        backdrop-filter: blur(14px) saturate(160%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        mix-blend-mode: normal !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body.home.nav-open .menu-toggle {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: none;
+    }
+
+    /* Leave room on the right so the logo / header never sits under the burger */
+    body.home .navbar {
+        padding-right: 76px;
+    }
+}

@@ -851,6 +851,8 @@ const handleLogoTransition = (scrollPos) => {
     }
 };
 
+const burgerMQ = window.matchMedia('(max-width: 991px)');
+
 // Orchestrated Scroll Logic (Hero sequence)
 const handleSequencedScroll = (scrollPos) => {
     const vh = cachedMetrics.windowHeight; // Use cached value — avoids forced reflow
@@ -885,7 +887,9 @@ const handleSequencedScroll = (scrollPos) => {
         videoWrapper.style.width = `${90 + (expansionProgress * 10)}vw`;
         videoWrapper.style.height = `calc(100vh - ${1 * (1 - expansionProgress)}cm)`;
         videoWrapper.style.borderRadius = `${40 * (1 - expansionProgress)}px ${40 * (1 - expansionProgress)}px 0 0`;
-        mainHeader.style.transform = `translateY(-${expansionProgress * 100}%)`;
+        // Desktop: header slides away as the video expands.
+        // Mobile/tablet (burger menu): header stays put so the burger is always reachable.
+        mainHeader.style.transform = burgerMQ.matches ? 'none' : `translateY(-${expansionProgress * 100}%)`;
     }
 
     // Phase 2: Overflight & Text

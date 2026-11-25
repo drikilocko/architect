@@ -906,6 +906,58 @@
             color: #fff;
             transform: scale(1.1);
         }
+        /* ===== STICKY COLLECTION TOOLBAR (title + search + filters) ===== */
+        .collection-header {
+            position: sticky;
+            top: var(--marbres-nav-h, 76px);
+            z-index: 60;
+            margin: 0 -1cm;
+            padding-left: 1cm;
+            padding-right: 1cm;
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            backdrop-filter: blur(16px) saturate(160%);
+            transition: padding 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .collection-sticky-sentinel {
+            height: 1px;
+            margin-bottom: -1px;
+        }
+
+        .collection-header.is-stuck {
+            padding-top: 14px;
+            padding-bottom: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .collection-header.is-stuck .section-title {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .collection-header {
+                margin: 0 -12px;
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            /* Stuck on mobile: keep search + filters only, compact */
+            .collection-header.is-stuck {
+                gap: 10px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .collection-header.is-stuck .section-title {
+                display: none;
+            }
+
+            .collection-header.is-stuck .filter-tab {
+                padding: 8px 10px;
+            }
+        }
     </style>
 </head>
 
@@ -980,6 +1032,7 @@
 
     <!-- Collection -->
     <section class="collection">
+        <div class="collection-sticky-sentinel" aria-hidden="true"></div>
         <div class="collection-header">
             <h2 class="section-title">Notre Collection</h2>
             <div class="search-panel">
@@ -1335,6 +1388,33 @@
         </div>
     </div>
 
+    <script>
+        // Sticky collection toolbar: sit right under the fixed navbar and
+        // switch to a compact look once it is stuck.
+        (function () {
+            const header = document.querySelector('.collection-header');
+            const sentinel = document.querySelector('.collection-sticky-sentinel');
+            const nav = document.querySelector('.navbar');
+            if (!header || !sentinel) return;
+            const setNavH = () => {
+                const h = nav ? Math.round(nav.getBoundingClientRect().height) : 76;
+                document.documentElement.style.setProperty('--marbres-nav-h', h + 'px');
+                return h;
+            };
+            let io = null;
+            const observe = () => {
+                const h = setNavH();
+                if (io) io.disconnect();
+                if (!('IntersectionObserver' in window)) return;
+                io = new IntersectionObserver(([entry]) => {
+                    header.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < h);
+                }, { rootMargin: `-${h}px 0px 0px 0px`, threshold: 0 });
+                io.observe(sentinel);
+            };
+            observe();
+            window.addEventListener('resize', observe, { passive: true });
+        })();
+    </script>
 </body>
 
 </html>
