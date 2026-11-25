@@ -6302,3 +6302,138 @@ html.no-intro body.loaded .hero-left-stack .btn-callnow {
         transform: none;
     }
 }
+
+/* ===================== PREV / NEXT BUTTONS — PROJETS & NOS MARBRES ===================== */
+.hnav {
+    position: absolute;
+    right: 1cm;
+    bottom: 4vh;
+    z-index: 40;
+    display: flex;
+    gap: 10px;
+}
+
+.hnav-btn {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--text-color);
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hnav-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (hover: hover) {
+    .hnav-btn:not(:disabled):hover {
+        background: var(--text-color);
+        border-color: var(--text-color);
+        color: #fff;
+    }
+}
+
+.hnav-btn:not(:disabled):active {
+    transform: scale(0.94);
+}
+
+.hnav-btn:focus-visible {
+    outline: 2px solid #c0392b;
+    outline-offset: 3px;
+}
+
+.hnav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* Marbres: the info HUD sits bottom-right too — keep it clear of the buttons */
+.marbre-gallery-hud {
+    right: calc(1cm + 140px);
+}
+
+@media (max-width: 768px) {
+    .hnav {
+        right: 16px;
+        bottom: 3vh;
+    }
+
+    .hnav-btn {
+        width: 46px;
+        height: 46px;
+    }
+}
+
+/* ===================== PROJECT POPUP — "EN SAVOIR PLUS" STEPS ===================== */
+/* The steps reuse the homepage .process-step class: neutralise the big card
+   styles that leaked in (fixed height, shadows, giant pseudo-element text),
+   which made the steps overlap each other. */
+.project-modal .pm-details-text .process-step {
+    height: auto;
+    min-height: 0;
+    flex: initial;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    cursor: default;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.project-modal .pm-details-text .process-step::before,
+.project-modal .pm-details-text .process-step::after {
+    content: none;
+    display: none;
+}
+
+/* Responsive: all the steps of a phase on ONE line, swipe horizontally */
+@media (max-width: 768px) {
+    .project-modal .pm-details-text {
+        gap: 28px;
+    }
+
+    .project-modal .pm-details-text .process-phase-title {
+        font-size: 1rem;
+    }
+
+    .project-modal .pm-details-text .process-steps-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 12px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x pan-y;
+        scrollbar-width: none;
+        margin: 0 -16px;
+        padding: 0 16px 4px;
+        scroll-padding: 0 16px;
+    }
+
+    .project-modal .pm-details-text .process-steps-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .project-modal .pm-details-text .process-step {
+        flex: 0 0 78%;
+        max-width: 300px;
+        scroll-snap-align: start;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+}

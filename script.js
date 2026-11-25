@@ -2134,3 +2134,80 @@ if (document.readyState === 'loading') {
     }
     start();
 })();
+
+// ===================== PREV / NEXT BUTTONS ON HORIZONTAL SECTIONS =====================
+// Projets & Nos Marbres: each click glides the page so the track lands exactly
+// on the previous / next card (same easing as the smooth scroll engine).
+(function initHorizontalNavButtons() {
+    const navs = document.querySelectorAll('.hnav[data-hnav]');
+    if (!navs.length) return;
+
+    const getSetup = (kind) => {
+        const track = document.getElementById(kind === 'process' ? 'process-container' : 'gallery-track');
+        const m = kind === 'process' ? cachedMetrics.process : cachedMetrics.gallery;
+        if (!track || !m || !m.height) return null;
+        const vh = cachedMetrics.windowHeight || window.innerHeight;
+        const travelY = m.height - vh;
+        const maxX = m.scrollWidth - (cachedMetrics.windowWidth || window.innerWidth);
+        if (travelY <= 0 || maxX <= 0) return null;
+        return { track, m, travelY, maxX };
+    };
+
+    const currentX = (st, y) => Math.max(0, Math.min(1, (y - st.m.top) / st.travelY)) * st.maxX;
+
+    // Horizontal positions where each card is aligned like the first one
+    const getStops = (st) => {
+        const items = Array.from(st.track.children);
+        if (!items.length) return [0, st.maxX];
+        const first = items[0].offsetLeft;
+        const stops = items.map(el => Math.min(st.maxX, Math.max(0, el.offsetLeft - first)));
+        stops.push(st.maxX);
+        return Array.from(new Set(stops.map(x => Math.round(x)))).sort((a, b) => a - b);
+    };
+
+    const go = (kind, dir) => {
+        const st = getSetup(kind);
+        if (!st) return;
+        const baseY = isScrollActive ? targetY : window.scrollY;
+        const x = currentX(st, baseY);
+        const stops = getStops(st);
+        let tx;
+        if (dir > 0) {
+            tx = stops.find(s => s > x + 8);
+            if (tx === undefined) return;
+        } else {
+            tx = [...stops].reverse().find(s => s < x - 8);
+            if (tx === undefined) tx = 0;
+        }
+        if (!isScrollActive) currentY = window.scrollY;
+        const maxY = cachedMaxScroll || getMaxScroll();
+        targetY = Math.max(0, Math.min(maxY, st.m.top + (tx / st.maxX) * st.travelY));
+        isScrollActive = true;
+    };
+
+    const updateStates = () => {
+        navs.forEach(nav => {
+            const st = getSetup(nav.dataset.hnav);
+            if (!st) return;
+            const x = currentX(st, window.scrollY);
+            const [prev, next] = nav.querySelectorAll('.hnav-btn');
+            const atStart = x <= 2;
+            const atEnd = x >= st.maxX - 2;
+            if (prev.disabled !== atStart) prev.disabled = atStart;
+            if (next.disabled !== atEnd) next.disabled = atEnd;
+        });
+    };
+
+    navs.forEach(nav => {
+        nav.addEventListener('click', (e) => {
+            const btn = e.target.closest('.hnav-btn');
+            if (!btn || btn.disabled) return;
+            go(nav.dataset.hnav, Number(btn.dataset.dir));
+        });
+    });
+
+    window.addEventListener('scroll', updateStates, { passive: true });
+    window.addEventListener('resize', updateStates, { passive: true });
+    window.addEventListener('load', updateStates);
+    updateStates();
+})();
