@@ -2175,16 +2175,24 @@ if (document.readyState === 'loading') {
         const baseY = isScrollActive ? targetY : window.scrollY;
         const x = currentX(st, baseY);
         const stops = getStops(st);
+        const maxY = cachedMaxScroll || getMaxScroll();
+        if (!isScrollActive) currentY = window.scrollY;
+
+        // End of the track (or "Continuer"): glide down to the next section
+        const goDown = () => {
+            targetY = Math.max(0, Math.min(maxY, st.m.top + st.m.height));
+            isScrollActive = true;
+        };
+        if (dir === 'down') return goDown();
+
         let tx;
         if (dir > 0) {
             tx = stops.find(s => s > x + 8);
-            if (tx === undefined) return;
+            if (tx === undefined) return goDown();
         } else {
             tx = [...stops].reverse().find(s => s < x - 8);
             if (tx === undefined) tx = 0;
         }
-        if (!isScrollActive) currentY = window.scrollY;
-        const maxY = cachedMaxScroll || getMaxScroll();
         targetY = Math.max(0, Math.min(maxY, st.m.top + (tx / st.maxX) * st.travelY));
         isScrollActive = true;
     };
@@ -2195,18 +2203,27 @@ if (document.readyState === 'loading') {
             if (!st) return;
             const x = currentX(st, window.scrollY);
             const [prev, next] = nav.querySelectorAll('.hnav-btn');
+            const cont = nav.querySelector('.hnav-continue');
             const atStart = x <= 2;
             const atEnd = x >= st.maxX - 2;
             if (prev.disabled !== atStart) prev.disabled = atStart;
-            if (next.disabled !== atEnd) next.disabled = atEnd;
+            // At the end the "next" button turns into a down arrow (page continues below)
+            if (nav.classList.contains('is-end') !== atEnd) {
+                nav.classList.toggle('is-end', atEnd);
+                next.setAttribute('aria-label', atEnd ? 'Continuer vers la section suivante' : 'Suivant');
+                if (cont) {
+                    cont.tabIndex = atEnd ? 0 : -1;
+                    cont.setAttribute('aria-hidden', atEnd ? 'false' : 'true');
+                }
+            }
         });
     };
 
     navs.forEach(nav => {
         nav.addEventListener('click', (e) => {
-            const btn = e.target.closest('.hnav-btn');
+            const btn = e.target.closest('.hnav-btn, .hnav-continue');
             if (!btn || btn.disabled) return;
-            go(nav.dataset.hnav, Number(btn.dataset.dir));
+            go(nav.dataset.hnav, btn.dataset.dir === 'down' ? 'down' : Number(btn.dataset.dir));
         });
     });
 
