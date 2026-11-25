@@ -7229,3 +7229,76 @@ html.is-navigating body {
         transition: none;
     }
 }
+
+/* ===================== "CONTINUER" PILL: SNAKE BORDER ANIMATION ===================== */
+/* A light trail runs around the pill's outline in a loop: a rotating conic
+   gradient behind, masked by an inner fill so only a 1.5px border shows. */
+.hnav-continue {
+    overflow: hidden;
+    isolation: isolate;
+    border-color: transparent;
+    background: transparent;
+}
+
+.hnav-continue::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300%;
+    aspect-ratio: 1;
+    background: conic-gradient(from 0deg,
+            transparent 0deg 250deg,
+            rgba(192, 57, 43, 0.15) 280deg,
+            #c0392b 335deg,
+            #111 358deg,
+            transparent 360deg);
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation: hnavSnake 2.4s linear infinite;
+    z-index: -2;
+}
+
+/* Inner fill: leaves only the moving border visible */
+.hnav-continue::after {
+    content: "";
+    position: absolute;
+    inset: 1.5px;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    transition: background 0.3s ease;
+    z-index: -1;
+}
+
+.hnav-continue > * {
+    position: relative;
+}
+
+@media (hover: hover) {
+    .hnav-continue:hover {
+        background: transparent;
+        color: #fff;
+    }
+
+    .hnav-continue:hover::after {
+        background: var(--text-color);
+    }
+}
+
+@keyframes hnavSnake {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* The snake only runs while the pill is visible (no hidden GPU work) */
+.hnav:not(.is-end) .hnav-continue::before {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hnav-continue::before {
+        animation: none;
+        background: rgba(0, 0, 0, 0.15);
+    }
+}
