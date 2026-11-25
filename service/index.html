@@ -994,6 +994,29 @@
     <script src="../script.js"></script>
 
     <script>
+        // "Page suivante": next service in the same order as the Services page;
+        // the last service leads to the Projets page (static fallback in the HTML).
+        (function () {
+            const data = window.serviceData;
+            const link = document.querySelector('.next-page-link');
+            if (!data || !link) return;
+            const id = new URLSearchParams(window.location.search).get('id') || '1';
+            const ids = Object.keys(data); // integer keys = ascending order, like the Services grid
+            const pos = ids.indexOf(String(id));
+            const next = pos >= 0 && pos < ids.length - 1 ? data[ids[pos + 1]] : null;
+            if (!next) return; // last service -> keep "Nos projets"
+
+            link.href = `?id=${next.id}`;
+            const set = (sel, txt) => { const el = link.querySelector(sel); if (el) el.textContent = txt; };
+            set('.next-page-title', next.title);
+            const eyebrow = link.querySelector('.next-page-eyebrow');
+            if (eyebrow) eyebrow.lastChild.textContent = 'Service suivant';
+            const desc = (next.description || '').split(/(?<=\.)\s/)[0];
+            set('.next-page-desc', desc);
+            const img = link.querySelector('.next-page-media');
+            if (img && next.image) img.src = '../' + next.image;
+        })();
+
         // Load single service details dynamically from URL parameter ?id=...
         (function () {
             const params = new URLSearchParams(window.location.search);
