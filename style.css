@@ -7792,3 +7792,21 @@ body::before {
         transform: none;
     }
 }
+
+/* ===================== CONTACT + FAQ: ONE CONTINUOUS BACKGROUND ===================== */
+/* "Votre projet" and "Vos réponses" read as one area: same white, no shadow
+   or line between them, the spacing alone separates the two blocks. */
+.contact-section,
+.faq-section {
+    background: #fff;
+    box-shadow: none;
+    border: 0;
+}
+
+.contact-section {
+    padding-bottom: clamp(40px, 7vh, 90px);
+}
+
+.faq-section {
+    padding-top: clamp(40px, 7vh, 90px);
+}
