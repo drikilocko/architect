@@ -24,10 +24,6 @@ html {
 body {
     font-family: 'Manrope', sans-serif;
     background-color: var(--bg-dark);
-    background-image: var(--bg-global);
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
     color: var(--text-color);
     overflow-x: clip;
     overscroll-behavior: auto;
@@ -2474,9 +2470,9 @@ body.loaded .scroll-indicator-wrapper {
 .horizontal-gallery-section {
     height: 400vh;
     position: relative;
-    background-color: #fff;
-    background-image: var(--bg-global);
-    background-attachment: fixed;
+    /* Transparent: the site's fixed background layer (body::before) shows
+       through, identical to the old background-attachment: fixed look */
+    background-color: transparent;
     z-index: 20;
 }
 
@@ -7578,5 +7574,221 @@ body.collection-stuck .back-home {
 
     .back-home {
         transition: none;
+    }
+}
+
+
+/* ===================== SCROLL PERFORMANCE ===================== */
+/* Site background as a fixed, GPU-composited layer instead of
+   background-attachment: fixed (which repainted the whole background on every
+   scroll frame - the main cause of jank, especially on Safari). */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--bg-global);
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    transform: translateZ(0);
+}
+
+/* Touch devices: frosted-glass blurs recompute what is behind them on every
+   frame. The glass elements already have semi-opaque backgrounds, so they keep
+   their look without the blur. */
+@media (hover: none), (max-width: 991px) {
+    *,
+    *::before,
+    *::after {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+}
+
+/* Footer (with its endless marquee) is not rendered until it is near the screen */
+.main-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 700px;
+}
+
+/* ===================== TESTIMONIALS: PROJECT PHOTO BEHIND EACH TAB (large screens) ===================== */
+/* Idle: the photo is a light, desaturated texture behind the name.
+   Hover: it comes forward a little and slowly pans.
+   Active: a curtain reveals it at full strength, text turns white. */
+@media (min-width: 1025px) {
+    .testi-tab {
+        min-height: 92px;
+        padding: 22px 20px;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .testi-tab.is-active {
+        padding-left: 28px;
+    }
+
+    .testi-tab-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.16;
+        filter: grayscale(1);
+        transform: scale(1.06);
+        transition: opacity 0.6s ease, filter 0.6s ease, transform 2.4s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.8s cubic-bezier(0.77, 0, 0.18, 1);
+        clip-path: inset(0 0 0 0);
+    }
+
+    /* White veil from the left keeps the idle text perfectly readable */
+    .testi-tab-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #fff 18%, rgba(255, 255, 255, 0.55) 60%, rgba(255, 255, 255, 0.2));
+        transition: background 0.6s ease, opacity 0.6s ease;
+    }
+
+    .testi-tab:hover .testi-tab-bg {
+        opacity: 0.32;
+        filter: grayscale(0.5);
+        transform: scale(1.12) translateX(-2%);
+    }
+
+    /* Active: curtain reveal from the left, full colour, dark veil */
+    .testi-tab.is-active .testi-tab-bg {
+        opacity: 1;
+        filter: none;
+        transform: scale(1);
+        animation: testiTabReveal 0.9s cubic-bezier(0.77, 0, 0.18, 1) both;
+    }
+
+    .testi-tab.is-active .testi-tab-bg::after {
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.78) 10%, rgba(0, 0, 0, 0.45) 60%, rgba(0, 0, 0, 0.15));
+    }
+
+    .testi-tab.is-active,
+    .testi-tab.is-active:hover {
+        color: #fff;
+    }
+
+    .testi-tab.is-active .testi-tab-index {
+        color: #ff6b5e;
+    }
+
+    .testi-tab.is-active .testi-tab-cat {
+        opacity: 0.85;
+    }
+
+    .testi-tab.is-active .testi-tab-progress {
+        background: #fff;
+        height: 2px;
+        bottom: 0;
+        z-index: 1;
+    }
+
+    .testi-tab > :not(.testi-tab-bg) {
+        position: relative;
+    }
+
+    .testi-tab-progress {
+        position: absolute !important;
+    }
+}
+
+@keyframes testiTabReveal {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .testi-tab-bg {
+        transition: opacity 0.3s ease;
+        animation: none !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .testi-tab-bg {
+        display: none;
+    }
+}
+
+/* ===================== TESTIMONIALS: PROJECT PHOTO AS THE SECTION BACKGROUND ===================== */
+/* The right-hand photo panel is gone: the active project's photo now fills the
+   whole section behind a light veil, cross-fading with each testimonial. */
+.testimonials-section {
+    isolation: isolate;
+}
+
+.testi-stage {
+    position: static;
+    min-height: 0;
+}
+
+.testi-media {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: #fff;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.testi-media-layer {
+    transform: scale(1.04);
+    will-change: opacity, transform;
+    transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 6s ease-out;
+}
+
+.testi-media-layer.is-visible {
+    transform: scale(1);
+}
+
+/* Light veil: photo clearly visible, text and card stay perfectly readable */
+.testi-media::after {
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.78) 45%, rgba(255, 255, 255, 0.6) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 30%, transparent 75%, rgba(255, 255, 255, 0.6) 100%);
+}
+
+.testi-head,
+.testi-layout {
+    position: relative;
+    z-index: 1;
+}
+
+/* The quote card now has the full right column */
+.testi-card {
+    width: 100%;
+    max-width: 860px;
+}
+
+@media (max-width: 768px) {
+    .testi-media {
+        height: auto;
+    }
+
+    .testi-card {
+        margin: 0;
+    }
+
+    .testi-media::after {
+        background: rgba(255, 255, 255, 0.82);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .testi-media-layer {
+        transition: opacity 0.4s ease;
+        transform: none;
     }
 }

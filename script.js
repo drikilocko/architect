@@ -902,13 +902,16 @@ const handleLogoTransition = (scrollPos) => {
 
 const burgerMQ = window.matchMedia('(max-width: 991px)');
 
+const _heroEls = { ui: null, uiHidden: null, dot: undefined, lastExp: -1, lastBurger: null };
+
 // Orchestrated Scroll Logic (Hero sequence)
 const handleSequencedScroll = (scrollPos) => {
     const vh = cachedMetrics.windowHeight; // Use cached value — avoids forced reflow
 
-    // Fade out UI layer on scroll
-    const heroUiLayer = document.getElementById('hero-ui-layer');
-    if (heroUiLayer) {
+    // Fade out UI layer on scroll (cached element, writes only on change)
+    const heroUiLayer = _heroEls.ui || (_heroEls.ui = document.getElementById('hero-ui-layer'));
+    if (heroUiLayer && (scrollPos > 10) !== _heroEls.uiHidden) {
+        _heroEls.uiHidden = scrollPos > 10;
         if (scrollPos > 10) {
             heroUiLayer.style.opacity = '0';
             heroUiLayer.style.pointerEvents = 'none';
@@ -919,7 +922,8 @@ const handleSequencedScroll = (scrollPos) => {
     }
 
     // Update custom scrollbar dot position
-    const scrollDot = document.getElementById('scroll-dot');
+    if (_heroEls.dot === undefined) _heroEls.dot = document.getElementById('scroll-dot');
+    const scrollDot = _heroEls.dot;
     if (scrollDot) {
         const maxScroll = cachedMetrics.docHeight - cachedMetrics.windowHeight;
         const pct = maxScroll > 0 ? Math.min(scrollPos / maxScroll, 1) * 100 : 0;
@@ -932,7 +936,11 @@ const handleSequencedScroll = (scrollPos) => {
     let expansionProgress = (scrollPos - expansionStart) / (expansionEnd - expansionStart);
     expansionProgress = Math.max(0, Math.min(1, expansionProgress));
 
-    if (videoWrapper && mainHeader) {
+    // Layout-affecting writes only while the expansion actually changes
+    // (they used to run on every frame, for the whole page)
+    if (videoWrapper && mainHeader && (expansionProgress !== _heroEls.lastExp || burgerMQ.matches !== _heroEls.lastBurger)) {
+        _heroEls.lastExp = expansionProgress;
+        _heroEls.lastBurger = burgerMQ.matches;
         videoWrapper.style.width = `${90 + (expansionProgress * 10)}vw`;
         videoWrapper.style.height = `calc(100vh - ${1 * (1 - expansionProgress)}cm)`;
         videoWrapper.style.borderRadius = `${40 * (1 - expansionProgress)}px ${40 * (1 - expansionProgress)}px 0 0`;
@@ -2187,13 +2195,8 @@ const initGlobalScrollIndicator = () => {
 const updateGlobalScrollDot = () => {
     const scrollDot = document.getElementById('scroll-dot');
     if (!scrollDot) return;
-    const docHeight = Math.max(
-        document.body.scrollHeight, document.documentElement.scrollHeight,
-        document.body.offsetHeight, document.documentElement.offsetHeight,
-        document.body.clientHeight, document.documentElement.clientHeight
-    );
-    const winHeight = window.innerHeight;
-    const maxScroll = docHeight - winHeight;
+    // cachedMaxScroll is kept up to date by a ResizeObserver: no layout read here
+    const maxScroll = cachedMaxScroll || getMaxScroll();
     const scrollY = window.scrollY || window.pageYOffset || 0;
     const pct = maxScroll > 0 ? Math.min(Math.max(0, scrollY / maxScroll), 1) * 100 : 0;
     scrollDot.style.top = `${pct}%`;
@@ -2270,6 +2273,7 @@ if (document.readyState === 'loading') {
 
     tabsEl.innerHTML = items.map((t, i) => `
         <button type="button" class="testi-tab" role="tab" id="testi-tab-${i}" aria-selected="false" data-i="${i}">
+            <span class="testi-tab-bg" aria-hidden="true" style="background-image:url('assets/testi-thumbs/${esc(t.projectId)}.webp')"></span>
             <span class="testi-tab-index">${esc(t.index || String(i + 1).padStart(2, '0'))}</span>
             <span class="testi-tab-text">
                 <span class="testi-tab-name">${esc(t.project)}</span>
@@ -2304,9 +2308,13 @@ if (document.readyState === 'loading') {
             b.tabIndex = on ? 0 : -1;
         });
 
-        const img = t.image || fallbackImg;
+        // Section background: light 1600x1000 WebP version of the project photo
+        const img = t.image ? `assets/testi-thumbs/${t.projectId}-bg.webp` : fallbackImg;
         const next = layers[1 - front];
         next.style.backgroundImage = img ? `url("${encodeURI(img)}")` : 'none';
+        // Warm the next testimonial's background so the cross-fade never waits
+        const upcoming = items[(i + 1) % items.length];
+        if (upcoming && upcoming.image) new Image().src = `assets/testi-thumbs/${upcoming.projectId}-bg.webp`;
         next.classList.add('is-visible');
         layers[front].classList.remove('is-visible');
         front = 1 - front;
